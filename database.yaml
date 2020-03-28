@@ -1,0 +1,4 @@
+mysql_host: 'localhost' #eventually cpanel?
+mysql_user: 'vikash' #vikash enter your mysql username
+mysql_password: '' #enter the mysql_password
+mysql_db: '?' #name of the database
