@@ -15,14 +15,8 @@ import yaml
 #-----------------------------------------------------------------------
 
 app = Flask(__name__, template_folder='.')
-
-db = yaml.load(open('database.yaml'))
-app.config['MYSQL_HOST'] = db["mysql_host"]
-app.config['MYSQL_USER'] = db["mysql_user"]
-app.config['MYSQL_PASSWORD'] = db["mysql_password"]
-app.config['MYSQL_DB'] = db["mysql_db"]
-
-mysql = MySQL(app)
+db = Database()
+db.connect()
 
 #-----------------------------------------------------------------------
 
@@ -41,15 +35,10 @@ def student():
     argv.append(major)
     career = request.form.get("field")
     argv.append(career)
-
-    cursor = mysql.connection.cursor()
-
+    
     query = "INSERT INTO student_table \
              VALUES ? ? ? ? "
-
-    cursor.execute(query, (firstname, lastname, email, major, career))
-    mysql.connection.commit() # try and except maybe before
-    cursor.close()
+    db.execute(query, (firstname, lastname, email, major, career))
 
 #-----------------------------------------------------------------------
 
@@ -73,10 +62,7 @@ def student():
 
     query = "INSERT INTO alumn_table \
              VALUES ? ? ? ? "
-
-    cursor.execute(query, (firstname, lastname, email, major, career))
-    mysql.connection.commit() # try and except maybe before
-    cursor.close()
+    db.execute(query, (firstname, lastname, email, major, career))
 
 #-----------------------------------------------------------------------
 
