@@ -75,7 +75,7 @@ def alumni():
     return response
 
 
-@app.route('/index.html', methods=['GET'])
+@app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
     html = render_template('site/index.html')
