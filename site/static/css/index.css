@@ -27,7 +27,7 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-image: url("../static/img/landing-bg.png");
+  background-image: url("../img/landing-bg.png");
 }
 
 body {
