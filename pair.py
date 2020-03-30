@@ -20,7 +20,7 @@ db.connect()
 
 #-----------------------------------------------------------------------
 
-@app.route('../hub/student/index.html', methods=['POST'])
+@app.route('/site/pages/student/info', methods=['POST'])
 def student():
 
     argv = []
@@ -43,8 +43,8 @@ def student():
 
 #-----------------------------------------------------------------------
 
-@app.route('../hub/alumni/index.html', methods=['POST'])
-def student():
+@app.route('/site/pages/alumni/info', methods=['POST'])
+def alumni():
 
     argv = []
 
