@@ -1,4 +1,3 @@
-USE profiledb;
 CREATE TABLE Alumni(
 Alum_id INT,
 AlumInfoNameFirst VARCHAR(255),
