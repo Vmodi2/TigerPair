@@ -15,12 +15,11 @@ import yaml
 #-----------------------------------------------------------------------
 
 app = Flask(__name__, template_folder='.')
-db = Database(app)
-db.connect()
+
 
 #-----------------------------------------------------------------------
 
-@app.route('/site/pages/student/info', methods=['POST'])
+@app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student():
 
     argv = []
@@ -39,11 +38,17 @@ def student():
     query = "INSERT INTO students \
              VALUES ? ? ? ? ?;"
     # check that the values are correct
+    db.connect()
     db.execute(query, (firstname, lastname, email, major, career))
+    db.disconnect()
+
+    html = render_template('info.html')
+    response = make_response(html)
+    return response
 
 #-----------------------------------------------------------------------
 
-@app.route('/site/pages/alumni/info', methods=['POST'])
+@app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni():
 
     argv = []
@@ -59,11 +64,22 @@ def alumni():
     career = request.form.get("field")
     argv.append(career)
 
-    cursor = mysql.connection.cursor()
-
     query = "INSERT INTO alumni \
              VALUES ? ? ? ? ?;"
+    db.connect()
     db.execute(query, (firstname, lastname, email, major, career))
+    db.disconnect()
+
+    html = render_template('info.html')
+    response = make_response(html)
+    return response
+
+
+@app.route('/index.html', methods=['GET'])
+@app.route('/', methods=['GET'])
+def index():
+    html = render_template('site/index.html')
+    return make_response(html)
 
 #-----------------------------------------------------------------------
 
@@ -78,3 +94,4 @@ if __name__ == '__main__':
         print('Usage: ' + argv[0] + ' port')
         exit(1)
     app.run(host='0.0.0.0', port=int(argv[1]), debug=True)
+    db = Database(app)
