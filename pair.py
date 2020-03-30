@@ -15,7 +15,7 @@ import yaml
 #-----------------------------------------------------------------------
 
 app = Flask(__name__, template_folder='.')
-
+db = Database(app)
 
 #-----------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ def alumni():
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('site/index.html')
+    html = render_template('index.html')
     return make_response(html)
 
 #-----------------------------------------------------------------------
