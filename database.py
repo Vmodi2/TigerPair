@@ -6,10 +6,10 @@ from flask import Flask
 import yaml
 
 DB_NAME = "database.yaml"
-app = Flask(__name__, template_folder='.')
+# app = Flask(__name__, template_folder='.')
 
 class Database():
-    def __init__(self):
+    def __init__(self, app):
         if not os.path.isfile(DB_NAME):
             raise Exception('Database connection failed')
         self._dbname = DB_NAME
@@ -24,7 +24,7 @@ class Database():
             raise Exception('Configuration failed:', e)
     def connect(self):
         try:
-            self._connection = MySQL(_app)
+            self._connection = MySQL(self._app)
         except Exception as e:
             raise Exception('Connection failed:', e)
     def disconnect(self):
@@ -45,7 +45,7 @@ def selectall_query(table):
 # number of features
 N = 2
 def get_rankings(weight_vector):
-    db = Database()
+    db = Database(app)
     db.connect()
     students = db.execute(selectall_query("students"), ())
     alumni = db.execute(selectall_query("alumni"), ())
