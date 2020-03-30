@@ -35,9 +35,10 @@ def student():
     argv.append(major)
     career = request.form.get("field")
     argv.append(career)
-    
-    query = "INSERT INTO student_table \
-             VALUES ? ? ? ? "
+
+    query = "INSERT INTO students \
+             VALUES ? ? ? ? ?;"
+    # check that the values are correct
     db.execute(query, (firstname, lastname, email, major, career))
 
 #-----------------------------------------------------------------------
@@ -60,9 +61,14 @@ def student():
 
     cursor = mysql.connection.cursor()
 
-    query = "INSERT INTO alumn_table \
-             VALUES ? ? ? ? "
+    query = "INSERT INTO alumni \
+             VALUES ? ? ? ? ?;"
     db.execute(query, (firstname, lastname, email, major, career))
+
+#-----------------------------------------------------------------------
+
+@app.route('', methods=['GET'])
+def matching():
 
 #-----------------------------------------------------------------------
 
