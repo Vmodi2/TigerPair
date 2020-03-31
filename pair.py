@@ -2,7 +2,7 @@
 
 #-----------------------------------------------------------------------
 # pair.py
-# Author: Tara, Abhinaya, Vikash, and Chris
+# Author: Vikash and Chris
 #-----------------------------------------------------------------------
 
 from sys import argv
@@ -16,19 +16,48 @@ from stable_marriage import get_matches, create_matches, clear_matches
 import yaml
 
 #-----------------------------------------------------------------------
-# Global var for program name
+
 app = Flask(__name__, template_folder='.')
 # db = Database(app)
 
+matched = False
+
 #-----------------------------------------------------------------------
-# Dynamic page function for student info page call
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
-    html = render_template('/site/pages/student/info.html')
-    return make_response(html)
-# Dynamic Function for student profile page call
-# Request values from the profile info form, and 
-# Set up query to add row to Student table
+    matches = get_matches()
+    firstname = request.cookies.get("firstname")
+    lastname = request.cookies.get("lastname")
+    email = request.cookies.get("email")
+    major = request.cookies.get("major")
+    career = request.cookies.get("career")
+
+    if firstname is None:
+        firstname = ""
+    if lastname is None:
+        lastname = ""
+    if email is None:
+        email = ""
+    if major is None:
+        major = ""
+    if career is None:
+        career = ""
+
+    matchname = ""
+    try:
+        matchname = matches[firstname]
+    except Exception as e:
+        pass
+    
+    html = render_template('/site/pages/student/info.html', matched=False,
+                           matchname=matchname, firstname=firstname,
+                           lastname=lastname, email=email, major=major,
+                           career=career)
+    
+    response = make_response(html)
+
+    return response
+
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
     firstname = request.form.get("firstname")
@@ -36,7 +65,6 @@ def student_profile():
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
-
 
     query = """ INSERT INTO students
                        (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
@@ -48,19 +76,20 @@ def student_profile():
 
     html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
+    response.set_cookie("firstname", firstname)
+    response.set_cookie("lastname", lastname)
+    response.set_cookie("email", email)
+    response.set_cookie("major", major)
+    response.set_cookie("career", career)
     return response
 
 #-----------------------------------------------------------------------
-
-# Dynamic page function for student info page call
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
-    html = render_template('/site/pages/alumni/info.html')
+    html = render_template('/site/pages/alumni/info.html', matched=matched)
     return make_response(html)
 
-# Dynamic Function for alumni profile page call
-# Request values from the profile info form, and 
-# Set up query to add row to Alumni table.
+
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
 
@@ -82,7 +111,7 @@ def alumni_profile():
     return response
 
 
-# Dynamic page function for home page of site
+
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
@@ -90,27 +119,26 @@ def index():
     return make_response(html)
 
 #-----------------------------------------------------------------------
-# Dynamic page function for sign in page of site
+
 @app.route('/site/pages/signin/index', methods=['GET'])
 def matching():
     html = render_template('/site/pages/signin/index.html')
     return make_response(html)
 
 #-----------------------------------------------------------------------
-# Dynamic page function for admin home page of site
 @app.route('/site/pages/admin/landing', methods=['GET'])
 def admin_landing():
     html = render_template('/site/pages/admin/landing.html')
     return make_response(html)
-# Dynamic page function for admin matches page of site
-# request a stable marriage pairing between all listed
-# students and alumni. Display in table on this page.
+
 @app.route('/site/pages/admin/matches', methods=['GET'])
 def admin_matches():
     create_matches()
     matches = get_matches()
+    matched = True
     html = render_template('/site/pages/admin/matches.html', matches=matches)
     return make_response(html)
+
 
 @app.route('/site/pages/admin/matches/clear', methods=['GET'])
 def admin_matches_clear():
