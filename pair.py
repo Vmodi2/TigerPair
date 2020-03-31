@@ -49,7 +49,7 @@ def student_info():
     except Exception as e:
         pass
     
-    html = render_template('/site/pages/student/info.html', matched=True,
+    html = render_template('/site/pages/student/info.html', matched=False,
                            matchname=matchname, firstname=firstname,
                            lastname=lastname, email=email, major=major,
                            career=career)
