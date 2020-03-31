@@ -17,10 +17,40 @@
 	</head>
 
 	<body class="d-flex flex-column h-100">
+		<!-- include 'studentheader.html' -->
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+				<a class="navbar-brand" href="#">Student Hub</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="/info">Info <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/match">Matches</a>
+						</li>
+					</ul>
+		
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Sign Out</button>
+				</div>
+			</nav>
+		</header>
 
 		<!-- Begin page content -->
 		<main role="main" class="flex-shrink-0">
-            This is the profile page.
+			<div class="container">
+				<br/>
+				<h1>Alumni Info</h1>
+				<p>Update your info with the desired data and press Submit.</p>
+				<br/>
+				{%  for field in fields: %}
+				<p>{{field}}</p>
+				{% endfor %}
+			</div>
 		</main>
 
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
