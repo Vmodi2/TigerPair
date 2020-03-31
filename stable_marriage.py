@@ -44,7 +44,7 @@ def get_rankings():
 def selectall_query(list, table):
     return f'SELECT {", ".join(list)} FROM {table}'
 
-def get_matches():
+def create_matches():
     students_alumni = get_rankings()
     used_alums = set()
     sad_students = set()
@@ -61,8 +61,34 @@ def get_matches():
         if no_match:
             student_alum[student] = "No match :("
             sad_students.add(student)
-    return student_alum
+    
+    db = Database()
+    db.connect()    
+    # Joe- updates wouldn't work (always added a new row) with WHERE NOT EXISTS(SELECT * FROM matches WHERE StudentInfoNameFirst=%s)
+    # and with ON DUPLICATE KEY UPDATE AlumInfoNameFirst = %s
+    for student in student_alum:
+        query_string = """
+        DELETE FROM matches
+        WHERE StudentInfoNameFirst = %s;
+        """
+        db.execute_set(query_string, (student))
+        query_string = """
+        INSERT INTO matches
+        VALUES (%s, %s);
+        """
+        db.execute_set(query_string, (student, student_alum[student]))
+    db.disconnect()
 
+def get_matches():
+    db = Database()
+    db.connect()
+    query_string = f"""
+    SELECT *
+    FROM matches
+    """
+    matches = db.execute_get(query_string)
+    db.disconnect()
+    return matches
 
 if __name__ == '__main__':
     print(get_matches())
