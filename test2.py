@@ -41,8 +41,8 @@ def student_profile():
     argv.append(career)
 
     print("Testing alumni", argv, sep='\n')
-    query = "INSERT INTO students \
-             VALUES ? ? ? ? ?"
+    query = """ INSERT INTO students
+                       (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
     # check that the values are correct
     db, conn = connection()
     # db.connect()
