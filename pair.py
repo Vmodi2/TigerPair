@@ -12,6 +12,7 @@ from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
 from stable_marriage import get_matches
+from CASCLient import CASClient
 
 import yaml
 
@@ -24,13 +25,15 @@ app = Flask(__name__, template_folder='.')
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
-    html = render_template('/site/pages/student/info.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/pages/student/info.html', username=username)
     return make_response(html)
 # Dynamic Function for student profile page call
-# Request values from the profile info form, and 
+# Request values from the profile info form, and
 # Set up query to add row to Student table
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
+    username = CASClient().authenticate()
 
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
@@ -42,13 +45,13 @@ def student_profile():
     print("Testing alumni", argv, sep='\n')
     query = """ INSERT INTO students
                        (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
-    
+
     db = Database()
     db.connect()
     db.execute_set(query, (firstname, lastname, email, major, career))
     db.disconnect()
 
-    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
+    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career, username=username)
     response = make_response(html)
     return response
 
@@ -61,7 +64,7 @@ def alumni_info():
     return make_response(html)
 
 # Dynamic Function for alumni profile page call
-# Request values from the profile info form, and 
+# Request values from the profile info form, and
 # Set up query to add row to Alumni table.
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
@@ -88,14 +91,16 @@ def alumni_profile():
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('/site/index.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/index.html', username=username)
     return make_response(html)
 
 #-----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
 @app.route('/site/pages/signin/index', methods=['GET'])
 def matching():
-    html = render_template('/site/pages/signin/index.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/pages/signin/index.html', username=username)
     return make_response(html)
 
 #-----------------------------------------------------------------------
@@ -104,6 +109,8 @@ def matching():
 def admin_landing():
     html = render_template('/site/pages/admin/landing.html')
     return make_response(html)
+#-----------------------------------------------------------------------
+
 # Dynamic page function for admin matches page of site
 # request a stable marriage pairing between all listed
 # students and alumni. Display in table on this page.
@@ -112,6 +119,14 @@ def admin_matches():
     matches = get_matches()
     html = render_template('/site/pages/admin/matches.html', matches=matches)
     return make_response(html)
+#-----------------------------------------------------------------------
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    casClient = CASClient()
+    casClient.authenticate()
+    casClient.logout()
+#-----------------------------------------------------------------------
 
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
