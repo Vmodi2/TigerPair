@@ -14,7 +14,7 @@ class Database():
         # self._dbname = DB_NAME
         try:
             # db = yaml.load(open(self._dbname))
-            self._args = ['host', 'TigerPair_dev', 'cos333', 'profiledb']
+            self._args = ['localhost', 'TigerPair_dev', 'cos333', 'profiledb']
         except Exception as e:
             raise Exception('Configuration failed:', e)
     def connect(self):
@@ -25,13 +25,21 @@ class Database():
             raise Exception('Connection failed:', e)
     def disconnect(self):
         self._connection.close()
-    def execute(self, query_string, params):
+    def execute_get(self, query_string, params):
         try:
             cursor = self._connection.cursor()
-            cursor.execute(query_string)
+            cursor.execute(query_string, params)
             self._connection.commit()
             result = cursor.fetchall()
             cursor.close()
             return result
+        except:
+            self._connection.rollback()
+    def execute_set(self, query_string, params):
+        try:
+            cursor = self._connection.cursor()
+            cursor.execute(query_string, params)
+            self._connection.commit()
+            cursor.close()
         except:
             self._connection.rollback()

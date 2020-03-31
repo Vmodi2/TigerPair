@@ -8,8 +8,10 @@
 from sys import argv
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
-from database import Database
 from flask_mysqldb import MySQL
+# from test import connection
+from database import Database
+
 import yaml
 
 #-----------------------------------------------------------------------
@@ -18,7 +20,6 @@ app = Flask(__name__, template_folder='.')
 # db = Database(app)
 
 #-----------------------------------------------------------------------
-
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
     html = render_template('/site/pages/student/info.html')
@@ -26,38 +27,36 @@ def student_info():
 
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
-    argv = []
 
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
-    print("corona: ", career)
 
- 
-    query = "INSERT INTO students \
-             VALUES ? ? ? ? ?;"
-    # check that the values are correct
-    # db.connect()
-    # db.execute(query, (firstname, lastname, email, major, career))
-    # db.disconnect()
+
+    print("Testing alumni", argv, sep='\n')
+    query = """ INSERT INTO students
+                       (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
+    
+    db = Database()
+    db.connect()
+    db.execute_set(query, (firstname, lastname, email, major, career))
+    db.disconnect()
 
     html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
 
+#-----------------------------------------------------------------------
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
     html = render_template('/site/pages/alumni/info.html')
     return make_response(html)
 
-#-----------------------------------------------------------------------
 
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
-
-    argv = []
 
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
@@ -65,17 +64,17 @@ def alumni_profile():
     major = request.form.get("major")
     career = request.form.get("career")
 
-    print("Testing alumni", argv, sep='\n')
+    query = """ INSERT INTO alumni\
+        (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
 
-    query = "INSERT INTO alumni \
-             VALUES ? ? ? ? ?;"
-    # db.connect()
-    # db.execute(query, (firstname, lastname, email, major, career))
-    # db.disconnect()
-
+    db = Database()
+    db.connect()
+    db.execute_set(query, (firstname, lastname, email, major, career))
+    db.disconnect()
     html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
+
 
 
 @app.route('/index', methods=['GET'])
@@ -92,7 +91,6 @@ def matching():
     return make_response(html)
 
 #-----------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     if len(argv) != 2:
