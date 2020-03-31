@@ -58,7 +58,6 @@ def alumni_info():
 
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
-
     argv = []
 
     firstname = request.form.get("firstname")
