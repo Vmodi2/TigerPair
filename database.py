@@ -18,13 +18,14 @@ class Database():
         # self._dbname = DB_NAME
         try:
             # db = yaml.load(open(self._dbname))
-            self._args = ['localhost', 'TigerPair_dev', 'cos333', 'profiledb']
+            # self._args = ['localhost', 'TigerPair_dev', 'cos333', 'profiledb']
+            self._args = ['remotemysql.com', 3306, 'Nq7N0pfZz5', 'ApjTJUBWx7', 'Nq7N0pfZz5']
         except Exception as e:
             raise Exception('Configuration failed:', e)
     def connect(self):
         try:
             args = self._args
-            self._connection = MySQLdb.connect(host=args[0], user=args[1], passwd=args[2], db=args[3])
+            self._connection = MySQLdb.connect(host=args[0], port=args[1], user=args[2], passwd=args[3], db=args[4])
         except Exception as e:
             raise Exception('Connection failed:', e)
     def disconnect(self):
