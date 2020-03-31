@@ -79,7 +79,6 @@ def create_matches():
         """
         db.execute_set(query_string, (student,))
 
-        db.connect()
         query_string = """
         UPDATE alumni
         SET Matched=True
@@ -120,6 +119,16 @@ def clear_matches():
     """
     db.execute_set(query_string, ())
     
+    db.disconnect()
+def clear_match(student):
+    db = Database()
+    db.connect()
+
+    query_string = """
+    DELETE FROM matches
+    WHERE StudentInfoNameFirst = %s
+    """
+    db.execute_set(query_string, (student,))
     db.disconnect()
 
 if __name__ == '__main__':

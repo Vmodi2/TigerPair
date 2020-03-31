@@ -80,8 +80,8 @@
                         
                     </tbody>
                 </table> -->
-            <a href="/site/pages/admin/matches/clear">Clear matches</a>
-            <h1 style="text-align: center; margin-top: 6vh">Matches</h1>
+            <a href="/site/pages/admin/matches/clearall">Clear matches</a>
+            <h1 style="text-align: center; margin-top: 6vh">Matches (student click->deletes match)</h1>
             <table style="margin: 2vh auto 0; font-size: 24px" cellpadding="20">
                 <tr>
                     <th>Student</th>
@@ -90,7 +90,7 @@
                 {% if matches is not none %}
                 {% for match in matches: %}
                 <tr>
-                    <td>{{match[0]}}</td>
+                    <td><a href='{{url_for('.admin_matches_clearone', student=match[0])}}'>{{match[0]}}</a></td>
                     <td>{{match[1]}}</td>
                 </tr>
                 {% endfor %}

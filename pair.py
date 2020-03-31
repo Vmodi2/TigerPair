@@ -11,7 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
-from stable_marriage import get_matches, create_matches, clear_matches
+from stable_marriage import get_matches, create_matches, clear_matches, clear_match
 
 import yaml
 
@@ -109,15 +109,24 @@ def admin_landing():
 def admin_matches():
     create_matches()
     matches = get_matches()
-    print(matches)
     html = render_template('/site/pages/admin/matches.html', matches=matches)
     return make_response(html)
 
-@app.route('/site/pages/admin/matches/clear', methods=['GET'])
-def admin_matches_clear():
+@app.route('/site/pages/admin/matches/clearall', methods=['GET'])
+def admin_matches_clearall():
     clear_matches()
     html = render_template('/site/pages/admin/matches.html', matches=None)
     return make_response(html)
+
+@app.route('/clearone', methods=['GET'])
+def admin_matches_clearone():
+    clear_match(request.args.get('student'))
+    matches = get_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=matches)
+    return make_response(html)
+
+# https://copyninja.info/blog/using-url-for-in-flask.html
+# ^ for serving static pages
 
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
