@@ -13,7 +13,7 @@ def get_ranking(student):
         return None
 
 def get_rankings(weight_vector):
-    db = Database(app)
+    db = Database()
     db.connect()
     students = db.execute_get(selectall_query(student_list, "students"))
     alumni = db.execute_get(selectall_query(alum_list, "alumni"))
@@ -39,6 +39,5 @@ def selectall_query(list, table):
     return f'SELECT {*list} FROM {table}'
 
 if __name__ == '__main__':
-    print(get_ranking("christine"))
-    print(get_ranking("bill"))
-    print(get_ranking("will"))
+    print(get_ranking("Vikash"))
+    print(get_ranking("Chris"))
