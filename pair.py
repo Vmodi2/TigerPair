@@ -11,7 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
-from stable_marriage import get_matches, create_matches, clear_matches, clear_match
+from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
 
 import yaml
 
@@ -107,9 +107,9 @@ def admin_landing():
 # students and alumni. Display in table on this page.
 @app.route('/site/pages/admin/matches', methods=['GET'])
 def admin_matches():
-    create_matches()
-    matches = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=matches)
+    create_new_matches()
+    matches, unmatched_alumni, unmatched_students = get_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=matches, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students)
     return make_response(html)
 
 @app.route('/site/pages/admin/matches/clearall', methods=['GET'])
@@ -118,11 +118,11 @@ def admin_matches_clearall():
     html = render_template('/site/pages/admin/matches.html', matches=None)
     return make_response(html)
 
-@app.route('/clearone', methods=['GET'])
+@app.route('/site/pages/admin/matches/clearone', methods=['GET'])
 def admin_matches_clearone():
-    clear_match(request.args.get('student'))
-    matches = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=matches)
+    clear_match(request.args.get('student'), request.args.get('alum'))
+    matches, unmatched_alumni, unmatched_students = get_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=matches, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students)
     return make_response(html)
 
 # https://copyninja.info/blog/using-url-for-in-flask.html
