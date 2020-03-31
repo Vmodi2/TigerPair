@@ -11,7 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
-from stable_marriage import get_matches
+from stable_marriage import get_matches, create_matches, clear_matches
 
 import yaml
 
@@ -60,14 +60,12 @@ def student_info():
 
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
-
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
 
-    print("Testing alumni", argv, sep='\n')
     query = """ INSERT INTO students
                        (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
     
@@ -135,11 +133,21 @@ def admin_landing():
 
 @app.route('/site/pages/admin/matches', methods=['GET'])
 def admin_matches():
+    create_matches()
     matches = get_matches()
     matched = True
     html = render_template('/site/pages/admin/matches.html', matches=matches)
     return make_response(html)
 
+
+@app.route('/site/pages/admin/matches/clear', methods=['GET'])
+def admin_matches_clear():
+    clear_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=None)
+    return make_response(html)
+
+# Runserver client, input port/host server. Returns current request,
+#  and site page. As well as what GET/POST request is sent
 if __name__ == '__main__':
     if len(argv) != 2:
         print('Usage: ' + argv[0] + ' port')

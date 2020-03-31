@@ -52,7 +52,7 @@ class Database():
     # Initialize cursor commit, then execute given 
     # query string with input params 
     # that is a "SET" call
-    # meaning client is putting values into DB
+    # meaning client is updating values in the DB
     def execute_set(self, query_string, params):
         try:
             cursor = self._connection.cursor()
