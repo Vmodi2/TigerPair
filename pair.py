@@ -11,8 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
-# from stable_marriage import get_matches
-from stable_marriage_db import get_matches, create_matches
+from stable_marriage import get_matches, create_matches
 
 import yaml
 

@@ -39,7 +39,7 @@ def get_rankings():
     return students_alumni
 
 def selectall_query(list, table):
-    return f'SELECT {", ".join(list)} FROM {table}'
+    return f'SELECT {", ".join(list)} FROM {table} WHERE Matched=FALSE'
 
 def create_matches():
     students_alumni = get_rankings()
