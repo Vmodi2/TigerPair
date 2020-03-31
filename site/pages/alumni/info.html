@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>Alumni Hub</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+		<!-- Custom styles for this page -->
+		<link href="/static/css/navbar.css" rel="stylesheet">
+	</head>
+
+	<body class="d-flex flex-column h-100">
+		<!-- include 'studentheader.html' -->
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+				<a class="navbar-brand" href="#">Alumni Hub</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="/info">Info <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/match">Matches</a>
+						</li>
+					</ul>
+		
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Sign Out</button>
+				</div>
+			</nav>
+		</header>
+
+		<!-- Begin page content -->
+		<main role="main" class="flex-shrink-0">
+			<div class="container">
+				<br/>
+				<h1>Alumni Info</h1>
+				<p>Update your info with the desired data and press Submit.</p>
+				<br/>
+				<form method="POST" action="/site/pages/alumni/profile">
+					<label for="firstname">First Name</label>
+					<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" placeholder="" required>
+					<br/>
+					<label for="lastname">Last Name</label>
+					<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" placeholder="" required>
+					<br/>
+					<label for="email">Email</label>
+					<input class="form-control mr-sm-2" type="text" id="email" name="email" placeholder="" required>
+					<br/>
+					<label for="major">Major</label>
+					<select class="form-control mr-sm-2" id="major" name="major" required>
+						<option value="" disabled selected hidden></option>
+						<option value="cos">COS</option>
+						<option value="ele">ELE</option>
+						<option value="orf">ORF</option>
+						<option value="cbe">CBE</option>
+						<option value="mae">MAE</option>
+						<option value="cee">CEE</option>
+					</select>
+					<br/>
+					<label for="career">Desired Career Field</label>
+					<!-- Changed id from field to career -->
+					<select class="form-control mr-sm-2" id="career" name="career" required>
+						<option value="" disabled selected hidden></option>
+						<option value="accounting">Accounting</option>
+						<option value="advertising">Advertising</option>
+						<option value="other">Other</option>
+					</select>
+					<br/>
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+				</form>
+			</div>
+		</main>
+
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+	</body>
+</html>
