@@ -47,13 +47,20 @@ def selectall_query(list, table):
 def get_matches():
     students_alumni = get_rankings()
     used_alums = set()
+    sad_students = set()
+
     student_alum = {}
     for student in students_alumni:
         for alum, score in students_alumni[student]:
+            no_match = True
             if alum not in used_alums:
+                no_match = False
                 used_alums.add(alum)
                 student_alum[student] = alum
                 break
+        if no_match:
+            student_alum[student] = "No match :("
+            sad_students.add(student)
     return student_alum
 
 
