@@ -17,7 +17,7 @@
 	</head>
 
 	<body class="d-flex flex-column h-100">
-		<!-- include alumniheader.html  -->
+		<!-- include 'studentheader.html' -->
 		<header>
 			<!-- Fixed navbar -->
 			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -28,18 +28,17 @@
 				<div class="collapse navbar-collapse" id="navbarCollapse">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item active">
-							<a class="nav-link" href="#">Info <span class="sr-only">(current)</span></a>
+							<a class="nav-link" href="/info">Info <span class="sr-only">(current)</span></a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="#">Matches</a>
+							<a class="nav-link" href="/match">Matches</a>
 						</li>
 					</ul>
 		
-					<button class="btn btn-outline-success my-2 my-sm-0" onclick="window.location.href = '../../index.html';">Sign Out</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Sign Out</button>
 				</div>
 			</nav>
 		</header>
-		
 
 		<!-- Begin page content -->
 		<main role="main" class="flex-shrink-0">
@@ -69,8 +68,9 @@
 						<option value="cee">CEE</option>
 					</select>
 					<br/>
-					<label for="field">Career Field</label>
-					<select class="form-control mr-sm-2" id="field" name="career" required>
+					<label for="career">Desired Career Field</label>
+					<!-- Changed id from field to career -->
+					<select class="form-control mr-sm-2" id="career" name="career" required>
 						<option value="" disabled selected hidden></option>
 						<option value="accounting">Accounting</option>
 						<option value="advertising">Advertising</option>
@@ -83,6 +83,6 @@
 		</main>
 
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.4/dist/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
 	</body>
 </html>

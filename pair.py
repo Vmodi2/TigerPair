@@ -60,15 +60,10 @@ def alumni_profile():
     argv = []
 
     firstname = request.form.get("firstname")
-    argv.append(firstname)
     lastname = request.form.get("lastname")
-    argv.append(lastname)
     email = request.form.get("email")
-    argv.append(email)
     major = request.form.get("major")
-    argv.append(major)
     career = request.form.get("career")
-    argv.append(career)
 
     print("Testing alumni", argv, sep='\n')
 
@@ -78,7 +73,7 @@ def alumni_profile():
     # db.execute(query, (firstname, lastname, email, major, career))
     # db.disconnect()
 
-    html = render_template('/site/pages/alumni/profile.html')
+    html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
 
