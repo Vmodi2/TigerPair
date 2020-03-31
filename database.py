@@ -1,4 +1,5 @@
 import os
+import MySQLdb
 from sys import argv, stderr, exit
 from flask_mysqldb import MySQL
 # from flask import Flask
@@ -14,17 +15,13 @@ class Database():
         # self._dbname = DB_NAME
         try:
             # db = yaml.load(open(self._dbname))
-            mysql = MySQL()
-            app.config['MYSQL_DATABASE_USER'] = 'TigerPair_dev'
-            app.config['MYSQL_DATABASE_PASSWORD'] = 'cos333'
-            app.config['MYSQL_DATABASE_DB'] = 'profiledb'
-            app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-            self._mysql = mysql.init_app(app)
+            self._args = ['host', 'TigerPair_dev', 'cos333', 'profiledb']
         except Exception as e:
             raise Exception('Configuration failed:', e)
     def connect(self):
         try:
-            self._connection = self._mysql.connect()
+            args = self._args
+            self._connection = MySQLdb.connect(host=args[0], user=args[1], passwd=args[2], db=args[3])
         except Exception as e:
             raise Exception('Connection failed:', e)
     def disconnect(self):

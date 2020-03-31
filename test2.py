@@ -64,7 +64,6 @@ def alumni_info():
 
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
-
     argv = []
 
     firstname = request.form.get("firstname")
@@ -81,15 +80,12 @@ def alumni_profile():
     print("Testing alumni", argv, sep='\n')
 
     query = "INSERT INTO alumni \
-             VALUES ? ? ? ? ?;"
-   # check that the values are correct
-    db, conn = connection()
-    # db.connect()
+            VALUES ? ? ? ? ?;"
+    # VIKASH
+    db = Database()
+    db.connect()
     db.execute(query, (firstname, lastname, email, major, career))
-    # db.disconnect()
-    conn.commit()
-    db.close()
-    conn.close()
+    db.disconnect()
     html = render_template('/site/pages/alumni/profile.html')
     response = make_response(html)
     return response
