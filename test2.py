@@ -9,7 +9,8 @@ from sys import argv
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask_mysqldb import MySQL
-from test import connection
+# from test import connection
+from database import Database
 
 import yaml
 
@@ -72,13 +73,15 @@ def alumni_profile():
                        (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
 
    # check that the values are correct
-    db, conn = connection()
+    # db, conn = connection()
 
+    # conn.commit()
+    # db.close()
+    # conn.close()
+    db = Database()
+    db.connect()
     db.execute(query, (firstname, lastname, email, major, career))
-
-    conn.commit()
-    db.close()
-    conn.close()
+    db.disconnect()
     html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
