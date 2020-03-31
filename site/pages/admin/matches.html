@@ -86,12 +86,14 @@
                     <th>Student</th>
                     <th>Alum</th>
                 </tr>
+                {% if matches is not none %}
                 {% for match in matches: %}
                 <tr>
                     <td>{{match[0]}}</td>
                     <td>{{match[1]}}</td>
                 </tr>
                 {% endfor %}
+                {% endif %}
                 <tr>
                     <td>
                         <strong>Everything that follows is hard-coded</strong>

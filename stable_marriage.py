@@ -21,7 +21,7 @@ def get_rankings():
     students = db.execute_get(selectall_query(student_list, "students"))
     alumni = db.execute_get(selectall_query(alum_list, "alumni"))
     db.disconnect()
-    
+
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -39,42 +39,57 @@ def get_rankings():
     return students_alumni
 
 def selectall_query(list, table):
-    return f'SELECT {", ".join(list)} FROM {table} WHERE Matched=FALSE'
+    return f'SELECT {", ".join(list)} FROM {table} WHERE Matched IS NULL'
 
 def create_matches():
     students_alumni = get_rankings()
     used_alums = set()
     sad_students = set()
+    happy_students = set()
 
     student_alum = {}
     for student in students_alumni:
+        no_match = True
         for alum, score in students_alumni[student]:
-            no_match = True
             if alum not in used_alums:
                 no_match = False
                 used_alums.add(alum)
                 student_alum[student] = alum
+                happy_students.add(student)
                 break
         if no_match:
             student_alum[student] = "No match :("
             sad_students.add(student)
     
     db = Database()
-    db.connect()    
     # Joe- updates wouldn't work (always added a new row) with WHERE NOT EXISTS(SELECT * FROM matches WHERE StudentInfoNameFirst=%s)
     # and with ON DUPLICATE KEY UPDATE AlumInfoNameFirst = %s
     for student in student_alum:
-        query_string = """
-        DELETE FROM matches
-        WHERE StudentInfoNameFirst = %s;
-        """
-        db.execute_set(query_string, (student))
+        db.connect()
         query_string = """
         INSERT INTO matches
         VALUES (%s, %s);
         """
         db.execute_set(query_string, (student, student_alum[student]))
-    db.disconnect()
+        db.disconnect()
+
+        db.connect()
+        query_string = """
+        UPDATE students
+        SET Matched=True
+        WHERE StudentInfoNameFirst = %s
+        """
+        db.execute_set(query_string, (student,))
+        db.disconnect()
+
+        db.connect()
+        query_string = """
+        UPDATE alumni
+        SET Matched=True
+        WHERE AlumInfoNameFirst = %s
+        """
+        db.execute_set(query_string, (student_alum[student],))
+        db.disconnect()
 
 def get_matches():
     db = Database()
