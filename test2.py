@@ -38,12 +38,14 @@ def student_profile():
     print("Testing alumni", argv, sep='\n')
     query = """ INSERT INTO students
                        (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
-    
-    db = Database()
-    db.connect()
-    db.execute_set(query, (firstname, lastname, email, major, career))
-    db.disconnect()
+    # db is cursor, conn is connection
+    db, conn = connection()
 
+    db.execute(query, (firstname, lastname, email, major, career))
+
+    conn.commit()
+    db.close()
+    conn.close()
     html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
@@ -67,6 +69,12 @@ def alumni_profile():
     query = """ INSERT INTO alumni\
         (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
 
+   # check that the values are correct
+    # db, conn = connection()
+
+    # conn.commit()
+    # db.close()
+    # conn.close()
     db = Database()
     db.connect()
     db.execute_set(query, (firstname, lastname, email, major, career))
