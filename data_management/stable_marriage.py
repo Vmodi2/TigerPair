@@ -1,6 +1,8 @@
 from database import get_rankings, Database
 
 weight_vector = (1, 3)
+student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor', 'StudentCareerDesiredField')
+alum_list = ('AlumInfoNameFirst', 'AlumAcademicsMajor', 'AlumCareerField')
 
 def get_ranking(student):
     if 'rankings' not in get_ranking.__dict__:
@@ -13,8 +15,8 @@ def get_ranking(student):
 def get_rankings(weight_vector):
     db = Database(app)
     db.connect()
-    students = db.execute(selectall_query("students"), ())
-    alumni = db.execute(selectall_query("alumni"), ())
+    students = db.execute_get(selectall_query(student_list, "students"))
+    alumni = db.execute_get(selectall_query(alum_list, "alumni"))
     db.disconnect()
     
     students_alumni = {}
@@ -23,7 +25,7 @@ def get_rankings(weight_vector):
         # assuming index 0 netid, index 1 is major, index 2 is career
         for j in range(len(alumni)):
             # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
-            score = sum(weight_vector[k] * (1 if students[i][k + 1] == alumni[j][k + 1] else 0) for k in range(len(students[i]) - 1))
+            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j][k + 1] else 0 for k in range(len(weight_vector) - 1))
             student_alumni.append((alumni[j][0], score))
         students_alumni[students[i][0]] = student_alumni
 
@@ -33,8 +35,8 @@ def get_rankings(weight_vector):
 
     return students_alumni
 
-def selectall_query(table):
-    return f'SELECT * FROM {table}'
+def selectall_query(list, table):
+    return f'SELECT {*list} FROM {table}'
 
 if __name__ == '__main__':
     print(get_ranking("christine"))
