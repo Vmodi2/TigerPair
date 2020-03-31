@@ -1,15 +1,14 @@
 import os
 import MySQLdb
 from sys import argv, stderr, exit
-from flask_mysqldb import MySQL
-# from flask import Flask
+
 # from flaskext.mysql import MySQL
 # import yaml
 
 # app = Flask(__name__, template_folder='.')
 
 class Database():
-    def __init__(self, app):
+    def __init__(self):
         # if not os.path.isfile(DB_NAME):
         #     raise Exception('Database connection failed')
         # self._dbname = DB_NAME
