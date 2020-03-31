@@ -17,68 +17,53 @@
 	</head>
 
 	<body class="d-flex flex-column h-100">
-		<!-- include 'studentheader.html' -->
-		<header>
-			<!-- Fixed navbar -->
-			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-				<a class="navbar-brand" href="#">Student Hub</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarCollapse">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item active">
-							<a class="nav-link" href="/info">Info <span class="sr-only">(current)</span></a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/match">Matches</a>
-						</li>
-					</ul>
-		
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Sign Out</button>
-				</div>
-			</nav>
-		</header>
+		{% include 'site/pages/student/studentheader.html' %}
 
 		<!-- Begin page content -->
 		<main role="main" class="flex-shrink-0">
 			<div class="container">
-				<br/>
-				<h1>Student Info</h1>
-				<p>Update your info with the desired data and press Submit.</p>
-				<br/>
-				<form method="POST" action="/site/pages/student/profile">
-					<label for="firstname">First Name</label>
-					<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" placeholder="" required>
+				{% if matched: %}
+					<p>You have been matched with {{matchname}}!</p>
+					<p>Please reach out to them at <a href="mailto:danielmg@princeton.edu">temp email</a></p>
+				
+				{% else: %}
 					<br/>
-					<label for="lastname">Last Name</label>
-					<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" placeholder="" required>
+					<h1>Student Info</h1>
+					<p>Update your info with the desired data and press Submit.</p>
 					<br/>
-					<label for="email">Email</label>
-					<input class="form-control mr-sm-2" type="text" id="email" name="email" placeholder="" required>
-					<br/>
-					<label for="major">Major</label>
-					<select class="form-control mr-sm-2" id="major" name="major" required>
-						<option value="" disabled selected hidden></option>
-						<option value="cos">COS</option>
-						<option value="ele">ELE</option>
-						<option value="orf">ORF</option>
-						<option value="cbe">CBE</option>
-						<option value="mae">MAE</option>
-						<option value="cee">CEE</option>
-					</select>
-					<br/>
-					<label for="career">Desired Career Field</label>
-					<!-- Changed id from field to career -->
-					<select class="form-control mr-sm-2" id="career" name="career" required>
-						<option value="" disabled selected hidden></option>
-						<option value="accounting">Accounting</option>
-						<option value="advertising">Advertising</option>
-						<option value="other">Other</option>
-					</select>
-					<br/>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
-				</form>
+					<form method="POST" action="/site/pages/student/profile">
+						<label for="firstname">First Name</label>
+						<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" placeholder="{{firstname}}" required>
+						<br/>
+						<label for="lastname">Last Name</label>
+						<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" placeholder="{{lastname}}" required>
+						<br/>
+						<label for="email">Email</label>
+						<input class="form-control mr-sm-2" type="text" id="email" name="email" placeholder="{{email}}" required>
+						<br/>
+						<label for="major">Major</label>
+						<select class="form-control mr-sm-2" id="major" name="major" required>
+							<option value="{{major}}" disabled selected hidden></option>
+							<option value="cos">COS</option>
+							<option value="ele">ELE</option>
+							<option value="orf">ORF</option>
+							<option value="cbe">CBE</option>
+							<option value="mae">MAE</option>
+							<option value="cee">CEE</option>
+						</select>
+						<br/>
+						<label for="career">Desired Career Field</label>
+						<!-- Changed id from field to career -->
+						<select class="form-control mr-sm-2" id="career" name="career" required>
+							<option value="{{career}}" disabled selected hidden></option>
+							<option value="accounting">Accounting</option>
+							<option value="advertising">Advertising</option>
+							<option value="other">Other</option>
+						</select>
+						<br/>
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+					</form>
+				{% endif %}
 			</div>
 		</main>
 
