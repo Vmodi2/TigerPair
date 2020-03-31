@@ -51,9 +51,9 @@ def student_profile():
     response = make_response(html)
     return response
 
-@app.route('/site/pages/student/info', methods=['POST', 'GET'])
+@app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
-    html = render_template('/site/pages/student/info.html')
+    html = render_template('/site/pages/alumni/info.html')
     return make_response(html)
 
 #-----------------------------------------------------------------------
@@ -82,7 +82,7 @@ def alumni_profile():
     # db.execute(query, (firstname, lastname, email, major, career))
     # db.disconnect()
 
-    html = render_template('/site/pages/student/profile.html')
+    html = render_template('/site/pages/alumni/profile.html')
     response = make_response(html)
     return response
 
