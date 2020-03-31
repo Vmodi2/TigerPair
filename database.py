@@ -1,3 +1,7 @@
+#-----------------------------------------------------------------------
+# pair.py
+# Author: Vikash Chris and Abhinaya
+#-----------------------------------------------------------------------
 import os
 import MySQLdb
 from sys import argv, stderr, exit
@@ -25,10 +29,10 @@ class Database():
             raise Exception('Connection failed:', e)
     def disconnect(self):
         self._connection.close()
-    def execute_get(self, query_string, params):
+    def execute_get(self, query_string):
         try:
             cursor = self._connection.cursor()
-            cursor.execute(query_string, params)
+            cursor.execute(query_string)
             self._connection.commit()
             result = cursor.fetchall()
             cursor.close()

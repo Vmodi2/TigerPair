@@ -2,7 +2,7 @@
 
 #-----------------------------------------------------------------------
 # pair.py
-# Author: Tara and Abhinaya
+# Author: Vikash and Chris
 #-----------------------------------------------------------------------
 
 from sys import argv
@@ -11,6 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
+from stable_marriage import get_matches
 
 import yaml
 
@@ -91,6 +92,16 @@ def matching():
     return make_response(html)
 
 #-----------------------------------------------------------------------
+@app.route('/site/pages/admin/landing', methods=['GET'])
+def admin_landing():
+    html = render_template('/site/pages/admin/landing.html')
+    return make_response(html)
+
+@app.route('/site/pages/admin/matches', methods=['GET'])
+def admin_matches():
+    matches = get_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=matches)
+    return make_response(html)
 
 if __name__ == '__main__':
     if len(argv) != 2:

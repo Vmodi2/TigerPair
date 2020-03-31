@@ -1,4 +1,10 @@
-from database import get_rankings, Database
+#!/usr/bin/env python
+
+#-----------------------------------------------------------------------
+# pair.py
+# Author: Chris
+#--------------------------------------------
+from database import Database
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor', 'StudentCareerDesiredField')
@@ -12,7 +18,7 @@ def get_ranking(student):
     except:
         return None
 
-def get_rankings(weight_vector):
+def get_rankings():
     db = Database()
     db.connect()
     students = db.execute_get(selectall_query(student_list, "students"))
@@ -25,7 +31,7 @@ def get_rankings(weight_vector):
         # assuming index 0 netid, index 1 is major, index 2 is career
         for j in range(len(alumni)):
             # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
-            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j][k + 1] else 0 for k in range(len(weight_vector) - 1))
+            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j][k + 1] else 0 for k in range(len(weight_vector)))
             student_alumni.append((alumni[j][0], score))
         students_alumni[students[i][0]] = student_alumni
 
@@ -36,8 +42,20 @@ def get_rankings(weight_vector):
     return students_alumni
 
 def selectall_query(list, table):
-    return f'SELECT {*list} FROM {table}'
+    return f'SELECT {", ".join(list)} FROM {table}'
+
+def get_matches():
+    students_alumni = get_rankings()
+    used_alums = set()
+    student_alum = {}
+    for student in students_alumni:
+        for alum, score in students_alumni[student]:
+            if alum not in used_alums:
+                used_alums.add(alum)
+                student_alum[student] = alum
+                break
+    return student_alum
+
 
 if __name__ == '__main__':
-    print(get_ranking("Vikash"))
-    print(get_ranking("Chris"))
+    print(get_matches())

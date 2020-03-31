@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>Admin Hub</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+		<!-- Custom styles for this page -->
+		<link href="/static/css/navbar.css" rel="stylesheet">
+	</head>
+
+	<body class="d-flex flex-column h-100">
+		<!-- include 'studentheader.html' -->
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+				<a class="navbar-brand" href="#">Admin Hub</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="/info">Info <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/match">Matches</a>
+						</li>
+					</ul>
+		
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Sign Out</button>
+				</div>
+			</nav>
+		</header>
+
+		<!-- Begin page content -->
+		<main role="main" class="flex-shrink-0">
+			<div class="container">
+                <!-- <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <th>StudentFirstName</th>
+                                <th>StudentLastName</th>
+                                <th>AlumFirstName</th>
+                                <th>AlumLastName</th>
+                                <th>StudentContact</th>
+                                <th>AlumContact</th>
+                                <th>StudentMajor</th>
+                                <th>AlumMajor</th>
+                                <th>StudentCareer</th>
+                                <th>AlumCareer</th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                          for  in all_classes:
+                        <tr>
+                            <td>{{sfn}}</td>
+                            <td>{{sln}}</td>
+                            <td>{{afn}}</td>
+                            <td>{{aln}}</td>
+                            <td>{{se}}</td>
+                            <td>{{ae}}</td>
+                            <td>{{sm}}</td>
+                            <td>{{am}}</td>
+                            <td>{{sc}}</td>
+                            <td>{{ac}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table> -->
+                <table>
+                    <tr>
+                        <th>Student</th>
+                        <th>Alum</th>
+                    </tr>
+                    {% for match in matches: %}
+                    <tr>
+                        <td>{{match}}</td>
+                        <td>{{matches[match]}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+			</div>
+		</main>
+
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+	</body>
+</html>
