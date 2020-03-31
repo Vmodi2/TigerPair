@@ -27,31 +27,25 @@ def student_info():
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
 
-    argv = []
-
     firstname = request.form.get("firstname")
-    argv.append(firstname)
     lastname = request.form.get("lastname")
-    argv.append(lastname)
     email = request.form.get("email")
-    argv.append(email)
     major = request.form.get("major")
-    argv.append(major)
-    career = request.form.get("field")
-    argv.append(career)
+    career = request.form.get("career")
+
 
     print("Testing alumni", argv, sep='\n')
     query = """ INSERT INTO students
                        (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
-    # check that the values are correct
+
     db, conn = connection()
-    # db.connect()
+
     db.execute(query, (firstname, lastname, email, major, career))
-    # db.disconnect()
+
     conn.commit()
     db.close()
     conn.close()
-    html = render_template('/site/pages/student/profile.html')
+    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
 
@@ -68,31 +62,28 @@ def alumni_profile():
     argv = []
 
     firstname = request.form.get("firstname")
-    argv.append(firstname)
     lastname = request.form.get("lastname")
-    argv.append(lastname)
     email = request.form.get("email")
-    argv.append(email)
     major = request.form.get("major")
-    argv.append(major)
-    career = request.form.get("field")
-    argv.append(career)
+    career = request.form.get("career")
 
     print("Testing alumni", argv, sep='\n')
 
-    query = "INSERT INTO alumni \
-             VALUES ? ? ? ? ?;"
+    query = """ INSERT INTO alumni
+                       (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
+
    # check that the values are correct
     db, conn = connection()
-    # db.connect()
+
     db.execute(query, (firstname, lastname, email, major, career))
-    # db.disconnect()
+
     conn.commit()
     db.close()
     conn.close()
-    html = render_template('/site/pages/alumni/profile.html')
+    html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
     response = make_response(html)
     return response
+
 
 
 @app.route('/index', methods=['GET'])
