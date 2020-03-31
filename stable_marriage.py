@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-#-----------------------------------------------------------------------
-# pair.py
-# Author: Chris
-#--------------------------------------------
+
 from database import Database
 
 weight_vector = (1, 3)

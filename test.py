@@ -1,8 +1,8 @@
 #-----------------------------------------------------------------------
 # pair.py
-# Author: Vikash and Chris
+# Author: Vikash
 #-----------------------------------------------------------------------
-
+# THIS IS A SIMPLE TEST FOR DATABASE.PY DO NOT USE
 import MySQLdb
 
 def connection():
