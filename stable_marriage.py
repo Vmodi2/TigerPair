@@ -102,5 +102,14 @@ def get_matches():
     db.disconnect()
     return matches
 
+def clear_matches():
+    db = Database()
+    db.connect()
+    query_string = f"""
+    DELETE FROM matches
+    """
+    db.execute_set(query_string, ())
+    db.disconnect()
+
 if __name__ == '__main__':
     print(get_matches())

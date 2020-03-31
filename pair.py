@@ -11,7 +11,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 # from test import connection
 from database import Database
-from stable_marriage import get_matches, create_matches
+from stable_marriage import get_matches, create_matches, clear_matches
 
 import yaml
 
@@ -110,6 +110,12 @@ def admin_matches():
     create_matches()
     matches = get_matches()
     html = render_template('/site/pages/admin/matches.html', matches=matches)
+    return make_response(html)
+
+@app.route('/site/pages/admin/matches/clear', methods=['GET'])
+def admin_matches_clear():
+    clear_matches()
+    html = render_template('/site/pages/admin/matches.html', matches=None)
     return make_response(html)
 
 # Runserver client, input port/host server. Returns current request,
