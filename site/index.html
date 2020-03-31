@@ -23,16 +23,6 @@
     <!-- Custom styles for this page -->
     <link href="static/css/index.css" rel="stylesheet" />
   </head>
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="{{ url_for('static',filename='css/index.css') }}"
-  />
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="{{ url_for('static',filename='css/navbar.css') }}"
-  />
 
   <body class="text-center">
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
@@ -42,7 +32,7 @@
         <h1 class="cover-heading">TigerPair</h1>
         <p class="lead">temp description (decide if we want one)</p>
         <p class="lead">
-          <a href="pages/signin" class="btn btn-lg btn-secondary">Sign in</a>
+          <a href="site/pages/signin/index" class="btn btn-lg btn-secondary">Sign in</a>
         </p>
       </main>
 
@@ -54,8 +44,8 @@
     </div>
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
       crossorigin="anonymous"

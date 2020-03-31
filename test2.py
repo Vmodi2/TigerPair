@@ -20,12 +20,8 @@ app = Flask(__name__, template_folder='.')
 #-----------------------------------------------------------------------
 
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
-def student_info():
-    html = render_template('/site/pages/student/info.html')
-    return make_response(html)
+def student():
 
-@app.route('/site/pages/student/profile', methods=['POST', 'GET'])
-def student_profile():
     argv = []
 
     firstname = request.form.get("firstname")
@@ -47,19 +43,14 @@ def student_profile():
     # db.execute(query, (firstname, lastname, email, major, career))
     # db.disconnect()
 
-    html = render_template('/site/pages/student/profile.html')
+    html = render_template('/site/pages/student/info.html')
     response = make_response(html)
     return response
 
-@app.route('/site/pages/student/info', methods=['POST', 'GET'])
-def alumni_info():
-    html = render_template('/site/pages/student/info.html')
-    return make_response(html)
-
 #-----------------------------------------------------------------------
 
-@app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
-def alumni_profile():
+@app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
+def alumni():
 
     argv = []
 
@@ -82,7 +73,7 @@ def alumni_profile():
     # db.execute(query, (firstname, lastname, email, major, career))
     # db.disconnect()
 
-    html = render_template('/site/pages/student/profile.html')
+    html = render_template('/site/pages/student/info.html')
     response = make_response(html)
     return response
 
