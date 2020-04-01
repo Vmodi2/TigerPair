@@ -23,7 +23,7 @@ class Database():
             # commented out local db details information
             # self._args = ['localhost', 'TigerPair_dev', 'cos333', 'profiledb']
             # Experimental remote db details
-            self._args = ['remotemysql.com', 3306, 'Nq7N0pfZz5', 'ApjTJUBWx7', 'Nq7N0pfZz5']
+            self._args = ['barkachi.mycpanel.princeton.edu', 3306, 'barkachi', 'Lenibac!7952', 'barkachi_site_database']
         except Exception as e:
             raise Exception('Configuration failed:', e)
     # Initialize Connection

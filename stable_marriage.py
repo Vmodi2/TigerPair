@@ -158,5 +158,5 @@ def clear_match(student, alum):
     
 
 if __name__ == '__main__':
-    create_matches()
+    create_new_matches()
     print(get_matches()[0])
