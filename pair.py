@@ -116,7 +116,7 @@ def admin_matches():
 def admin_matches_clearall():
     clear_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=None)
+    html = render_template('/site/pages/admin/matches.html', matches=None, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students)
     return make_response(html)
 
 @app.route('/site/pages/admin/matches/clearone', methods=['GET'])
