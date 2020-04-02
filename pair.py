@@ -22,7 +22,8 @@ app = Flask(__name__, template_folder='.')
 
 #-----------------------------------------------------------------------
 # Dynamic page function for student info page call
-@app.route('/site/pages/student/info', methods=['POST', 'GET'])
+# ***Check out POST/GET***
+@app.route('/site/pages/student/info', methods=['POST'])
 def student_info():
     matched = False
     
@@ -53,7 +54,7 @@ def student_info():
 #-----------------------------------------------------------------------
 
 # Dynamic page function for student info page call
-@app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
+@app.route('/site/pages/alumni/info', methods=['POST'])
 def alumni_info():
     matched = False
     
@@ -117,6 +118,7 @@ def admin_matches():
 @app.route('/site/pages/admin/matches/clearall', methods=['GET'])
 def admin_matches_clearall():
     clear_matches()
+    matches, unmatched_alumni, unmatched_students = get_matches()
     html = render_template('/site/pages/admin/matches.html', matches=None, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students, side='Admin')
     return make_response(html)
 
