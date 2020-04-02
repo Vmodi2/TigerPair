@@ -2,7 +2,7 @@
 
 #-----------------------------------------------------------------------
 # pair.py
-# Author: Tara, Abhinaya, Vikash, and Chris
+# Author: Tara, Abhinaya, Vikash, Chris, and Daniel
 #-----------------------------------------------------------------------
 
 from sys import argv
@@ -24,8 +24,9 @@ app = Flask(__name__, template_folder='.')
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
-    html = render_template('/site/pages/student/info.html')
+    html = render_template('/site/pages/student/info.html', side="Student")
     return make_response(html)
+
 # Dynamic Function for student profile page call
 # Request values from the profile info form, and 
 # Set up query to add row to Student table
@@ -46,7 +47,9 @@ def student_profile():
     db.execute_set(query, (firstname, lastname, email, major, career))
     db.disconnect()
 
-    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
+    html = render_template('/site/pages/student/profile.html', firstname=firstname,
+                           lastname=lastname, email=email, major=major,
+                           career=career, side="Student")
     response = make_response(html)
     return response
 
@@ -55,7 +58,7 @@ def student_profile():
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
-    html = render_template('/site/pages/alumni/info.html')
+    html = render_template('/site/pages/alumni/info.html', side="Alumni")
     return make_response(html)
 
 # Dynamic Function for alumni profile page call
@@ -77,7 +80,9 @@ def alumni_profile():
     db.connect()
     db.execute_set(query, (firstname, lastname, email, major, career))
     db.disconnect()
-    html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
+    html = render_template('/site/pages/alumni/profile.html', firstname=firstname,
+                           lastname=lastname, email=email, major=major,
+                           career=career, side="Alumni")
     response = make_response(html)
     return response
 
@@ -100,7 +105,7 @@ def matching():
 # Dynamic page function for admin home page of site
 @app.route('/site/pages/admin/landing', methods=['GET'])
 def admin_landing():
-    html = render_template('/site/pages/admin/landing.html')
+    html = render_template('/site/pages/admin/landing.html', side='Admin')
     return make_response(html)
 # Dynamic page function for admin matches page of site
 # request a stable marriage pairing between all listed
@@ -109,20 +114,27 @@ def admin_landing():
 def admin_matches():
     create_new_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=matches, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students)
+    html = render_template('/site/pages/admin/matches.html', matches=matches,
+                           unmatched_alumni=unmatched_alumni,
+                           unmatched_students=unmatched_students,
+                           side='Admin')
     return make_response(html)
 
 @app.route('/site/pages/admin/matches/clearall', methods=['GET'])
 def admin_matches_clearall():
     clear_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=None)
+    html = render_template('/site/pages/admin/matches.html', matches=None,
+                           side='Admin')
     return make_response(html)
 
 @app.route('/site/pages/admin/matches/clearone', methods=['GET'])
 def admin_matches_clearone():
     clear_match(request.args.get('student'), request.args.get('alum'))
     matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=matches, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students)
+    html = render_template('/site/pages/admin/matches.html', matches=matches,
+                           unmatched_alumni=unmatched_alumni,
+                           unmatched_students=unmatched_students,
+                           side='Admin')
     return make_response(html)
 
 # https://copyninja.info/blog/using-url-for-in-flask.html
