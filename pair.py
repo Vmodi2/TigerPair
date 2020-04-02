@@ -58,34 +58,28 @@ def student_profile():
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
-    html = render_template('/site/pages/alumni/info.html', side="Alumni")
-    return make_response(html)
-
-# Dynamic Function for alumni profile page call
-# Request values from the profile info form, and 
-# Set up query to add row to Alumni table.
-@app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
-def alumni_profile():
-
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
 
-    query = """ INSERT INTO alumni\
-        (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
+    if firstname is not None:
+        query = """ INSERT INTO alumni\
+            (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
 
-    db = Database()
-    db.connect()
-    db.execute_set(query, (firstname, lastname, email, major, career))
-    db.disconnect()
-    html = render_template('/site/pages/alumni/profile.html', firstname=firstname,
-                           lastname=lastname, email=email, major=major,
-                           career=career, side="Alumni")
-    response = make_response(html)
-    return response
-
+        db = Database()
+        db.connect()
+        db.execute_set(query, (firstname, lastname, email, major, career))
+        db.disconnect()
+        html = render_template('/site/pages/alumni/info.html', firstname=firstname,
+                               lastname=lastname, email=email, major=major.upper(),
+                               career=career.capitalize(), side="Alumni")
+    else:
+        html = render_template('/site/pages/alumni/info.html', firstname="",
+                               lastname="", email="", major="",
+                               career="", side="Alumni")
+    return make_response(html)
 
 # Dynamic page function for home page of site
 @app.route('/index', methods=['GET'])
