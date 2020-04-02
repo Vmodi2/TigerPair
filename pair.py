@@ -24,40 +24,39 @@ app = Flask(__name__, template_folder='.')
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
-    html = render_template('/site/pages/student/info.html', side="Student")
-    return make_response(html)
-
-# Dynamic Function for student profile page call
-# Request values from the profile info form, and 
-# Set up query to add row to Student table
-@app.route('/site/pages/student/profile', methods=['POST', 'GET'])
-def student_profile():
+    matched = False
+    
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
 
+    if firstname is not None:
+        query = """ INSERT INTO students\
+            (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
 
-    query = """ INSERT INTO students
-                       (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
-    
-    db = Database()
-    db.connect()
-    db.execute_set(query, (firstname, lastname, email, major, career))
-    db.disconnect()
-
-    html = render_template('/site/pages/student/profile.html', firstname=firstname,
-                           lastname=lastname, email=email, major=major,
-                           career=career, side="Student")
-    response = make_response(html)
-    return response
+        db = Database()
+        db.connect()
+        db.execute_set(query, (firstname, lastname, email, major, career))
+        db.disconnect()
+        html = render_template('/site/pages/student/info.html', firstname=firstname,
+                               lastname=lastname, email=email, major=major.upper(),
+                               career=career.capitalize(), side="Student",
+                               matched=matched)
+    else:
+        html = render_template('/site/pages/student/info.html', firstname="",
+                               lastname="", email="", major="",
+                               career="", side="Student", matched=matched)
+    return make_response(html)
 
 #-----------------------------------------------------------------------
 
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
+    matched = False
+    
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -74,11 +73,12 @@ def alumni_info():
         db.disconnect()
         html = render_template('/site/pages/alumni/info.html', firstname=firstname,
                                lastname=lastname, email=email, major=major.upper(),
-                               career=career.capitalize(), side="Alumni")
+                               career=career.capitalize(), side="Alumni",
+                               matched=matched)
     else:
         html = render_template('/site/pages/alumni/info.html', firstname="",
                                lastname="", email="", major="",
-                               career="", side="Alumni")
+                               career="", side="Alumni", matched=matched)
     return make_response(html)
 
 # Dynamic page function for home page of site
