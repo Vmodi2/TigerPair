@@ -23,11 +23,24 @@ a:hover {
 /*
  * Base structure
  */
+ 
+ 
+@-webkit-keyframes backgroundScroll {
+    from {background-position: 0 0;}
+    to {background-position: -99999999px 99999999px;}
+}
 
 html,
 body {
-  height: 100%;
-  background-image: url("../img/landing-bg.png");
+	height: 100%;
+	background-image: url("../img/landing-bg.png");
+	background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: cover;
+	-webkit-animation: backgroundScroll 3s linear infinite;
+    -webkit-animation-fill-mode: forwards;
+    animation: backgroundScroll 800000s linear infinite;
+    animation-fill-mode: forwards;
 }
 
 body {

@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='.')
 
 #-----------------------------------------------------------------------
 # Dynamic page function for student info page call
-@app.route('/site/pages/student/info', methods=['POST', 'GET'])
+@app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
     matched = False
     
@@ -40,12 +40,12 @@ def student_info():
         db.connect()
         db.execute_set(query, (firstname, lastname, email, major, career))
         db.disconnect()
-        html = render_template('/site/pages/student/info.html', firstname=firstname,
+        html = render_template('/site/pages/student/index.html', firstname=firstname,
                                lastname=lastname, email=email, major=major.upper(),
                                career=career.capitalize(), side="Student",
                                matched=matched)
     else:
-        html = render_template('/site/pages/student/info.html', firstname="",
+        html = render_template('/site/pages/student/index.html', firstname="",
                                lastname="", email="", major="",
                                career="", side="Student", matched=matched)
     return make_response(html)
@@ -53,7 +53,7 @@ def student_info():
 #-----------------------------------------------------------------------
 
 # Dynamic page function for student info page call
-@app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
+@app.route('/site/pages/alumni/', methods=['POST', 'GET'])
 def alumni_info():
     matched = False
     
@@ -71,12 +71,12 @@ def alumni_info():
         db.connect()
         db.execute_set(query, (firstname, lastname, email, major, career))
         db.disconnect()
-        html = render_template('/site/pages/alumni/info.html', firstname=firstname,
+        html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                lastname=lastname, email=email, major=major.upper(),
                                career=career.capitalize(), side="Alumni",
                                matched=matched)
     else:
-        html = render_template('/site/pages/alumni/info.html', firstname="",
+        html = render_template('/site/pages/alumni/index.html', firstname="",
                                lastname="", email="", major="",
                                career="", side="Alumni", matched=matched)
     return make_response(html)
@@ -90,7 +90,7 @@ def index():
 
 #-----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
-@app.route('/site/pages/signin/index', methods=['GET'])
+@app.route('/site/pages/signin/', methods=['GET'])
 def matching():
     html = render_template('/site/pages/signin/index.html')
     return make_response(html)
