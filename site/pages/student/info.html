@@ -17,33 +17,32 @@
 	</head>
 
 	<body class="d-flex flex-column h-100">
-		{% include 'site/pages/student/studentheader.html' %}
+		{% include 'site/pages/hubheader.html' %}
 
 		<!-- Begin page content -->
 		<main role="main" class="flex-shrink-0">
 			<div class="container">
 				{% if matched: %}
 					<p>You have been matched with {{matchname}}!</p>
-					<p>Please reach out to them at <a href="mailto:danielmg@princeton.edu">temp email</a></p>
-				
+					<p>Please reach out to them at <a href="{{matchemail}}">{{matchemail}}</a></p>
 				{% else: %}
 					<br/>
 					<h1>Student Info</h1>
 					<p>Update your info with the desired data and press Submit.</p>
 					<br/>
-					<form method="POST" action="/site/pages/student/profile">
+					<form method="POST" action="#">
 						<label for="firstname">First Name</label>
-						<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" placeholder="{{firstname}}" required>
+						<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" value="{{firstname}}" required>
 						<br/>
 						<label for="lastname">Last Name</label>
-						<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" placeholder="{{lastname}}" required>
+						<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" value="{{lastname}}" required>
 						<br/>
 						<label for="email">Email</label>
-						<input class="form-control mr-sm-2" type="text" id="email" name="email" placeholder="{{email}}" required>
+						<input class="form-control mr-sm-2" type="text" id="email" name="email" value="{{email}}" required>
 						<br/>
 						<label for="major">Major</label>
 						<select class="form-control mr-sm-2" id="major" name="major" required>
-							<option value="{{major}}" disabled selected hidden></option>
+							<option value="{{major}}" disabled selected hidden>{{major}}</option>
 							<option value="cos">COS</option>
 							<option value="ele">ELE</option>
 							<option value="orf">ORF</option>
@@ -55,7 +54,7 @@
 						<label for="career">Desired Career Field</label>
 						<!-- Changed id from field to career -->
 						<select class="form-control mr-sm-2" id="career" name="career" required>
-							<option value="{{career}}" disabled selected hidden></option>
+							<option value="{{career}}" disabled selected hidden>{{career}}</option>
 							<option value="accounting">Accounting</option>
 							<option value="advertising">Advertising</option>
 							<option value="other">Other</option>
