@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-python pair.py "$@"
+python3 pair.py "$@"

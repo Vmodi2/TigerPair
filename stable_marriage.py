@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+# -----------------------------------------------------------------------
+# stable_marriage.py
+# -----------------------------------------------------------------------
 
 from database import Database
 
 weight_vector = (1, 3)
-student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor', 'StudentCareerDesiredField')
+student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
+                'StudentCareerDesiredField')
 alum_list = ('AlumInfoNameFirst', 'AlumAcademicsMajor', 'AlumCareerField')
+
 
 def get_ranking(student):
     if 'rankings' not in get_ranking.__dict__:
@@ -14,6 +19,7 @@ def get_ranking(student):
         return get_ranking.rankings[student]
     except:
         return None
+
 
 def get_rankings():
     db = Database()
@@ -28,7 +34,8 @@ def get_rankings():
         # assuming index 0 netid, index 1 is major, index 2 is career
         for j in range(len(alumni)):
             # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
-            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j][k + 1] else 0 for k in range(len(weight_vector)))
+            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j]
+                        [k + 1] else 0 for k in range(len(weight_vector)))
             student_alumni.append((alumni[j][0], score))
         students_alumni[students[i][0]] = student_alumni
 
@@ -38,8 +45,10 @@ def get_rankings():
 
     return students_alumni
 
+
 def selectall_query(list, table):
     return f'SELECT {", ".join(list)} FROM {table} WHERE Matched IS NULL'
+
 
 def create_new_matches():
     students_alumni = get_rankings()
@@ -54,7 +63,7 @@ def create_new_matches():
             if alum not in used_alums:
                 used_alums.add(alum)
                 student_alum[student] = alum
-                
+
                 query_string = """
                 INSERT INTO matches
                 VALUES (%s, %s);
@@ -77,6 +86,7 @@ def create_new_matches():
 
                 break
     db.disconnect()
+
 
 def get_matches():
     db = Database()
@@ -106,28 +116,31 @@ def get_matches():
     db.disconnect()
     return matches, unmatched_alumni, unmatched_students
 
+
 def clear_matches():
     db = Database()
     db.connect()
-    
+
     query_string = """
     DELETE FROM matches
     """
     db.execute_set(query_string, ())
 
-    query_string ="""
+    query_string = """
     UPDATE students
     SET Matched=NULL
     """
     db.execute_set(query_string, ())
 
-    query_string ="""
+    query_string = """
     UPDATE alumni
     SET Matched=NULL
     """
     db.execute_set(query_string, ())
-    
+
     db.disconnect()
+
+
 def clear_match(student, alum):
     db = Database()
     db.connect()
@@ -138,14 +151,14 @@ def clear_match(student, alum):
     """
     db.execute_set(query_string, (student,))
 
-    query_string ="""
+    query_string = """
     UPDATE students
     SET Matched=NULL
     WHERE StudentInfoNameFirst = %s
     """
     db.execute_set(query_string, (student,))
 
-    query_string ="""
+    query_string = """
     UPDATE alumni
     SET Matched=NULL
     WHERE AlumInfoNameFirst = %s
@@ -153,9 +166,7 @@ def clear_match(student, alum):
     db.execute_set(query_string, (alum,))
 
     db.disconnect()
-    
 
-    
 
 if __name__ == '__main__':
     create_new_matches()

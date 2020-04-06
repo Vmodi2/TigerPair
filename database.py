@@ -1,16 +1,11 @@
 #-----------------------------------------------------------------------
-# pair.py
-# Author: Vikash and Chris 
+# database.py
 # Modularizes Database connection/execution/disconnection protocol
 #-----------------------------------------------------------------------
 import os
 import MySQLdb
 from sys import argv, stderr, exit
 
-# from flaskext.mysql import MySQL
-# import yaml
-
-# app = Flask(__name__, template_folder='.')
 # Self contained DB class to use in any function that must connect
 # to MySQL server
 class Database():

@@ -1,31 +1,27 @@
 #!/usr/bin/env python
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # pair.py
-# Author: Tara, Abhinaya, Vikash, Chris, and Daniel
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 from sys import argv
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask_mysqldb import MySQL
-# from test import connection
 from database import Database
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
-
 import yaml
 
-#-----------------------------------------------------------------------
-# Global var for program name
+# -----------------------------------------------------------------------
+# Flask program runnable
 app = Flask(__name__, template_folder='.')
-# db = Database(app)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
     matched = False
-    
+
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -50,13 +46,13 @@ def student_info():
                                career="", side="Student", matched=matched)
     return make_response(html)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/', methods=['POST', 'GET'])
 def alumni_info():
     matched = False
-    
+
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -88,14 +84,14 @@ def index():
     html = render_template('/site/index.html')
     return make_response(html)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
 @app.route('/site/pages/signin/', methods=['GET'])
 def matching():
     html = render_template('/site/pages/signin/index.html')
     return make_response(html)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
 @app.route('/site/pages/admin/landing', methods=['GET'])
 def admin_landing():
@@ -114,12 +110,15 @@ def admin_matches():
                            side='Admin')
     return make_response(html)
 
+
 @app.route('/site/pages/admin/matches/clearall', methods=['GET'])
 def admin_matches_clearall():
     clear_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/matches.html', matches=None, unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students, side='Admin')
+    html = render_template('/site/pages/admin/matches.html', matches=None,
+                           unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students, side='Admin')
     return make_response(html)
+
 
 @app.route('/site/pages/admin/matches/clearone', methods=['GET'])
 def admin_matches_clearone():
@@ -133,6 +132,7 @@ def admin_matches_clearone():
 
 # https://copyninja.info/blog/using-url-for-in-flask.html
 # ^ for serving static pages
+
 
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
