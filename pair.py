@@ -40,7 +40,7 @@ def student_info():
         html = render_template('/site/pages/student/index.html', firstname=firstname,
                                lastname=lastname, email=email, major=major.upper(),
                                career=career.capitalize(), side="Student",
-                               matched=matched, username = username)
+                               matched=matched, username=username)
     else:
         html = render_template('/site/pages/student/index.html', firstname="",
                                lastname="", email="", major="",
