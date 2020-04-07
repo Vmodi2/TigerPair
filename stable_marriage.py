@@ -111,7 +111,6 @@ def get_matches():
     WHERE Matched IS NULL
     """
     unmatched_students = db.execute_get(query_string)
-    print(unmatched_students)
 
     db.disconnect()
     return matches, unmatched_alumni, unmatched_students
