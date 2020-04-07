@@ -7,7 +7,7 @@
 from sys import argv
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
-# from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL
 from database import Database
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
 import yaml
