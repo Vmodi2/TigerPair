@@ -10,6 +10,7 @@ from flask import render_template
 from flask_mysqldb import MySQL
 from database import Database
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
+from CASClient import CASClient
 import yaml
 
 # -----------------------------------------------------------------------
@@ -21,7 +22,7 @@ app = Flask(__name__, template_folder='.')
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
     matched = False
-
+    username = CASClient().authenticate()
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -39,7 +40,7 @@ def student_info():
         html = render_template('/site/pages/student/index.html', firstname=firstname,
                                lastname=lastname, email=email, major=major.upper(),
                                career=career.capitalize(), side="Student",
-                               matched=matched)
+                               matched=matched, username = username)
     else:
         html = render_template('/site/pages/student/index.html', firstname="",
                                lastname="", email="", major="",
