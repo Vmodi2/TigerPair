@@ -9,7 +9,7 @@ from urllib.parse import quote
 from re import sub, match
 from flask import request, session, redirect, abort
 from sys import stderr
-
+from CASClient import CASClient
 #-----------------------------------------------------------------------
 
 class CASClient:

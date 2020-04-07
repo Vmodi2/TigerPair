@@ -17,17 +17,19 @@ import yaml
 #-----------------------------------------------------------------------
 
 app = Flask(__name__, template_folder='.')
+app.secret_key = b'\xcdt\x8dn\xe1\xbdW\x9d[}yJ\xfc\xa3~/'
 # db = Database(app)
 
 #-----------------------------------------------------------------------
 @app.route('/site/pages/student/info', methods=['POST', 'GET'])
 def student_info():
-    html = render_template('/site/pages/student/info.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/pages/student/info.html', username=username)
     return make_response(html)
 
 @app.route('/site/pages/student/profile', methods=['POST', 'GET'])
 def student_profile():
-
+    username = CASClient().authenticate()
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -46,20 +48,21 @@ def student_profile():
     conn.commit()
     db.close()
     conn.close()
-    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
+    html = render_template('/site/pages/student/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career, username=username)
     response = make_response(html)
     return response
 
 #-----------------------------------------------------------------------
 @app.route('/site/pages/alumni/info', methods=['POST', 'GET'])
 def alumni_info():
-    html = render_template('/site/pages/alumni/info.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/pages/alumni/info.html', username=username)
     return make_response(html)
 
 
 @app.route('/site/pages/alumni/profile', methods=['POST', 'GET'])
 def alumni_profile():
-
+    username = CASClient().authenticate()
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -79,7 +82,7 @@ def alumni_profile():
     db.connect()
     db.execute_set(query, (firstname, lastname, email, major, career))
     db.disconnect()
-    html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career)
+    html = render_template('/site/pages/alumni/profile.html', firstname=firstname, lastname=lastname, email=email, major=major, career=career, username=username)
     response = make_response(html)
     return response
 
@@ -88,14 +91,15 @@ def alumni_profile():
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('/site/index.html')
+    html = render_template('/site/index.html', )
     return make_response(html)
 
 #-----------------------------------------------------------------------
 
 @app.route('/site/pages/signin/index', methods=['GET'])
 def matching():
-    html = render_template('/site/pages/signin/index.html')
+    username = CASClient().authenticate()
+    html = render_template('/site/pages/signin/index.html', username=username)
     return make_response(html)
 
 #-----------------------------------------------------------------------
