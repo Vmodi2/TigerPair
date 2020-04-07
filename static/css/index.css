@@ -11,12 +11,18 @@ a:hover {
 
 /* Custom default button */
 .btn-secondary,
-.btn-secondary:hover,
 .btn-secondary:focus {
   color: #333;
   text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 1);
   border: .05rem solid #fff;
+}
+
+.btn-secondary:hover {
+  color: #fff;
+  text-shadow: none; /* Prevent inheritance from `body` */
+  background-color: rgba(100, 227, 129, 0.7);
+  border: .05rem solid rgba(0, 0, 0, 0.5);
 }
 
 
@@ -24,7 +30,8 @@ a:hover {
  * Base structure
  */
  
- 
+/* Make sure all browsers support numbers as big as these
+   (and 800000s below) */
 @-webkit-keyframes backgroundScroll {
     from {background-position: 0 0;}
     to {background-position: -99999999px 99999999px;}
