@@ -16,7 +16,7 @@
 		<link href="/static/css/navbar.css" rel="stylesheet">
 	</head>
 
-	<body class="d-flex flex-column h-100">
+	<body class="d-flex flex-column h-100" onload="update_majors()">
 		{% include 'site/pages/hubheader.html' %}
 
 		<!-- Begin page content -->
@@ -43,12 +43,6 @@
 						<label for="major">Major</label>
 						<select class="form-control mr-sm-2" id="major" name="major" required>
 							<option value="{{major}}" disabled selected hidden>{{major}}</option>
-							<option value="cos">COS</option>
-							<option value="ele">ELE</option>
-							<option value="orf">ORF</option>
-							<option value="cbe">CBE</option>
-							<option value="mae">MAE</option>
-							<option value="cee">CEE</option>
 						</select>
 						<br/>
 						<label for="career">Career Field</label>
@@ -65,7 +59,8 @@
 				{% endif %}
 			</div>
 		</main>
-
+		
+		<script src="/static/js/majors.js"></script>
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
 	</body>

@@ -29,6 +29,8 @@ def student_info():
     career = request.form.get("career")
 
     if firstname is not None:
+        #TODO - if logged in, don't add data again; instead, update rows
+        
         query = """ INSERT INTO students\
             (StudentInfoNameFirst, StudentInfoNameLast, StudentInfoEmail, StudentAcademicsMajor, StudentCareerDesiredField) VALUES (%s,%s,%s,%s,%s)"""
 
@@ -60,6 +62,8 @@ def alumni_info():
     career = request.form.get("career")
 
     if firstname is not None:
+        #TODO - if logged in, don't add data again; instead, update rows
+        
         query = """ INSERT INTO alumni\
             (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
 
