@@ -1,33 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="">
-		<meta name="author" content="">
 
-		<title>Student Hub</title>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<title>Admin Hub</title>
 
-		<!-- Custom styles for this page -->
-		<link href="/static/css/navbar.css" rel="stylesheet">
-	</head>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-	<body class="d-flex flex-column h-100">
-		{% include 'site/pages/hubheader.html' %}
+	<!-- Custom styles for this page -->
+	<link href="/static/css/navbar.css" rel="stylesheet">
+	<style>
+		.row {
+			max-width: 100%;
+		}
 
-		<!-- Begin page content -->
-		<main role="main" class="flex-shrink-0">
-            <!-- change this later -->
-            <div class="container" align="center">
-				<button><a href="/site/pages/admin/matches">Press Me</a></button>
+		.wrapper {
+			width: 85vw;
+			margin: 0 auto 30px;
+		}
+
+		h2,
+		h4 {
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body class="d-flex flex-column h-100">
+	{% include 'site/pages/hubheader.html' %}
+
+	<!-- Begin page content -->
+	<main role="main" class="flex-shrink-0">
+		<div class="container wrapper">
+			<h1>Welcome to your dashboard, [adminName]</h1>
+		</div>
+
+		<div class="row wrapper">
+			<div class="col-3">
+				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+					<a class="nav-link active" id="v-pills-groupinfo-tab" data-toggle="pill" href="#v-pills-groupinfo"
+						role="tab" aria-controls="v-pills-groupinfo" aria-selected="true">Group information</a>
+					<a class="nav-link" id="v-pills-currentmatches-tab" data-toggle="pill"
+						href="#v-pills-currentmatches" role="tab" aria-controls="v-pills-currentmatches"
+						aria-selected="false">Current matches</a>
+					<a class="nav-link" id="v-pills-studentsmatchless-tab" data-toggle="pill"
+						href="#v-pills-studentsmatchless" role="tab" aria-controls="v-pills-studentsmatchless"
+						aria-selected="false">Students without matches</a>
+					<a class="nav-link" id="v-pills-alumnimatchless-tab" data-toggle="pill"
+						href="#v-pills-alumnimatchless" role="tab" aria-controls="v-pills-alumnimatchless"
+						aria-selected="false">Alumni without matches</a>
+					<a class="nav-link" id="v-pills-modifymatches-tab" data-toggle="pill" href="#v-pills-modifymatches"
+						role="tab" aria-controls="v-pills-modifymatches" aria-selected="false">Modify matches</a>
+					<a class="nav-link" id="v-pills-statistics-tab" data-toggle="pill" href="#v-pills-statistics"
+						role="tab" aria-controls="v-pills-statistics" aria-selected="false">Statistics</a>
+				</div>
 			</div>
-		</main>
+			<div class="col-9">
+				<div class="tab-content" id="v-pills-tabContent">
+					<div class="tab-pane fade show active" id="v-pills-groupinfo" role="tabpanel"
+						aria-labelledby="v-pills-groupinfo-tab">
+						<h2>[Group name]</h2>
+						<h3>[Group information]</h3>
+						<p>Maybe just combine this with statistics tab</p>
+					</div>
+					<div class="tab-pane fade" id="v-pills-currentmatches" role="tabpanel"
+						aria-labelledby="v-pills-currentmatches-tab">
+						{% if matches %}
+						<h2>Matches (student click->deletes match)</h1>
+							<table style="margin: 2vh auto 0; font-size: 24px" cellpadding="20">
+								<tr>
+									<th>Student</th>
+									<th>Alum</th>
+								</tr>
+								{% for match in matches: %}
+								<tr>
+									<td><a
+											href='{{url_for('.admin_landing_clearone', student=match[0], alum=match[1])}}'>{{match[0]}}</a>
+									</td>
+									<td>{{match[1]}}</td>
+								</tr>
+								{% endfor %}
+							</table>
+							{% else %}
+							<h2>No matches
+							</h2>
+							{% endif %}
+					</div>
+					<div class="tab-pane fade" id="v-pills-studentsmatchless" role="tabpanel"
+						aria-labelledby="v-pills-studentsmatchless-tab">
+						{% if unmatched_students %}
+						<h2>Students without matches:</h2>
+						{% for student in unmatched_students %}
+						<h4>{{student[0]}}</h4>
+						{% endfor %}
 
-		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
-	</body>
+						{% else %}
+						<h2>No students without matches</h2>
+						{% endif %}
+					</div>
+					<div class="tab-pane fade" id="v-pills-alumnimatchless" role="tabpanel"
+						aria-labelledby="v-pills-alumnimatchless-tab">
+						{% if unmatched_alumni %}
+						<h2>Alumni without matches:</h2>
+						{% for alum in unmatched_alumni %}
+						<h4>{{alum[0]}}</h4>
+						{% endfor %}
+
+						{% else %}
+						<h2>No alumni without matches</h2>
+						{% endif %}
+					</div>
+					<div class="tab-pane fade" id="v-pills-modifymatches" role="tabpanel"
+						aria-labelledby="v-pills-modifymatches-tab">
+						<p><a href="/site/pages/admin/landing/run">Create matches</a> (this will not modify any
+							pre-existing matches)</p>
+						<a href="/site/pages/admin/landing/clearall">Clear matches</a>
+					</div>
+					<div class="tab-pane fade" id="v-pills-statistics" role="tabpanel"
+						aria-labelledby="v-pills-statistics-tab">
+						<h3>Statistics (TBD)</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+
 </html>
