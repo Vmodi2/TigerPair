@@ -30,6 +30,18 @@
 		h4 {
 			text-align: center;
 		}
+
+		th {
+			padding-top: 0;
+		}
+
+		.tab-content>.active {
+			width: 100%;
+		}
+
+		.dashboard-title {
+			margin-top: 12px;
+		}
 	</style>
 </head>
 
@@ -39,7 +51,7 @@
 	<!-- Begin page content -->
 	<main role="main" class="flex-shrink-0">
 		<div class="container wrapper">
-			<h1>Welcome to your dashboard, [adminName]</h1>
+			<h1 class="dashboard-title">Welcome to your dashboard, [adminName]</h1>
 		</div>
 
 		<div class="row wrapper">
@@ -73,25 +85,24 @@
 					<div class="tab-pane fade" id="v-pills-currentmatches" role="tabpanel"
 						aria-labelledby="v-pills-currentmatches-tab">
 						{% if matches %}
-						<h2>Matches (student click->deletes match)</h1>
-							<table style="margin: 2vh auto 0; font-size: 24px" cellpadding="20">
-								<tr>
-									<th>Student</th>
-									<th>Alum</th>
-								</tr>
-								{% for match in matches: %}
-								<tr>
-									<td><a
-											href='{{url_for('.admin_landing_clearone', student=match[0], alum=match[1])}}'>{{match[0]}}</a>
-									</td>
-									<td>{{match[1]}}</td>
-								</tr>
-								{% endfor %}
-							</table>
-							{% else %}
-							<h2>No matches
-							</h2>
-							{% endif %}
+						<table style="margin: 2vh auto 0; font-size: 24px" cellpadding="20">
+							<tr>
+								<th>Student</th>
+								<th>Alum</th>
+							</tr>
+							{% for match in matches: %}
+							<tr>
+								<td><a
+										href='{{url_for('.admin_landing_clearone', student=match[0], alum=match[1])}}'>{{match[0]}}</a>
+								</td>
+								<td>{{match[1]}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+						{% else %}
+						<h2>No matches
+						</h2>
+						{% endif %}
 					</div>
 					<div class="tab-pane fade" id="v-pills-studentsmatchless" role="tabpanel"
 						aria-labelledby="v-pills-studentsmatchless-tab">
