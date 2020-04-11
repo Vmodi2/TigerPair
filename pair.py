@@ -11,10 +11,18 @@ from flask_mysqldb import MySQL
 from database import Database
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
 import yaml
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 # -----------------------------------------------------------------------
 # Flask program runnable
 app = Flask(__name__, template_folder='.')
+
+app.config.from_pyfile('config.cfg')
+
+mail = Mail(app)
+
+s = URLSafeTimedSerializer('randomkey')
 
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
@@ -51,31 +59,63 @@ def student_info():
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/', methods=['POST', 'GET'])
 def alumni_info():
-    matched = False
+    html = ''
+    
+    # PUT SOME QUERY HERE THAT DETERMINES IF USER HAS VERIFIED THEIR EMAIL
 
-    firstname = request.form.get("firstname")
-    lastname = request.form.get("lastname")
-    email = request.form.get("email")
-    major = request.form.get("major")
-    career = request.form.get("career")
+    verified = True
+    if verified == False:
+        html = render_template('/site/pages/alumni/index.html', side="Alumni", exists = False)
+    
+        ## allow email to be submitted
+        ## get the email from the page
+        email = request.form.get("email")
+        if email is not None:
+            token = s.dumps(email)
 
-    if firstname is not None:
-        query = """ INSERT INTO alumni\
-            (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
+            msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body= 'Confirmation link is {}'.format(link)
+            mail.send(msg)
 
-        db = Database()
-        db.connect()
-        db.execute_set(query, (firstname, lastname, email, major, career))
-        db.disconnect()
-        html = render_template('/site/pages/alumni/index.html', firstname=firstname,
-                               lastname=lastname, email=email, major=major.upper(),
-                               career=career.capitalize(), side="Alumni",
-                               matched=matched)
     else:
-        html = render_template('/site/pages/alumni/index.html', firstname="",
-                               lastname="", email="", major="",
-                               career="", side="Alumni", matched=matched)
+        matched = False
+
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        major = request.form.get("major")
+        career = request.form.get("career")
+
+        if firstname is not None:
+            query = """ INSERT INTO alumni\
+                (AlumInfoNameFirst, AlumInfoNameLast, AlumInfoEmail, AlumAcademicsMajor, AlumCareerField) VALUES (%s,%s,%s,%s,%s)"""
+
+            db = Database()
+            db.connect()
+            db.execute_set(query, (firstname, lastname, email, major, career))
+            db.disconnect()
+            html = render_template('/site/pages/alumni/index.html', firstname=firstname,
+                                   lastname=lastname, email=email, major=major.upper(),
+                                   career=career.capitalize(), side="Alumni", exists = True,
+                                   matched=matched)
+        else:
+            html = render_template('/site/pages/alumni/index.html', firstname="",
+                                   lastname="", email="", major="",
+                                   career="", side="Alumni", exists = True, matched=matched)
     return make_response(html)
+
+@app.route('/confirm_email/<token>')
+def confirm_email(token):
+
+    try:
+        email = s.loads(token, max_age=3600) #one hour to confirm
+    except SignatureExpired:
+        return 'The token is expired'
+
+    # in the database we should have a confirmed email = false. When
+    # we get here we should make confirmed = True
+
 
 # Dynamic page function for home page of site
 @app.route('/index', methods=['GET'])
