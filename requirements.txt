@@ -1,7 +1,10 @@
 astroid==2.3.3
+blinker==1.4
 Click==7.0
 colorama==0.4.3
 Flask==1.1.1
+Flask-Login==0.5.0
+Flask-Mail==0.9.1
 Flask-MySQL==1.5.1
 Flask-MySQLdb==0.2.0
 Flask-SQLAlchemy==2.4.1
