@@ -85,20 +85,46 @@ def student_info():
     major = request.form.get("major")
     career = request.form.get("career")
 
-    if firstname is not None:
-        # TODO - if logged in, don't add data again; instead, update rows
-        new_student = students(username, firstname, lastname, email, major, career, 0)
-        db.session.add(new_student)
-        db.session.commit()
-        html = render_template('/site/pages/student/index.html', firstname=firstname,
-                               lastname=lastname, email=email, major=major.upper(),
-                               career=career.capitalize(), side="Student",
-                               matched=matched, username=username)
+    current = students.query.filter_by(studentid=username).first()
+
+    if firstname is None:
+        if current is not None:
+            html = render_template('/site/pages/student/index.html',
+                                   firstname=current.studentinfonamefirst,
+                                   lastname=current.studentinfonamelast,
+                                   email=current.studentinfoemail,
+                                   major=current.studentacademicsmajor.upper(),
+                                   career=current.studentcareerdesiredfield.capitalize(),
+                                   side="Student", matched=matched, username=username)
+
+            
+        else: 
+            html = render_template('/site/pages/student/index.html', firstname="",
+                                   lastname="", email="", major="",
+                                   career="", side="Student", matched=matched,
+                                   username=username)
     else:
-        html = render_template('/site/pages/student/index.html', firstname="",
-                               lastname="", email="", major="",
-                               career="", side="Student", matched=matched,
-                               username=username)
+        
+        if current is not None: # Update row if student is not new
+            current.studentinfonamefirst = firstname
+            current.studentinfonamelast = lastname
+            current.studentinfoemail = email
+            current.studentacademicsmajor = major
+            current.studentcareerdesiredfield = career
+            db.session.commit()
+        else: # Otherwise, add new row
+            new_student = students(username, firstname, lastname, email, major, career, 0)
+            db.session.add(new_student)
+            db.session.commit()
+
+        html = render_template('/site/pages/student/index.html',
+                               firstname=current.studentinfonamefirst,
+                               lastname=current.studentinfonamelast,
+                               email=current.studentinfoemail,
+                               major=current.studentacademicsmajor.upper(),
+                               career=current.studentcareerdesiredfield.capitalize(),
+                               side="Student", matched=matched, username=username)
+        
     return make_response(html)
 
 # -----------------------------------------------------------------------
