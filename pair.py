@@ -14,6 +14,8 @@ import yaml
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from CASClient import CASClient
+import mysql.connector
+
 
 # -----------------------------------------------------------------------
 # Flask program runnable
@@ -67,13 +69,13 @@ def student_info():
 @app.route('/site/pages/alumni/', methods=['POST', 'GET'])
 def alumni_info():
     html = ''
-    
+
     # PUT SOME QUERY HERE THAT DETERMINES IF USER HAS VERIFIED THEIR EMAIL
 
     verified = True
     if verified == False:
         html = render_template('/site/pages/alumni/index.html', side="Alumni", exists = False)
-    
+
         ## allow email to be submitted
         ## get the email from the page
         email = request.form.get("email")
@@ -116,13 +118,17 @@ def alumni_info():
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
 
+    html = ''
+    errormsg = ''
     try:
         email = s.loads(token, max_age=3600) #one hour to confirm
     except SignatureExpired:
-        return 'The token is expired'
+        errormsg = 'The token is expired'
 
     # in the database we should have a confirmed email = false. When
     # we get here we should make confirmed = True
+
+    html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
 
 
 # Dynamic page function for home page of site

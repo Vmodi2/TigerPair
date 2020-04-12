@@ -31,9 +31,9 @@ class Database():
     # Disconnect (it is client's responsibility to close connection)
     def disconnect(self):
         self._connection.close()
-    # Initialize cursor commit, then execute given 
+    # Initialize cursor commit, then execute given
     # query string that is a "GET" call
-    # meaning client is requesting values from db 
+    # meaning client is requesting values from db
     def execute_get(self, query_string):
         try:
             cursor = self._connection.cursor()
@@ -44,8 +44,8 @@ class Database():
             return result
         except:
             self._connection.rollback()
-    # Initialize cursor commit, then execute given 
-    # query string with input params 
+    # Initialize cursor commit, then execute given
+    # query string with input params
     # that is a "SET" call
     # meaning client is updating values in the DB
     def execute_set(self, query_string, params):
