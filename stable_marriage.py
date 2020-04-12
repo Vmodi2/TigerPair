@@ -4,11 +4,7 @@
 # stable_marriage.py
 # -----------------------------------------------------------------------
 
-from sqlalchemy import create_engine
-
-db_string = "postgres://wrmojcmmbmrgbs:1c5df5fe85929a57652b14c8793fb2162f0c1605549df090aa613d2b95da298f@ec2-3-91-112-166.compute-1.amazonaws.com:5432/dan2dlk2ptnidd"
-db = create_engine(db_string)
-conn = db.connect()
+from database import students, alumni, matches
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -26,8 +22,8 @@ def get_ranking(student):
 
 
 def get_rankings():
-    students = conn.execute_get(selectall_query(student_list, "students"))
-    alumni = conn.execute_get(selectall_query(alum_list, "alumni"))
+    students = students.query.all()
+    alumni = alumni.query.all()
     
     students_alumni = {}
     for i in range(len(students)):
@@ -46,11 +42,6 @@ def get_rankings():
 
     return students_alumni
 
-
-def selectall_query(list, table):
-    return f'SELECT {", ".join(list)} FROM {table} WHERE Matched IS NULL'
-
-
 def create_new_matches():
     students_alumni = get_rankings()
     used_alums = set()
@@ -63,52 +54,29 @@ def create_new_matches():
                 used_alums.add(alum)
                 student_alum[student] = alum
 
-                query_string = """
-                INSERT INTO matches
-                VALUES (%s, %s);
-                """
-                conn.execute_set(query_string, (student, student_alum[student]))
+                new_match = matches(student, student_alum[student])
+                db.session.add(new_match)
+                db.session.commit()
 
-                query_string = """
-                UPDATE students
-                SET Matched=True
-                WHERE StudentInfoNameFirst = %s
-                """
-                conn.execute_set(query_string, (student,))
+                student = students.query.filter_by(studentid=student)
+                student.matched = 1
+                db.session.commit()
 
-                query_string = """
-                UPDATE alumni
-                SET Matched=True
-                WHERE AlumInfoNameFirst = %s
-                """
-                conn.execute_set(query_string, (student_alum[student],))
-
+                alum = alumni.query.filter_by(aluminfoemail=student_alum[student])
+                alum.matched = 1
+                db.session.commit()
+                
                 break
 
 def get_matches():
-    query_string = """
-    SELECT *
-    FROM matches
-    """
-    matches = conn.execute_get(query_string)
+    matches_list = matches.query.all()
+    unmatched_alumni = alumni.query.filter_by(matched=0)
+    unmatched_students = students.query.filter_by(matched=0)
 
-    query_string = """
-    SELECT AlumInfoNameFirst
-    FROM alumni
-    WHERE Matched IS NULL
-    """
-    unmatched_alumni = conn.execute_get(query_string)
-
-    query_string = """
-    SELECT StudentInfoNameFirst
-    FROM students
-    WHERE Matched IS NULL
-    """
-    unmatched_students = conn.execute_get(query_string)
-
-    return matches, unmatched_alumni, unmatched_students
+    return matches_list, unmatched_alumni, unmatched_students
 
 
+''' TODO: CONVERT TO SQLALCHEMY '''
 def clear_matches():
     query_string = """
     DELETE FROM matches
@@ -127,7 +95,7 @@ def clear_matches():
     """
     conn.execute_set(query_string, ())
     
-
+''' TODO: CONVERT TO SQLALCHEMY '''
 def clear_match(student, alum):
     query_string = """
     DELETE FROM matches
@@ -149,7 +117,6 @@ def clear_match(student, alum):
     """
     conn.execute_set(query_string, (alum,))
 
-    
 if __name__ == '__main__':
     create_new_matches()
     print(get_matches()[0])
