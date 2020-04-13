@@ -49,9 +49,9 @@ def signup():
                 mail.send(msg)
                 
                 user = User(name=name,
-                            email=email,
-                            website=website)
+                             email=email)
                 user.set_password(password)
+                user.email_confirmed = False
                 db.session.add(user)
                 db.session.commit()  # Create new user
                 login_user(user)  # Log in as newly created user
@@ -59,12 +59,12 @@ def signup():
             flash('A user already exists with that email address.')
             return redirect(url_for('/site/pages/login/signup'))
 
-    return render_template('/site/pages/login/signup.jinja2',
+    return render_template('/site/pages/login/signup.html',
                            title='Create an Account.',
                            form=signup_form,
                            template='signup-page',
-                           body="Sign up for a user account.",
-                           link=link) #ADDED THIS - TARA
+                           body="Sign up for a user account.") 
+                           #may need to add link=link
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -77,22 +77,21 @@ def confirm_email(token):
         errormsg = 'The token is expired'
         abort(404)
 
-    user = User.query.filter_by(email=email).first_or_404()
+    user = User.query.filter_by(email=email).first_or_404() # give email column indexability
 
     user.email_confirmed = True
     
     db.session.add(user)
     db.session.commit()
 
-    return redirect(url_for('signin')) ## idk where to redirect to
+    login_user(user)  # Log in as newly created user
+    return redirect(url_for('/site/pages/login/dashboard')) ## idk where to redirect to
 
     # in the database we should have a confirmed email = false. When
     # we get here we should make confirmed = True
 
-
-
-    html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
-
+    html = render_template('/site/pages/alumni/confirm_email.html', errormsg = errormsg)
+    # make html
 
 @app.route('/site/pages/login', methods=['GET', 'POST'])
 def login():
@@ -117,7 +116,7 @@ def login():
         flash('Invalid username/password combination')
         return redirect(url_for('/site/pages/login/login'))
 
-    return render_template('/site/pages/login/login.jinja2',
+    return render_template('/site/pages/login/login.html',
                            form=login_form,
                            title='Log in.',
                            template='login-page',

@@ -10,11 +10,17 @@ from flask_login import login_required, logout_user
 compile_auth_assets(app)
 
 
+# Blueprint Configuration
+# routes_bp = Blueprint('auth_bp', __name__,
+#                     template_folder='templates',
+#                     static_folder='static')
+# compile_auth_assets(app)
+
 @app.route('/site/pages/login/', methods=['GET'])
 @login_required
 def dashboard():
     """Serve logged-in Dashboard."""
-    return render_template('/site/pages/login/dashboard.jinja2',
+    return render_template('/site/pages/login/dashboard.html',
                            title='Flask-Login Tutorial.',
                            template='dashboard-template',
                            current_user=current_user,
