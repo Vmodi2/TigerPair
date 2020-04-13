@@ -4,6 +4,7 @@
 # stable_marriage.py
 # -----------------------------------------------------------------------
 
+from sqlalchemy import update
 from database import students, alumni, matches
 from config import db
 
@@ -23,8 +24,11 @@ def get_ranking(student):
 
 
 def get_rankings():
-    students = students.query.all()
-    alumni = alumni.query.all()
+    # do more sql-alchemy way later
+    students = students.query.filter_by(matched=0)
+    students = [student.studentid for student in students]
+    alumni = alumni.query.filter_by(matched=0)
+    alumni = [alum.aluminfoemail for alum in alumni]
 
     students_alumni = {}
     for i in range(len(students)):
@@ -49,7 +53,6 @@ def create_new_matches():
     used_alums = set()
     student_alum = {}
 
-    # can make this much more efficient (LATER) by keeping track of all the values in lists and making database server call only once
     for student in students_alumni:
         for alum, score in students_alumni[student]:
             if alum not in used_alums:
@@ -64,10 +67,9 @@ def create_new_matches():
 
                 alum = alumni.query.filter_by(
                     aluminfoemail=student_alum[student]).first()
-                alum.matched = 1
+                alum.matched += 1
 
                 db.session.commit()
-
                 break
 
 
@@ -88,32 +90,16 @@ def get_matches():
 
 
 def clear_matches():
-    matches_list = matches.query.all()
-    db.session.delete(matches_list)
-
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    """
-    conn.execute_set(query_string, ())
-
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    """
-    conn.execute_set(query_string, ())
+    matches.delete()
+    update(students).values(matched=0)
+    update(alumni).values(matched=0)
+    db.session.commit()
 
 
 def clear_match(student, alum):
-    match = matches.query.filter_by(studentid=student).first()
-    db.session.delete(match)
-
-    student = students.query.filter_by(studentid=student).first()
-    student.matched = 0
-
-    alum = alumni.query.filter_by(aluminfoemail=alum).first()
-    alum.matched = 0
-
+    matches.delete().where(studentid=student)
+    update(students).where(studentid=student).values(matched=0)
+    update(alumni).where(aluminfoemail=alum).values(matched=0)
     db.session.commit()
 
 
