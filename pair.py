@@ -40,23 +40,23 @@ def student_info():
                                    career=current.studentcareerdesiredfield.capitalize(),
                                    side="Student", matched=matched, username=username)
 
-            
-        else: 
+        else:
             html = render_template('/site/pages/student/index.html', firstname="",
                                    lastname="", email="", major="",
                                    career="", side="Student", matched=matched,
                                    username=username)
     else:
-        
-        if current is not None: # Update row if student is not new
+
+        if current is not None:  # Update row if student is not new
             current.studentinfonamefirst = firstname
             current.studentinfonamelast = lastname
             current.studentinfoemail = email
             current.studentacademicsmajor = major
             current.studentcareerdesiredfield = career
             db.session.commit()
-        else: # Otherwise, add new row
-            new_student = students(username, firstname, lastname, email, major, career, 0)
+        else:  # Otherwise, add new row
+            new_student = students(username, firstname,
+                                   lastname, email, major, career, 0)
             db.session.add(new_student)
             db.session.commit()
 
@@ -67,7 +67,7 @@ def student_info():
                                major=major.upper(),
                                career=career.capitalize(),
                                side="Student", matched=matched, username=username)
-        
+
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -81,17 +81,19 @@ def alumni_info():
 
     verified = True
     if verified == False:
-        html = render_template('/site/pages/alumni/index.html', side="Alumni", exists = False)
+        html = render_template(
+            '/site/pages/alumni/index.html', side="Alumni", exists=False)
 
-        ## allow email to be submitted
-        ## get the email from the page
+        # allow email to be submitted
+        # get the email from the page
         email = request.form.get("email")
         if email is not None:
             token = s.dumps(email)
 
-            msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
+            msg = Message(
+                'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
             link = url_for('confirm_email', token=token, _external=True)
-            msg.body= 'Confirmation link is {}'.format(link)
+            msg.body = 'Confirmation link is {}'.format(link)
             mail.send(msg)
 
     else:
@@ -110,13 +112,14 @@ def alumni_info():
             db.session.commit()
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
-                                   career=career.capitalize(), side="Alumni", exists = True,
+                                   career=career.capitalize(), side="Alumni", exists=True,
                                    matched=matched)
         else:
             html = render_template('/site/pages/alumni/index.html', firstname="",
                                    lastname="", email="", major="",
-                                   career="", side="Alumni", exists = True, matched=matched)
+                                   career="", side="Alumni", exists=True, matched=matched)
     return make_response(html)
+
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -124,14 +127,15 @@ def confirm_email(token):
     html = ''
     errormsg = ''
     try:
-        email = s.loads(token, max_age=3600) #one hour to confirm
+        email = s.loads(token, max_age=3600)  # one hour to confirm
     except SignatureExpired:
         errormsg = 'The token is expired'
 
     # in the database we should have a confirmed email = false. When
     # we get here we should make confirmed = True
 
-    html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
+    html = render_template(
+        '/site/pages/alumni/confirm_email', errormsg=errormsg)
 
 
 # Dynamic page function for home page of site
@@ -175,6 +179,7 @@ def admin_landing():
 def admin_landing_run():
     create_new_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
+    print("CORONATIME", matches)
     html = render_template('/site/pages/admin/landing.html', matches=matches,
                            unmatched_alumni=unmatched_alumni,
                            unmatched_students=unmatched_students,

@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from config import db
 
+
 class students(db.Model):
     __tablename__ = 'students'
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
@@ -9,7 +10,8 @@ class students(db.Model):
     studentinfonamelast = db.Column('studentinfonamelast', db.Unicode)
     studentinfoemail = db.Column('studentinfoemail', db.Unicode)
     studentacademicsmajor = db.Column('studentacademicsmajor', db.Unicode)
-    studentcareerdesiredfield = db.Column('studentcareerdesiredfield', db.Unicode)
+    studentcareerdesiredfield = db.Column(
+        'studentcareerdesiredfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
@@ -21,7 +23,8 @@ class students(db.Model):
         self.studentacademicsmajor = studentacademicsmajor
         self.studentcareerdesiredfield = studentcareerdesiredfield
         self.matched = matched
-    
+
+
 class alumni(db.Model):
     __tablename__ = 'alumni'
     aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
@@ -39,6 +42,7 @@ class alumni(db.Model):
         self.alumacademicsmajor = alumacademicsmajor
         self.alumcareerfield = alumcareerfield
         self.matched = matched
+
 
 class matches(db.Model):
     __tablename__ = 'matches'
