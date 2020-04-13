@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------
 
 from database import students, alumni, matches
+from config import db
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -57,10 +58,10 @@ def create_new_matches():
                 new_match = matches(student, student_alum[student])
                 db.session.add(new_match)
 
-                student = students.query.filter_by(studentid=student)
+                student = students.query.filter_by(studentid=student).first()
                 student.matched = 1
 
-                alum = alumni.query.filter_by(aluminfoemail=student_alum[student])
+                alum = alumni.query.filter_by(aluminfoemail=student_alum[student]).first()
                 alum.matched = 1
                 
                 db.session.commit()
@@ -75,7 +76,6 @@ def get_matches():
     return matches_list, unmatched_alumni, unmatched_students
 
 
-''' TODO: CONVERT TO SQLALCHEMY '''
 def clear_matches():
     query_string = """
     DELETE FROM matches
