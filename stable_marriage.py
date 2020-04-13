@@ -4,7 +4,9 @@
 # stable_marriage.py
 # -----------------------------------------------------------------------
 
+from sqlalchemy import update
 from database import students, alumni, matches
+from config import db
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -22,9 +24,12 @@ def get_ranking(student):
 
 
 def get_rankings():
-    students = students.query.all()
-    alumni = alumni.query.all()
-    
+    # do more sql-alchemy way later
+    students = students.query.filter_by(matched=0)
+    students = [student.studentid for student in students]
+    alumni = alumni.query.filter_by(matched=0)
+    alumni = [alum.aluminfoemail for alum in alumni]
+
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -42,12 +47,12 @@ def get_rankings():
 
     return students_alumni
 
+
 def create_new_matches():
     students_alumni = get_rankings()
     used_alums = set()
     student_alum = {}
 
-    # can make this much more efficient (LATER) by keeping track of all the values in lists and making database server call only once
     for student in students_alumni:
         for alum, score in students_alumni[student]:
             if alum not in used_alums:
@@ -57,64 +62,46 @@ def create_new_matches():
                 new_match = matches(student, student_alum[student])
                 db.session.add(new_match)
 
-                student = students.query.filter_by(studentid=student)
+                student = students.query.filter_by(studentid=student).first()
                 student.matched = 1
 
-                alum = alumni.query.filter_by(aluminfoemail=student_alum[student])
-                alum.matched = 1
-                
+                alum = alumni.query.filter_by(
+                    aluminfoemail=student_alum[student]).first()
+                alum.matched += 1
+
                 db.session.commit()
-                
                 break
+
 
 def get_matches():
     matches_list = matches.query.all()
-    unmatched_alumni = alumni.query.filter_by(matched=0)
-    unmatched_students = students.query.filter_by(matched=0)
+    matches_list = [(match.studentid, match.aluminfoemail)
+                    for match in matches_list]
 
+    unmatched_alumni = alumni.query.filter_by(matched=0).all()
+    unmatched_alumni = [alum.aluminfoemail for alum in unmatched_alumni]
+
+    unmatched_students = students.query.filter_by(matched=0).all()
+    unmatched_students = [
+        student.studentinfonamefirst for student in unmatched_students]
     return matches_list, unmatched_alumni, unmatched_students
 
+# TODO: FINISH THIS!!!
 
-''' TODO: CONVERT TO SQLALCHEMY '''
+
 def clear_matches():
-    query_string = """
-    DELETE FROM matches
-    """
-    conn.execute_set(query_string, ())
+    matches.delete()
+    update(students).values(matched=0)
+    update(alumni).values(matched=0)
+    db.session.commit()
 
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    """
-    conn.execute_set(query_string, ())
 
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    """
-    conn.execute_set(query_string, ())
-    
-''' TODO: CONVERT TO SQLALCHEMY '''
 def clear_match(student, alum):
-    query_string = """
-    DELETE FROM matches
-    WHERE StudentInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (student,))
+    matches.delete().where(studentid=student)
+    update(students).where(studentid=student).values(matched=0)
+    update(alumni).where(aluminfoemail=alum).values(matched=0)
+    db.session.commit()
 
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    WHERE StudentInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (student,))
-
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    WHERE AlumInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (alum,))
 
 if __name__ == '__main__':
     create_new_matches()
