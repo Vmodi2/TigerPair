@@ -25,7 +25,7 @@ def get_ranking(student):
 def get_rankings():
     students = students.query.all()
     alumni = alumni.query.all()
-    
+
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -42,6 +42,7 @@ def get_rankings():
         students_alumni[student].sort(key=lambda x: x[1], reverse=True)
 
     return students_alumni
+
 
 def create_new_matches():
     students_alumni = get_rankings()
@@ -61,26 +62,30 @@ def create_new_matches():
                 student = students.query.filter_by(studentid=student).first()
                 student.matched = 1
 
-                alum = alumni.query.filter_by(aluminfoemail=student_alum[student]).first()
+                alum = alumni.query.filter_by(
+                    aluminfoemail=student_alum[student]).first()
                 alum.matched = 1
-                
+
                 db.session.commit()
-                
+
                 break
+
 
 def get_matches():
     matches_list = matches.query.all()
-    unmatched_alumni = alumni.query.filter_by(matched=0)
-    unmatched_students = students.query.filter_by(matched=0)
+    matches_list = [(match.studentid, match.aluminfoemail)
+                    for match in matches_list]
 
+    unmatched_alumni = alumni.query.filter_by(matched=0).all()
+    unmatched_alumni = [alum.aluminfoemail for alum in unmatched_alumni]
+
+    unmatched_students = students.query.filter_by(matched=0).all()
+    unmatched_students = [
+        student.studentinfonamefirst for student in unmatched_students]
     return matches_list, unmatched_alumni, unmatched_students
 
 
 def clear_matches():
-    query_string = """
-    DELETE FROM matches
-    """
-    conn.execute_set(query_string, ())
 
     query_string = """
     UPDATE students
@@ -93,8 +98,11 @@ def clear_matches():
     SET Matched=NULL
     """
     conn.execute_set(query_string, ())
-    
+
+
 ''' TODO: CONVERT TO SQLALCHEMY '''
+
+
 def clear_match(student, alum):
     query_string = """
     DELETE FROM matches
@@ -115,6 +123,7 @@ def clear_match(student, alum):
     WHERE AlumInfoNameFirst = %s
     """
     conn.execute_set(query_string, (alum,))
+
 
 if __name__ == '__main__':
     create_new_matches()
