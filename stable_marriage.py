@@ -56,14 +56,13 @@ def create_new_matches():
 
                 new_match = matches(student, student_alum[student])
                 db.session.add(new_match)
-                db.session.commit()
 
                 student = students.query.filter_by(studentid=student)
                 student.matched = 1
-                db.session.commit()
 
                 alum = alumni.query.filter_by(aluminfoemail=student_alum[student])
                 alum.matched = 1
+                
                 db.session.commit()
                 
                 break

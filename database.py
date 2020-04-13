@@ -47,8 +47,8 @@ class alumni(db.Model):
 
 class matches(db.Model):
     __tablename__ = 'matches'
-    studentid = db.Column('studentinfonamefirst', db.Unicode, primary_key=True)
-    aluminfoemail = db.Column('aluminfonamefirst', db.Unicode)
+    studentid = db.Column('studentid', db.Unicode, primary_key=True)
+    aluminfoemail = db.Column('aluminfoemail', db.Unicode)
 
     def __init__(self, studentid, aluminfoemail):
         self.studentid = studentid
