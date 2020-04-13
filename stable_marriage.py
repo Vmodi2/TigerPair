@@ -84,8 +84,12 @@ def get_matches():
         student.studentinfonamefirst for student in unmatched_students]
     return matches_list, unmatched_alumni, unmatched_students
 
+# TODO: FINISH THIS!!!
+
 
 def clear_matches():
+    matches_list = matches.query.all()
+    db.session.delete(matches_list)
 
     query_string = """
     UPDATE students
@@ -98,31 +102,19 @@ def clear_matches():
     SET Matched=NULL
     """
     conn.execute_set(query_string, ())
-
-
-''' TODO: CONVERT TO SQLALCHEMY '''
 
 
 def clear_match(student, alum):
-    query_string = """
-    DELETE FROM matches
-    WHERE StudentInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (student,))
+    match = matches.query.filter_by(studentid=student).first()
+    db.session.delete(match)
 
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    WHERE StudentInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (student,))
+    student = students.query.filter_by(studentid=student).first()
+    student.matched = 0
 
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    WHERE AlumInfoNameFirst = %s
-    """
-    conn.execute_set(query_string, (alum,))
+    alum = alumni.query.filter_by(aluminfoemail=alum).first()
+    alum.matched = 0
+
+    db.session.commit()
 
 
 if __name__ == '__main__':
