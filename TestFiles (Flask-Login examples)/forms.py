@@ -18,8 +18,6 @@ class SignupForm(FlaskForm):
     confirm = PasswordField('Confirm Your Password',
                             validators=[DataRequired(),
                                         EqualTo('password', message='Passwords must match.')])
-    website = StringField('Website',
-                          validators=[Optional()])
     submit = SubmitField('Register')
 
 

@@ -6,15 +6,15 @@
 
 from sys import argv
 from flask import Flask, request, make_response, redirect, url_for
-from flask import render_template
-from flask_mysqldb import MySQL
+from flask import Blueprint,render_template
+from flask_sqlalchemy import SQLAlchemy
 from database import students, alumni, matches
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
-import yaml
+from flask_login import LoginManager
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from CASClient import CASClient
-from flask_sqlalchemy import SQLAlchemy
+
 
 # -----------------------------------------------------------------------
 # Flask program runnable
@@ -32,6 +32,7 @@ s = URLSafeTimedSerializer('randomkey')
 # SQLAlchemy database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://wrmojcmmbmrgbs:1c5df5fe85929a57652b14c8793fb2162f0c1605549df090aa613d2b95da298f@ec2-3-91-112-166.compute-1.amazonaws.com:5432/dan2dlk2ptnidd"
 db = SQLAlchemy(app)
+login_manager.init_app(app)
 
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call

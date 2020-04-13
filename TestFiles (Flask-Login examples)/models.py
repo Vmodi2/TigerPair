@@ -21,10 +21,6 @@ class User(UserMixin, db.Model):
                          primary_key=False,
                          unique=False,
                          nullable=False)
-    website = db.Column(db.String(60),
-                        index=False,
-                        unique=False,
-                        nullable=True)
     created_on = db.Column(db.DateTime,
                            index=False,
                            unique=False,
