@@ -21,24 +21,29 @@ class students(db.Model):
         self.studentacademicsmajor = studentacademicsmajor
         self.studentcareerdesiredfield = studentcareerdesiredfield
         self.matched = matched
-    
-class alumni(db.Model):
+
+    # maybe change unicode to string
+class alumni(db.Model): 
     __tablename__ = 'alumni'
+    alumnid = db.Column('alumnid', db.Unicode, primary_key=True)
     aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
     aluminfonamelast = db.Column('aluminfonamelast', db.Unicode)
-    aluminfoemail = db.Column('aluminfoemail', db.Unicode, primary_key=True)
+    aluminfoemail = db.Column('aluminfoemail', db.Unicode, unique=True)
     alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
     alumcareerfield = db.Column('alumcareerfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
+    password = db.Column('password', db.Unicode, nullable=False)
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
-                 alumacademicsmajor, alumcareerfield, matched):
+                 alumacademicsmajor, alumcareerfield, password, 
+                 matched):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail
         self.alumacademicsmajor = alumacademicsmajor
         self.alumcareerfield = alumcareerfield
         self.matched = matched
+        self.password = password
 
 class matches(db.Model):
     __tablename__ = 'matches'
