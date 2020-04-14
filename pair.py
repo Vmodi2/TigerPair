@@ -41,8 +41,8 @@ class RegisterForm(FlaskForm):
 
 # -----------------------------------------------------------------------
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def user_loader(user_id):
+    return alumni.query.filter_by(aluminfoemail=user_id).first()
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
@@ -102,27 +102,12 @@ def student_info():
 
 # Dynamic page function for student info page call
 @app.route('/site/pages/alumni/', methods=['POST', 'GET'])
+@login_required
 def alumni_info():
     html = ''
 
-    # PUT SOME QUERY HERE THAT DETERMINES IF USER HAS VERIFIED THEIR EMAIL
-
-    verified = True
-    if verified == False:
-        html = render_template('/site/pages/alumni/index.html', side="Alumni", exists = False)
-
-        ## allow email to be submitted
-        ## get the email from the page
-        email = request.form.get("email")
-        if email is not None:
-            token = s.dumps(email)
-
-            msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body= 'Confirmation link is {}'.format(link)
-            mail.send(msg)
-
-    else:
+    user = alumni.query.filter_by(aluminfoemail=current_user).first()
+    if user.email_confirmed:
         matched = False
 
         firstname = request.form.get("firstname")
@@ -132,9 +117,10 @@ def alumni_info():
         career = request.form.get("career")
 
         if firstname is not None:
-            # TODO - if logged in, don't add data again; instead, update rows
-            new_alum = alumni(firstname, lastname, email, major, career, 0)
-            db.session.add(new_alum)
+            user.aluminfonamefirst = firstname
+            user.aluminfonamelast = lastname
+            user.alumacademicsmajor = major
+            user.alumcareerfield = career
             db.session.commit()
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
@@ -144,22 +130,11 @@ def alumni_info():
             html = render_template('/site/pages/alumni/index.html', firstname="",
                                    lastname="", email="", major="",
                                    career="", side="Alumni", exists = True, matched=matched)
+    else:
+        return redirect(url_for('login'))
+    
     return make_response(html)
 # -----------------------------------------------------------------------
-# @app.route('/confirm_email/<token>')
-# def confirm_email(token):
-
-#     html = ''
-#     errormsg = ''
-#     try:
-#         email = s.loads(token, max_age=3600) #one hour to confirm
-#     except SignatureExpired:
-#         errormsg = 'The token is expired'
-
-#     # in the database we should have a confirmed email = false. When
-#     # we get here we should make confirmed = True
-
-#     html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -167,19 +142,17 @@ def confirm_email(token):
     html = ''
     errormsg = ''
     try:
-        email = s.loads(token, max_age=3600) #one hour to confirm
+        email = s.loads(token, salt='email-confirm', max_age=3600) #one hour to confirm
     except SignatureExpired:
         errormsg = 'The token is expired'
         abort(404)
 
     user = alumni.query.filter_by(aluminfoemail=email).first_or_404() # give email column indexability
-
     user.email_confirmed = True
-    
-    db.session.add(user)
     db.session.commit()
 
     html = render_template('/site/pages/login/confirm_email.html', errormsg = errormsg)
+    return make_response(html)
     # add a button in confirm_email that redirects them to login
 
     # login_user(user)  # Log in as newly created user
@@ -209,19 +182,20 @@ def login():
     if form.validate_on_submit():
         user = alumni.query.filter_by(username=form.username.data).first()
         if user is not None:
-            verified = True #user.email_confirmed #hope this is the right syntax
-            if verified:
+            if user.email_confirmed:
                 if check_password_hash(user.password, form.password.data):
-                    login_user(current_user, remember=form.remember.data)
-                    # return redirect(url_for('site/pages/alumni/index')) # where do we want to redirect here?
-                    return redirect(url_for('dashboard'))
+                    user.authenticated = True
+                    db.session.commit()
+                    login_user(user, remember=form.remember.data)
+                    return redirect(url_for('alumni_info'))
             else:
                 flash("email not verified")
 
         else:
             flash("Invalid username or password")
 
-    return render_template('/site/pages/login/login.html', form=form)
+    html = render_template('/site/pages/login/login.html', form=form)
+    return make_response(html)
 
 # -----------------------------------------------------------------------
 
@@ -242,7 +216,7 @@ def signup():
        
             # email verification code
 
-            token = s.dumps(email)
+            token = s.dumps(email, salt='email-confirm')
 
             msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
             link = url_for('confirm_email', token=token, _external=True)
@@ -251,24 +225,16 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(None, None, email, None, None, name, hashed_password, 0)
-            # user.email_confirmed = False # Does this have to be in User()
+            user = alumni(None, None, email, None, None, name, hashed_password, 0, False, False)
             db.session.add(user)
             db.session.commit()  # Create new user
-            # login_user(user)
 
             return redirect(url_for('gotoemail'), code=400)
 
         flash('A user already exists with that email address.')
-        return redirect(url_for('/site/pages/login/signup'))
 
     return render_template('/site/pages/login/signup.html', form=form) ## WE NEED TO CREATE SIGNUP.HTML
 
-# -----------------------------------------------------------------------
-@app.route('/site/pages/alumni/')
-@login_required
-def dashboard():
-    return render_template('index.html')
 # -----------------------------------------------------------------------
 
 @app.route('/site/pages/admin/signin', methods=['GET'])
