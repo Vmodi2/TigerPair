@@ -5,8 +5,7 @@
 # -----------------------------------------------------------------------
 
 from sqlalchemy import update
-from .models import students as students_table, alumni as alumni_table, matches as matches_table
-from config import db
+from models import Match as matches_table, Student as students_table, Alum as alumni_table
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -76,16 +75,18 @@ def get_matches():
     matches_list = matches_table.query.all()
     matches_list = [(match.studentid, match.aluminfoemail)
                     for match in matches_list]
-
-    unmatched_alumni = alumni_table.query.filter_by(matched=0).all()
-    unmatched_alumni = [alum.aluminfoemail for alum in unmatched_alumni]
-
-    unmatched_students = students_table.query.filter_by(matched=0).all()
-    unmatched_students = [
-        student.studentinfonamefirst for student in unmatched_students]
     db.session.commit()
-    return matches_list, unmatched_alumni, unmatched_students
+    return matches_list
 
+def get_unmatched_students():
+    unmatched_students = students_list.query.filter_by(matched=0).all()
+    db.session.commit()
+    return [student.studentinfonamefirst for student in unmatched_students]
+
+def get_unmatched_alumni():
+    unmatched_alumni = alumni_list.query.filter_by(matched=0).all()
+    db.session.commit()
+    return [alum.aluminfonamefirst for alum in unmatched_alumni]
 
 def clear_matches():
     db.session.query(matches_table).delete()

@@ -1,0 +1,20 @@
+{% extends "admin_dash_base.html" %}
+
+{% block content %}
+<h1 class="mt-4">Unmatched alumni</h1>
+{% if unmatched_alumni %}
+<h2 class="mt-4">Alumni without matches:</h2>
+{% for alum in unmatched_alumni %}
+<h4 class="mt-4">{{alum[0]}}</h4>
+{% endfor %}
+
+{% else %}
+<h2 class="mt-4">No alum without matches</h2>
+{% endif %}
+{% endblock %}
+
+{% block dashboard %}{% endblock %}
+{% block modify_matches %}{% endblock %}
+{% block unmatched_students %}{% endblock %}
+{% block unmatched_alumni %}active{% endblock %}
+{% block match_statistics %}{% endblock %}
