@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------
 
 from sqlalchemy import update
-from database import students, alumni, matches
+from database import students as students_table, alumni as alumni_table, matches as matches_table
 from config import db
 
 weight_vector = (1, 3)
@@ -24,12 +24,11 @@ def get_ranking(student):
 
 
 def get_rankings():
-    # do more sql-alchemy way later
-    students = students.query.filter_by(matched=0)
-    students = [student.studentid for student in students]
-    alumni = alumni.query.filter_by(matched=0)
-    alumni = [alum.aluminfoemail for alum in alumni]
-
+    students = [(student.studentid, student.studentacademicsmajor,
+                 student.studentcareerdesiredfield) for student in students_table.query.filter_by(matched=0)]
+    alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
+              for alum in alumni_table.query.filter_by(matched=0)]
+    db.session.commit()
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -59,50 +58,56 @@ def create_new_matches():
                 used_alums.add(alum)
                 student_alum[student] = alum
 
-                new_match = matches(student, student_alum[student])
+                new_match = matches_table(student, student_alum[student])
                 db.session.add(new_match)
 
-                student = students.query.filter_by(studentid=student).first()
+                student = students_table.query.filter_by(
+                    studentid=student).first()
                 student.matched = 1
 
-                alum = alumni.query.filter_by(
-                    aluminfoemail=student_alum[student]).first()
+                alum = alumni_table.query.filter_by(
+                    aluminfoemail=alum).first()
                 alum.matched += 1
-
-                db.session.commit()
                 break
+    db.session.commit()
+
 
 
 def get_matches():
-    matches_list = matches.query.all()
+    matches_list = matches_table.query.all()
     matches_list = [(match.studentid, match.aluminfoemail)
                     for match in matches_list]
 
-    unmatched_alumni = alumni.query.filter_by(matched=0).all()
+    unmatched_alumni = alumni_table.query.filter_by(matched=0).all()
     unmatched_alumni = [alum.aluminfoemail for alum in unmatched_alumni]
 
-    unmatched_students = students.query.filter_by(matched=0).all()
+    unmatched_students = students_table.query.filter_by(matched=0).all()
     unmatched_students = [
         student.studentinfonamefirst for student in unmatched_students]
+    db.session.commit()
     return matches_list, unmatched_alumni, unmatched_students
 
 # TODO: FINISH THIS!!!
 
 
 def clear_matches():
-    matches.delete()
-    update(students).values(matched=0)
-    update(alumni).values(matched=0)
+    db.session.query(matches_table).delete()
+    students = students_table.query.all()
+    for student in students:
+        student.matched = 0
+    alumni = alumni_table.query.all()
+    for alum in alumni:
+        alum.matched = 0
     db.session.commit()
 
 
 def clear_match(student, alum):
-    matches.delete().where(studentid=student)
-    update(students).where(studentid=student).values(matched=0)
-    update(alumni).where(aluminfoemail=alum).values(matched=0)
+    db.session.query(matches_table).filter_by(studentid=student).delete()
+    students_table.query.filter_by(studentid=student).first().matched = 0
+    alumni_table.query.filter_by(aluminfoemail=alum).first().matched -= 1
     db.session.commit()
 
 
 if __name__ == '__main__':
     create_new_matches()
-    print(get_matches()[0])
+    print(get_matches())

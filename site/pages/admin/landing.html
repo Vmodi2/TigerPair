@@ -105,7 +105,7 @@
 						{% if unmatched_students %}
 						<h2>Students without matches:</h2>
 						{% for student in unmatched_students %}
-						<h4>{{student[0]}}</h4>
+						<h4>{{student}}</h4>
 						{% endfor %}
 
 						{% else %}
@@ -117,7 +117,7 @@
 						{% if unmatched_alumni %}
 						<h2>Alumni without matches:</h2>
 						{% for alum in unmatched_alumni %}
-						<h4>{{alum[0]}}</h4>
+						<h4>{{alum}}</h4>
 						{% endfor %}
 
 						{% else %}
