@@ -139,8 +139,8 @@ def confirm_email(token):
 
 
 # Dynamic page function for home page of site
-@app.route('/index', methods=['GET'])
-@app.route('/', methods=['GET'])
+@app.route('/site/index', methods=['GET'])
+# @app.route('/', methods=['GET'])
 def index():
     html = render_template('/site/index.html')
     return make_response(html)
