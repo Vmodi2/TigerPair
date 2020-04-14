@@ -179,7 +179,6 @@ def admin_landing():
 def admin_landing_run():
     create_new_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
-    print("CORONATIME", matches)
     html = render_template('/site/pages/admin/landing.html', matches=matches,
                            unmatched_alumni=unmatched_alumni,
                            unmatched_students=unmatched_students,
