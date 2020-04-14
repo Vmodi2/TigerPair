@@ -26,10 +26,10 @@ class students(db.Model):
     # maybe change unicode to string
 class alumni(db.Model): 
     __tablename__ = 'alumni'
-    alumnid = db.Column('alumnid', db.Unicode, primary_key=True)
+    # alumid = db.Column('alumid', db.Unicode, primary_key=True)
     aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
     aluminfonamelast = db.Column('aluminfonamelast', db.Unicode)
-    aluminfoemail = db.Column('aluminfoemail', db.Unicode, unique=True)
+    aluminfoemail = db.Column('aluminfoemail', db.Unicode, primary_key=True)
     alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
     alumcareerfield = db.Column('alumcareerfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
