@@ -44,12 +44,12 @@ class RegisterForm(FlaskForm):
 
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
-@app.route('/signup', methods=['GET', 'POST'])
-def login():
+@app.route('/site/pages/login/signup', methods=['GET', 'POST'])
+def signup():
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -108,17 +108,17 @@ def confirm_email(token):
     # return redirect(url_for('/site/pages/alumni/index.html')) ## idk where to redirect to
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/site/pages/login', methods=['GET', 'POST'])
 def login():
 
     # check that user is verified
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            verified = user.email_confirmed #hope this is the right syntax
-            if verifed:
+        user = alumni.query.filter_by(username=form.username.data).first()
+        if user is not None:
+            verified = True #user.email_confirmed #hope this is the right syntax
+            if verified:
                 if check_password_hash(user.password, form.password.data):
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('site/pages/alumni/index')) # where do we want to redirect here?

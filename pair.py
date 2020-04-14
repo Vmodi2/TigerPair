@@ -5,16 +5,44 @@
 # -----------------------------------------------------------------------
 
 from sys import argv
+from flask_bootstrap import Bootstrap
 from flask import request, make_response, redirect, url_for
 from flask import render_template
+from flask_wtf import FlaskForm 
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import InputRequired, Email, Length
 from database import students, alumni, matches
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
 import yaml
 from flask_mail import Message
 from itsdangerous import SignatureExpired
 from CASClient import CASClient
-from config import app, mail, s, db
+from config import app, mail, s, db, login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+# -----------------------------------------------------------------------
+
+bootstrap = Bootstrap(app)
+login_manager.login_view = 'login'
+
+# -----------------------------------------------------------------------
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('remember me')
+    
+# -----------------------------------------------------------------------
+class RegisterForm(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+
+# -----------------------------------------------------------------------
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
@@ -117,6 +145,21 @@ def alumni_info():
                                    lastname="", email="", major="",
                                    career="", side="Alumni", exists = True, matched=matched)
     return make_response(html)
+# -----------------------------------------------------------------------
+# @app.route('/confirm_email/<token>')
+# def confirm_email(token):
+
+#     html = ''
+#     errormsg = ''
+#     try:
+#         email = s.loads(token, max_age=3600) #one hour to confirm
+#     except SignatureExpired:
+#         errormsg = 'The token is expired'
+
+#     # in the database we should have a confirmed email = false. When
+#     # we get here we should make confirmed = True
+
+#     html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -127,13 +170,22 @@ def confirm_email(token):
         email = s.loads(token, max_age=3600) #one hour to confirm
     except SignatureExpired:
         errormsg = 'The token is expired'
+        abort(404)
 
-    # in the database we should have a confirmed email = false. When
-    # we get here we should make confirmed = True
+    user = alumni.query.filter_by(aluminfoemail=email).first_or_404() # give email column indexability
 
-    html = render_template('/site/pages/alumni/confirm_email', errormsg = errormsg)
+    user.email_confirmed = True
+    
+    db.session.add(user)
+    db.session.commit()
 
+    html = render_template('/site/pages/login/confirm_email.html', errormsg = errormsg)
+    # add a button in confirm_email that redirects them to login
 
+    # login_user(user)  # Log in as newly created user
+    # return redirect(url_for('/site/pages/alumni/index.html')) ## idk where to redirect to
+
+# -----------------------------------------------------------------------
 # Dynamic page function for home page of site
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
@@ -148,19 +200,89 @@ def matching():
     html = render_template('/site/pages/signin/index.html')
     return make_response(html)
 
+@app.route('/site/pages/login/', methods=['GET', 'POST'])
+def login():
+
+    # check that user is verified
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = alumni.query.filter_by(username=form.username.data).first()
+        if user is not None:
+            verified = True #user.email_confirmed #hope this is the right syntax
+            if verified:
+                if check_password_hash(user.password, form.password.data):
+                    login_user(current_user, remember=form.remember.data)
+                    # return redirect(url_for('site/pages/alumni/index')) # where do we want to redirect here?
+                    return redirect(url_for('dashboard'))
+            else:
+                flash("email not verified")
+
+        else:
+            flash("Invalid username or password")
+
+    return render_template('/site/pages/login/login.html', form=form)
+
 # -----------------------------------------------------------------------
+
+@app.route('/site/pages/login/gotoemail', methods=['GET', 'POST'])
+def gotoemail():
+    return render_template('/site/pages/login/gotoemail.html')
+
+@app.route('/site/pages/login/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        name = form.username.data
+        email = form.email.data
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        existing_user = alumni.query.filter_by(aluminfoemail=email).first()
+        if existing_user is None:
+       
+            # email verification code
+
+            token = s.dumps(email)
+
+            msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body= 'Confirmation link is {}'.format(link)
+            mail.send(msg)
+
+            # update the database with new user info
+
+            user = alumni(None, None, email, None, None, name, hashed_password, 0)
+            # user.email_confirmed = False # Does this have to be in User()
+            db.session.add(user)
+            db.session.commit()  # Create new user
+            # login_user(user)
+
+            return redirect(url_for('gotoemail'), code=400)
+
+        flash('A user already exists with that email address.')
+        return redirect(url_for('/site/pages/login/signup'))
+
+    return render_template('/site/pages/login/signup.html', form=form) ## WE NEED TO CREATE SIGNUP.HTML
+
+# -----------------------------------------------------------------------
+@app.route('/site/pages/alumni/')
+@login_required
+def dashboard():
+    return render_template('index.html')
+# -----------------------------------------------------------------------
+
 @app.route('/site/pages/admin/signin', methods=['GET'])
 def admin_signin():
     html = render_template('/site/pages/admin/signin.html', side='Admin')
     return make_response(html)
 
-
+# -----------------------------------------------------------------------
 @app.route('/site/pages/admin/register', methods=['GET'])
 def admin_register():
     html = render_template('/site/pages/admin/register.html', side='Admin')
     return make_response(html)
 
-
+# -----------------------------------------------------------------------
 @app.route('/site/pages/admin/landing', methods=['GET'])
 def admin_landing():
     matches, unmatched_alumni, unmatched_students = get_matches()
@@ -169,7 +291,7 @@ def admin_landing():
                            unmatched_students=unmatched_students,
                            side='Admin')
     return make_response(html)
-
+# -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
 @app.route('/site/pages/admin/landing/run', methods=['GET'])
 def admin_landing_run():
@@ -180,7 +302,7 @@ def admin_landing_run():
                            unmatched_students=unmatched_students,
                            side='Admin')
     return make_response(html)
-
+# -----------------------------------------------------------------------
 
 @app.route('/site/pages/admin/landing/clearall', methods=['GET'])
 def admin_landing_clearall():
@@ -190,7 +312,7 @@ def admin_landing_clearall():
                            unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students, side='Admin')
     return make_response(html)
 
-
+# -----------------------------------------------------------------------
 @app.route('/site/pages/admin/landing/clearone', methods=['GET'])
 def admin_landing_clearone():
     clear_match(request.args.get('student'), request.args.get('alum'))
@@ -204,7 +326,7 @@ def admin_landing_clearone():
 # https://copyninja.info/blog/using-url-for-in-flask.html
 # ^ for serving static pages
 
-
+# -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
 if __name__ == '__main__':

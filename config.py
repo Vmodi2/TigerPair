@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 # Flask program runnable
 app = Flask(__name__, template_folder='.')
@@ -20,6 +20,5 @@ s = URLSafeTimedSerializer('randomkey')
 # SQLAlchemy database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://wrmojcmmbmrgbs:1c5df5fe85929a57652b14c8793fb2162f0c1605549df090aa613d2b95da298f@ec2-3-91-112-166.compute-1.amazonaws.com:5432/dan2dlk2ptnidd"
 db = SQLAlchemy(app)
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = 'login'
+login_manager = LoginManager()
+login_manager.init_app(app)
