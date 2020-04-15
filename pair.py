@@ -7,7 +7,7 @@
 from sys import argv
 from flask_bootstrap import Bootstrap
 from flask import request, make_response, redirect, url_for
-from flask import render_template
+from flask import render_template, flash
 from flask_wtf import FlaskForm 
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
@@ -106,8 +106,7 @@ def student_info():
 def alumni_info():
     html = ''
 
-    user = alumni.query.filter_by(aluminfoemail=current_user).first()
-    if user.email_confirmed:
+    if current_user.email_confirmed:
         matched = False
 
         firstname = request.form.get("firstname")
@@ -178,8 +177,7 @@ def login():
 
     # check that user is verified
     form = LoginForm()
-
-    if form.validate_on_submit():
+    if form.validate():
         user = alumni.query.filter_by(username=form.username.data).first()
         if user is not None:
             if user.email_confirmed:

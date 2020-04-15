@@ -37,7 +37,7 @@ class alumni(db.Model):
     username = db.Column('username', db.Unicode)
     password = db.Column('password', db.Unicode, nullable=False)
     email_confirmed = db.Column('email_confirmed', db.Boolean)
-    authenticated = db.Column('authenticated', db.Boolean)
+    authenticated = db.Column('is_authenticated', db.Boolean)
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
                  alumacademicsmajor, alumcareerfield, username, password, 
