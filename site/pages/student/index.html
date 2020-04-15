@@ -16,7 +16,7 @@
 		<link href="/static/css/navbar.css" rel="stylesheet">
 	</head>
 
-	<body class="d-flex flex-column h-100" onload="update_majors()">
+	<body class="d-flex flex-column h-100" onload="update_majors();update_careers();">
 		{% include 'site/pages/hubheader.html' %}
 
 		<!-- Begin page content -->
@@ -46,12 +46,8 @@
 						</select>
 						<br/>
 						<label for="career">Desired Career Field</label>
-						<!-- Changed id from field to career -->
 						<select class="form-control mr-sm-2" id="career" name="career" required>
 							<option value="{{career}}" selected hidden>{{career}}</option>
-							<option value="Accounting">Accounting</option>
-							<option value="Advertising">Advertising</option>
-							<option value="Other">Other</option>
 						</select>
 						<br/>
 						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
@@ -61,6 +57,7 @@
 		</main>
 		
 		<script src="/static/js/majors.js"></script>
+		<script src="/static/js/careers.js"></script>
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
 	</body>
