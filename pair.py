@@ -177,7 +177,7 @@ def login():
 
     # check that user is verified
     form = LoginForm()
-    if form.validate():
+    if form.validate_on_submit():
         user = alumni.query.filter_by(username=form.username.data).first()
         if user is not None:
             if user.email_confirmed:
