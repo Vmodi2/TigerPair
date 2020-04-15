@@ -14,7 +14,6 @@ Flask==1.1.2
 Flask-Assets==2.0
 Flask-Bootstrap==3.3.7.1
 Flask-Login==0.5.0
-flask-login-tutorial==0.1.0
 Flask-Mail==0.9.1
 Flask-MySQL==1.5.1
 Flask-MySQLdb==0.2.0
