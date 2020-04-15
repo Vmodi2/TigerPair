@@ -6,7 +6,7 @@ Understanding of CAS and Process API - Tara and Abhinaya
 DB Design, and MySql Implmentation - Chris and Vikash
 
 TODO:
-- Make matching show up
+- Don't match if name, etc. not filled out
 - Make sure CAS is working - make sure Student Hub acts same as Alumni Hub
 - Make sure CAS is working on Admin profile
 - Check Admin Hub: 
