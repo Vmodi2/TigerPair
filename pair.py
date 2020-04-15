@@ -43,6 +43,14 @@ class RegisterForm(FlaskForm):
 @login_manager.user_loader
 def user_loader(user_id):
     return alumni.query.filter_by(aluminfoemail=user_id).first()
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    # logout from cas as well
+    return redirect(url_for("index"))
+
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
@@ -189,14 +197,15 @@ def matching():
 @app.route('/site/pages/login/', methods=['GET', 'POST'])
 def login():
 
-    # check that user is verified
+    if current_user.is_authenticated:
+        return redirect(url_for('alumni_info'))
+    
     form = LoginForm()
     if form.validate_on_submit():
         user = alumni.query.filter_by(username=form.username.data).first()
         if user is not None:
             if user.email_confirmed:
                 if check_password_hash(user.password, form.password.data):
-                    user.authenticated = True
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alumni_info'))
@@ -237,7 +246,7 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(None, None, email, None, None, name, hashed_password, 0, False, False)
+            user = alumni(None, None, email, None, None, name, hashed_password, 0, False)
             db.session.add(user)
             db.session.commit()  # Create new user
 
