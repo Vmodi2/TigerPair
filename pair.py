@@ -45,10 +45,10 @@ def user_loader(user_id):
     return alumni.query.filter_by(aluminfoemail=user_id).first()
 
 @app.route("/logout")
-@login_required
+#@login_required <- this makes it redirect to login when student logs out
 def logout():
     logout_user()
-    # logout from cas as well
+    # DON'T FORGET TO logout from cas as well
     return redirect(url_for("index"))
 
 # -----------------------------------------------------------------------
