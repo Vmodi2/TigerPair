@@ -116,19 +116,31 @@ def alumni_info():
         career = request.form.get("career")
 
         if firstname is not None:
-            user.aluminfonamefirst = firstname
-            user.aluminfonamelast = lastname
-            user.alumacademicsmajor = major
-            user.alumcareerfield = career
+            current_user.aluminfonamefirst = firstname
+            current_user.aluminfonamelast = lastname
+            current_user.alumacademicsmajor = major
+            current_user.alumcareerfield = career
             db.session.commit()
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
                                    career=career.capitalize(), side="Alumni", exists = True,
                                    matched=matched)
         else:
-            html = render_template('/site/pages/alumni/index.html', firstname="",
-                                   lastname="", email="", major="",
-                                   career="", side="Alumni", exists = True, matched=matched)
+            firstname = current_user.aluminfonamefirst
+            firstname = "" if firstname is None else firstname
+            lastname = current_user.aluminfonamelast
+            lastname = "" if lastname is None else lastname
+            email = current_user.aluminfoemail
+            email = "" if email is None else email
+            major = current_user.alumacademicsmajor
+            major = "" if major is None else major
+            career = current_user.alumcareerfield
+            career = "" if career is None else career            
+            
+            html = render_template('/site/pages/alumni/index.html', firstname=firstname,
+                                   lastname=lastname, email=email, major=major.upper(),
+                                   career=career.capitalize(), side="Alumni", exists = True,
+                                   matched=matched)
     else:
         return redirect(url_for('login'))
     
