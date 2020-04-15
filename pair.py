@@ -65,7 +65,7 @@ def student_info():
                                    lastname=current.studentinfonamelast,
                                    email=current.studentinfoemail,
                                    major=current.studentacademicsmajor.upper(),
-                                   career=current.studentcareerdesiredfield.capitalize(),
+                                   career=current.studentcareerdesiredfield,
                                    side="Student", matched=matched, username=username)
 
             
@@ -80,11 +80,11 @@ def student_info():
             current.studentinfonamefirst = firstname
             current.studentinfonamelast = lastname
             current.studentinfoemail = email
-            current.studentacademicsmajor = major
+            current.studentacademicsmajor = major.upper()
             current.studentcareerdesiredfield = career
             db.session.commit()
         else: # Otherwise, add new row
-            new_student = students(username, firstname, lastname, email, major, career, 0)
+            new_student = students(username, firstname, lastname, email, major.upper(), career, 0)
             db.session.add(new_student)
             db.session.commit()
 
@@ -93,7 +93,7 @@ def student_info():
                                lastname=lastname,
                                email=email,
                                major=major.upper(),
-                               career=career.capitalize(),
+                               career=career,
                                side="Student", matched=matched, username=username)
         
     return make_response(html)
@@ -118,12 +118,12 @@ def alumni_info():
         if firstname is not None:
             current_user.aluminfonamefirst = firstname
             current_user.aluminfonamelast = lastname
-            current_user.alumacademicsmajor = major
+            current_user.alumacademicsmajor = major.upper()
             current_user.alumcareerfield = career
             db.session.commit()
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
-                                   career=career.capitalize(), side="Alumni", exists = True,
+                                   career=career, side="Alumni", exists = True,
                                    matched=matched)
         else:
             firstname = current_user.aluminfonamefirst
@@ -133,13 +133,15 @@ def alumni_info():
             email = current_user.aluminfoemail
             email = "" if email is None else email
             major = current_user.alumacademicsmajor
-            major = "" if major is None else major
+            major = "" if major is None else major.upper()
             career = current_user.alumcareerfield
-            career = "" if career is None else career            
+            career = "" if career is None else career
+
+            
             
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
-                                   lastname=lastname, email=email, major=major.upper(),
-                                   career=career.capitalize(), side="Alumni", exists = True,
+                                   lastname=lastname, email=email, major=major,
+                                   career=career, side="Alumni", exists = True,
                                    matched=matched)
     else:
         return redirect(url_for('login'))

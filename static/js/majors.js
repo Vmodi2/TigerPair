@@ -6,10 +6,10 @@ function update_majors() {
 	major_string = document.getElementById("major").innerHTML;
 	for (var i = 0; i < majors.length; i++) {
 		major = majors[i];
-		major_string += '<option value="' + major.toLowerCase() + '">' + major + '</option>';
+		major_string += '<option value="' + major + '">' + major + '</option>';
 	}
 	
-	major_string += '<option value="other">Other</option>'
+	/* major_string += '<option value="XXX">Other</option>'; */
 	
 	document.getElementById("major").innerHTML = major_string;
 }
