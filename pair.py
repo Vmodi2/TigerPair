@@ -65,7 +65,7 @@ def student_info():
 
     current = students.query.filter_by(studentid=username).first()
 
-    attribute = 0 if current is not None else current.matched
+    attribute = 0 if current is None else current.matched
 
     matched = False if attribute == 0 else True
     matchfirstname = ''
