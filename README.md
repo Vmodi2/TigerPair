@@ -6,8 +6,7 @@ Understanding of CAS and Process API - Tara and Abhinaya
 DB Design, and MySql Implmentation - Chris and Vikash
 
 TODO:
-- Constant log-in state; make sure they're logged in even if redirected
-- Remember Me function
+- Make matching show up
 - Make sure CAS is working - make sure Student Hub acts same as Alumni Hub
 - Make sure CAS is working on Admin profile
 - Check Admin Hub: 

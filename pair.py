@@ -55,7 +55,6 @@ def logout():
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
-    matched = False
     username = CASClient().authenticate()
 
     firstname = request.form.get("firstname")
@@ -65,6 +64,16 @@ def student_info():
     career = request.form.get("career")
 
     current = students.query.filter_by(studentid=username).first()
+    matched = False if current.matched == 0 else True
+    matchfirstname = ''
+    matchlastname = ''
+    matchemail = ''
+    if matched:
+        match = matches.query.filter_by(studentid=username).first()
+        matchemail = match.aluminfoemail
+        match = alumni.query.filter_by(aluminfoemail=matchemail).first()
+        matchfirstname = match.aluminfonamefirst
+        matchlastname = match.aluminfonamelast
 
     if firstname is None:
         if current is not None:
@@ -74,14 +83,20 @@ def student_info():
                                    email=current.studentinfoemail,
                                    major=current.studentacademicsmajor.upper(),
                                    career=current.studentcareerdesiredfield,
-                                   side="Student", matched=matched, username=username)
+                                   side="Student", matched=matched, username=username,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail = matchemail)
 
             
         else: 
             html = render_template('/site/pages/student/index.html', firstname="",
                                    lastname="", email="", major="",
                                    career="", side="Student", matched=matched,
-                                   username=username)
+                                   username=username,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail = matchemail)
     else:
         
         if current is not None: # Update row if student is not new
@@ -102,7 +117,11 @@ def student_info():
                                email=email,
                                major=major.upper(),
                                career=career,
-                               side="Student", matched=matched, username=username)
+                               side="Student", matched=matched,
+                               username=username,
+                               matchfirstname=matchfirstname,
+                               matchlastname=matchlastname,
+                               matchemail = matchemail)
         
     return make_response(html)
 
@@ -115,7 +134,19 @@ def alumni_info():
     html = ''
 
     if current_user.email_confirmed:
-        matched = False
+
+        # THIS ASSUMES THERE IS ONLY ONE MATCH FOR EACH ALUM. THIS WILL
+        # FAIL OTHERWISE.
+        matched = False if current_user.matched == 0 else True
+        matchfirstname = ''
+        matchlastname = ''
+        matchemail = ''
+        if matched:
+            match = matches.query.filter_by(aluminfoemail=current_user.aluminfoemail).first()
+            match = students.query.filter_by(studentid=match.studentid).first()
+            matchfirstname = match.studentinfonamefirst
+            matchlastname = match.studentinfonamelast
+            matchemail = match.studentinfoemail
 
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
@@ -131,8 +162,10 @@ def alumni_info():
             db.session.commit()
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
-                                   career=career, side="Alumni", exists = True,
-                                   matched=matched)
+                                   career=career, side="Alumni", matched=matched,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail = matchemail)
         else:
             firstname = current_user.aluminfonamefirst
             firstname = "" if firstname is None else firstname
@@ -149,8 +182,10 @@ def alumni_info():
             
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major,
-                                   career=career, side="Alumni", exists = True,
-                                   matched=matched)
+                                   career=career, side="Alumni", matched=matched,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail = matchemail)
     else:
         return redirect(url_for('login'))
     
