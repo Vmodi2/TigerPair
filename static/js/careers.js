@@ -11,5 +11,5 @@ function update_career() {
 
 	career_string += '<option value="other">Other</option>'
 
-	document.getElementById("major").innerHTML = career_string;
+	document.getElementById("career").innerHTML = career_string;
 }
