@@ -64,7 +64,8 @@ def student_info():
     career = request.form.get("career")
 
     current = students.query.filter_by(studentid=username).first()
-    matched = False if current.matched == 0 else True
+
+    matched = True if current.matched else False
     matchfirstname = ''
     matchlastname = ''
     matchemail = ''
