@@ -43,6 +43,10 @@ def user_loader(user_id):
 #@login_required <- this makes it redirect to login when student logs out
 def logout():
     logout_user()
+    # if CASClient().validate(CASClient().stripTicket()) is not None:
+    # username = CASClient().authenticate()
+    # if username is not None:
+    #     CASClient().logout()
     # DON'T FORGET TO logout from cas as well
     return redirect(url_for("index"))
 
@@ -293,18 +297,21 @@ def signup():
 
 @app.route('/site/pages/admin/signin', methods=['GET'])
 def admin_signin():
+    username = CASClient().authenticate()
     html = render_template('/site/pages/admin/signin.html', side='Admin')
     return make_response(html)
 
 # -----------------------------------------------------------------------
 @app.route('/site/pages/admin/register', methods=['GET'])
 def admin_register():
+    username = CASClient().authenticate()
     html = render_template('/site/pages/admin/register.html', side='Admin')
     return make_response(html)
 
 # -----------------------------------------------------------------------
 @app.route('/site/pages/admin/landing', methods=['GET'])
 def admin_landing():
+    username = CASClient().authenticate()
     matches, unmatched_alumni, unmatched_students = get_matches()
     html = render_template('/site/pages/admin/landing.html', matches=matches,
                            unmatched_alumni=unmatched_alumni,
@@ -315,6 +322,7 @@ def admin_landing():
 # Dynamic page function for admin home page of site
 @app.route('/site/pages/admin/landing/run', methods=['GET'])
 def admin_landing_run():
+    username = CASClient().authenticate()
     create_new_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
     html = render_template('/site/pages/admin/landing.html', matches=matches,
@@ -326,6 +334,7 @@ def admin_landing_run():
 
 @app.route('/site/pages/admin/landing/clearall', methods=['GET'])
 def admin_landing_clearall():
+    username = CASClient().authenticate()
     clear_matches()
     matches, unmatched_alumni, unmatched_students = get_matches()
     html = render_template('/site/pages/admin/landing.html', matches=None,
@@ -335,6 +344,7 @@ def admin_landing_clearall():
 # -----------------------------------------------------------------------
 @app.route('/site/pages/admin/landing/clearone', methods=['GET'])
 def admin_landing_clearone():
+    username = CASClient().authenticate()
     clear_match(request.args.get('student'), request.args.get('alum'))
     matches, unmatched_alumni, unmatched_students = get_matches()
     html = render_template('/site/pages/admin/landing.html', matches=matches,
