@@ -54,8 +54,8 @@ def logout():
 # Dynamic page function for student info page call
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
-    username = CASClient().authenticate()
 
+    username = CASClient().authenticate()
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
