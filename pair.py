@@ -16,6 +16,12 @@ from database import students, alumni, matches
 from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
+import hashlib
+import random
+from base64 import b64encode
+from datetime import datetime
+import requests
+import json
 
 # -----------------------------------------------------------------------
 
@@ -52,15 +58,46 @@ def logout():
 
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
+
 @app.route('/site/pages/student/', methods=['POST', 'GET'])
 def student_info():
-
     username = CASClient().authenticate()
+    username = username[0:len(username)-1]
+    # adding tigerbook code
+    key = "1cf0a08b74009367d00279d0926f88cb"
+    url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+username
+    created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
+
+    nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=') for i in range(32)]).encode('utf-8')
+
+    password = key.encode('utf-8')    # use your own from /getkey
+    generated_digest = b64encode(hashlib.sha256(nonce + created + password).digest())
+    generated_digest = str(generated_digest).replace("b\'", '')
+    generated_digest = str(generated_digest).replace("\'", '')
+    nonce = str(b64encode(nonce)).replace("b\'", '')
+    nonce = str(nonce).replace("\'", '')
+    created = str(created).replace("b\'", '')
+    created = str(created).replace("\'", '')
+    headers = {
+    'Authorization': 'WSSE profile="UsernameToken"',
+    'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
+    }
+    print(headers)
+    r = requests.get(url, headers = headers)
+    student_info = json.loads(r.text)
+    print(student_info)
+
+
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
     major = request.form.get("major")
     career = request.form.get("career")
+
+    # firstname = student_info['first_name']
+    # lastname = student_info['last_name']
+    # email = student_info['email']
+    # major = student_info['major_code']
 
     current = students.query.filter_by(studentid=username).first()
 
