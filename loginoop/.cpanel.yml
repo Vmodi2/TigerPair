@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/barkachi/public_html/github_version
+    - /bin/cp -R * $DEPLOYPATH
