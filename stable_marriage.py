@@ -72,6 +72,7 @@ def create_new_matches():
     db.session.commit()
 
 
+
 def get_matches():
     matches_list = matches_table.query.all()
     matches_list = [(match.studentid, match.aluminfoemail)
@@ -85,6 +86,8 @@ def get_matches():
         student.studentinfonamefirst for student in unmatched_students]
     db.session.commit()
     return matches_list, unmatched_alumni, unmatched_students
+
+# TODO: FINISH THIS!!!
 
 
 def clear_matches():
