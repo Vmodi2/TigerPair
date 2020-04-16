@@ -27,7 +27,7 @@ login_manager.login_view = 'login'
 #     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
 #     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 #     remember = BooleanField('remember me')
-    
+
 # # -----------------------------------------------------------------------
 # class RegisterForm(FlaskForm):
 #     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
@@ -39,8 +39,9 @@ login_manager.login_view = 'login'
 def user_loader(user_id):
     return alumni.query.filter_by(aluminfoemail=user_id).first()
 
+
 @app.route("/logout")
-#@login_required <- this makes it redirect to login when student logs out
+# @login_required <- this makes it redirect to login when student logs out
 def logout():
     logout_user()
     # if CASClient().validate(CASClient().stripTicket()) is not None:
@@ -88,28 +89,28 @@ def student_info():
                                    side="Student", matched=matched, username=username,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail = matchemail)
+                                   matchemail=matchemail)
 
-            
-        else: 
+        else:
             html = render_template('/site/pages/student/index.html', firstname="",
                                    lastname="", email="", major="",
                                    career="", side="Student", matched=matched,
                                    username=username,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail = matchemail)
+                                   matchemail=matchemail)
     else:
-        
-        if current is not None: # Update row if student is not new
+
+        if current is not None:  # Update row if student is not new
             current.studentinfonamefirst = firstname
             current.studentinfonamelast = lastname
             current.studentinfoemail = email
             current.studentacademicsmajor = major.upper()
             current.studentcareerdesiredfield = career
             db.session.commit()
-        else: # Otherwise, add new row
-            new_student = students(username, firstname, lastname, email, major.upper(), career, 0)
+        else:  # Otherwise, add new row
+            new_student = students(username, firstname,
+                                   lastname, email, major.upper(), career, 0)
             db.session.add(new_student)
             db.session.commit()
 
@@ -123,8 +124,8 @@ def student_info():
                                username=username,
                                matchfirstname=matchfirstname,
                                matchlastname=matchlastname,
-                               matchemail = matchemail)
-        
+                               matchemail=matchemail)
+
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -144,7 +145,8 @@ def alumni_info():
         matchlastname = ''
         matchemail = ''
         if matched:
-            match = matches.query.filter_by(aluminfoemail=current_user.aluminfoemail).first()
+            match = matches.query.filter_by(
+                aluminfoemail=current_user.aluminfoemail).first()
             match = students.query.filter_by(studentid=match.studentid).first()
             matchfirstname = match.studentinfonamefirst
             matchlastname = match.studentinfonamelast
@@ -167,7 +169,7 @@ def alumni_info():
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail = matchemail)
+                                   matchemail=matchemail)
         else:
             firstname = current_user.aluminfonamefirst
             firstname = "" if firstname is None else firstname
@@ -180,19 +182,18 @@ def alumni_info():
             career = current_user.alumcareerfield
             career = "" if career is None else career
 
-            
-            
             html = render_template('/site/pages/alumni/index.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major,
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail = matchemail)
+                                   matchemail=matchemail)
     else:
         return redirect(url_for('login'))
-    
+
     return make_response(html)
 # -----------------------------------------------------------------------
+
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -200,16 +201,19 @@ def confirm_email(token):
     html = ''
     errormsg = ''
     try:
-        email = s.loads(token, salt='email-confirm', max_age=3600) #one hour to confirm
+        email = s.loads(token, salt='email-confirm',
+                        max_age=3600)  # one hour to confirm
     except SignatureExpired:
         errormsg = 'The token is expired'
         abort(404)
 
-    user = alumni.query.filter_by(aluminfoemail=email).first_or_404() # give email column indexability
+    # give email column indexability
+    user = alumni.query.filter_by(aluminfoemail=email).first_or_404()
     user.email_confirmed = True
     db.session.commit()
 
-    html = render_template('/site/pages/login/confirm_email.html', errormsg = errormsg)
+    html = render_template(
+        '/site/pages/login/confirm_email.html', errormsg=errormsg)
     return make_response(html)
     # add a button in confirm_email that redirects them to login
 
@@ -231,12 +235,13 @@ def matching():
     html = render_template('/site/pages/signin/index.html')
     return make_response(html)
 
+
 @app.route('/site/pages/login/', methods=['GET', 'POST'])
 def login():
 
     if current_user.is_authenticated:
         return redirect(url_for('alumni_info'))
-    
+
     form = LoginForm()
     if form.validate_on_submit():
         user = alumni.query.filter_by(username=form.username.data).first()
@@ -257,9 +262,11 @@ def login():
 
 # -----------------------------------------------------------------------
 
+
 @app.route('/site/pages/login/gotoemail', methods=['GET', 'POST'])
 def gotoemail():
     return render_template('/site/pages/login/gotoemail.html')
+
 
 @app.route('/site/pages/login/signup', methods=['GET', 'POST'])
 def signup():
@@ -268,22 +275,25 @@ def signup():
     if form.validate_on_submit():
         name = form.username.data
         email = form.email.data
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        hashed_password = generate_password_hash(
+            form.password.data, method='sha256')
         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
         if existing_user is None:
-       
+
             # email verification code
 
             token = s.dumps(email, salt='email-confirm')
 
-            msg = Message('Confirm Email', sender= 'tigerpaircontact@gmail.com', recipients=[email])
+            msg = Message(
+                'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
             link = url_for('confirm_email', token=token, _external=True)
-            msg.body= 'Confirmation link is {}'.format(link)
+            msg.body = 'Confirmation link is {}'.format(link)
             mail.send(msg)
 
             # update the database with new user info
 
-            user = alumni(None, None, email, None, None, name, hashed_password, 0, False)
+            user = alumni(None, None, email, None, None,
+                          name, hashed_password, 0, False)
             db.session.add(user)
             db.session.commit()  # Create new user
 
@@ -291,9 +301,11 @@ def signup():
 
         flash('A user already exists with that email address.')
 
-    return render_template('/site/pages/login/signup.html', form=form) ## WE NEED TO CREATE SIGNUP.HTML
+    # WE NEED TO CREATE SIGNUP.HTML
+    return render_template('/site/pages/login/signup.html', form=form)
 
 # -----------------------------------------------------------------------
+
 
 @app.route('/site/pages/admin/signin', methods=['GET'])
 def admin_signin():
@@ -332,6 +344,7 @@ def admin_landing_run():
     return make_response(html)
 # -----------------------------------------------------------------------
 
+
 @app.route('/site/pages/admin/landing/clearall', methods=['GET'])
 def admin_landing_clearall():
     username = CASClient().authenticate()
@@ -355,6 +368,7 @@ def admin_landing_clearone():
 
 # https://copyninja.info/blog/using-url-for-in-flask.html
 # ^ for serving static pages
+
 
 # -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,
