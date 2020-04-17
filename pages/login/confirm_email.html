@@ -1,75 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-<head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+		<title>Alumni Hub</title>
 
-	<title>Alumni Hub</title>
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<!-- Custom styles for this page -->
+		<link href="/static/css/navbar.css" rel="stylesheet">
+	</head>
 
-	<!-- Custom styles for this page -->
-	<link href="/static/css/navbar.css" rel="stylesheet">
-</head>
+	<body class="d-flex flex-column h-100" onload="update_majors()">
+		{% include 'pages/hubheader.html' %}
 
-<body class="d-flex flex-column h-100" onload="update_majors(); update_careers();">
-	{% include 'pages/hubheader.html' %}
+		<!-- Begin page content -->
+		<main role="main" class="flex-shrink-0">
+			<div class="container">
+				<strong>{{errormsg}}</strong>
+				<p> Email confirmed! </p>
+			</div>
+		</main>
 
-	<!-- Begin page content -->
-	<main role="main" class="flex-shrink-0">
-		<div class="container">
-			{% if matched: %}
-			<p>You have been matched with {{matchfirstname}} {{matchlastname}}!</p>
-			<p>Please reach out to them at <a href="{{matchemail}}">{{matchemail}}</a></p>
-			{% else: %}
-			<br />
-			<h1>Alumni Info</h1>
-			<p>Update your info with the desired data and press Submit.</p>
-			<br />
-			<form method="POST" action="#">
-				<label for="firstname">First Name</label>
-				<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" value="{{firstname}}"
-					required>
-				<br />
-				<label for="lastname">Last Name</label>
-				<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" value="{{lastname}}"
-					required>
-				<br />
-				<label for="email">Email</label>
-				<input class="form-control mr-sm-2" type="text" id="email" name="email" value="{{email}}" required>
-				<br />
-				<label for="major">Major</label>
-				<select class="form-control mr-sm-2" id="major" name="major" required>
-					<option value="{{major}}" selected hidden>{{major}}</option>
-				</select>
-				<br />
-				<label for="career">Career Field</label>
-				<!-- Changed id from field to career -->
-				<select class="form-control mr-sm-2" id="career" name="career" required>
-					<option value="{{career}}" selected hidden>{{career}}</option>
-				</select>
-				<br />
-				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
-			</form>
-			{% endif %}
-		</div>
-	</main>
-
-	<script src="/static/js/majors.js"></script>
-	<script src="/static/js/careers.js"></script>
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
-	<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
-	<script src="/static/js/bootstrap.bundle.min.js"
-		integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-		crossorigin="anonymous"></script>
-</body>
-
+		<script src="/static/js/majors.js"></script>
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/static/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+	</body>
 </html>
