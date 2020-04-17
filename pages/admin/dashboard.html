@@ -28,21 +28,24 @@
                     <tr>
                         <th>Student</th>
                         <th>Alum</th>
+                        <th>Modify</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Student</th>
                         <th>Alum</th>
+                        <th>Modify</th>
                     </tr>
                 </tfoot>
                 <tbody>
                     {% for match in matches: %}
                     <tr>
-                        <td><a
-                                href='{{url_for('.admin_dashboard_clearone', student=match[0], alum=match[1])}}'>{{match[0]}}</a>
-                        </td>
-                        <td>{{match[1]}}</td>
+                        <td><a href='{{url_for('.admin_profile_student', netid=match[0])}}'>{{match[0]}}</a></td>
+                        <td><a href='{{url_for('.admin_profile_alum', email=match[1])}}'>{{match[1]}}</a></td>
+                        <td><a href='
+                            {{url_for('.admin_dashboard_clearone', student=match[0], alum=match[1])}}'>Delete
+                                Match</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -56,7 +59,3 @@
 </div>
 {% endblock %}
 {% block dashboard %}active{% endblock %}
-{% block modify_matches %}{% endblock %}
-{% block unmatched_students %}{% endblock %}
-{% block unmatched_alumni %}{% endblock %}
-{% block match_statistics %}{% endblock %}

@@ -18,7 +18,7 @@
 	<link href="/static/css/navbar.css" rel="stylesheet">
 </head>
 
-<body class="d-flex flex-column h-100" onload="update_majors()">
+<body class="d-flex flex-column h-100" onload="update_majors(); update_careers();">
 	{% include 'pages/hubheader.html' %}
 
 	<!-- Begin page content -->
@@ -26,7 +26,7 @@
 		<div class="container">
 			{% if matched: %}
 			<p>You have been matched with {{matchname}}!</p>
-			<p>Please reach out to them at <a href="{{matchemail}}">{{matchemail}}</a></p>
+			<p>Please reach out to them at <a href="mailto:{{matchemail}}">{{matchemail}}</a></p>
 			{% else: %}
 			<br />
 			<h1>Student Info</h1>
@@ -50,12 +50,8 @@
 				</select>
 				<br />
 				<label for="career">Desired Career Field</label>
-				<!-- Changed id from field to career -->
 				<select class="form-control mr-sm-2" id="career" name="career" required>
-					<option value="{{career}}" selected hidden>{{career}}</option>
-					<option value="accounting">Accounting</option>
-					<option value="advertising">Advertising</option>
-					<option value="other">Other</option>
+					<option value="{{major}}" selected hidden>{{career}}</option>
 				</select>
 				<br />
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
@@ -65,6 +61,7 @@
 	</main>
 
 	<script src="/static/js/majors.js"></script>
+	<script src="/static/js/careers.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
 		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
 		crossorigin="anonymous"></script>

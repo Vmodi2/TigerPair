@@ -32,16 +32,19 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
                             Modify matches
                         </a>
+                        <a class="nav-link {% block manual_match %}{% endblock %}" href="/admin/manual-match">
+                            <div class="sb-nav-link-icon"><i class="fas fa-pencil-alt"></i></div>
+                            Manual match
+                        </a>
                         <div class="sb-sidenav-menu-heading">Students</div>
-                        <a class="nav-link {% block unmatched_students %}{% endblock %}"
-                            href="/admin/unmatched-students">
-                            <div class="sb-nav-link-icon"><i class="fas fa-child"></i></div>
-                            Unmatched students
+                        <a class="nav-link {% block profiles_student %}{% endblock %}" href="/admin/profiles-student">
+                            <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
+                            Student profiles
                         </a>
                         <div class="sb-sidenav-menu-heading">Alumni</div>
-                        <a class="nav-link {% block unmatched_alumni %}{% endblock %}" href="/admin/unmatched-alumni">
-                            <div class="sb-nav-link-icon"><i class="fas fa-user-graduate"></i></div>
-                            Unmatched alumni
+                        <a class="nav-link {% block profiles_alum %}{% endblock %}" href="/admin/profiles-alum">
+                            <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
+                            Alum profiles
                         </a>
                         <div class="sb-sidenav-menu-heading">Statistics</div>
                         <a class="nav-link {% block match_statistics %}{% endblock %}" href="/admin/match-statistics">
@@ -86,6 +89,7 @@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
     <script src="/static/assets/demo/datatables-demo.js"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>

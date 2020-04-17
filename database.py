@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from config import db
 
+
 class students(db.Model):
     __tablename__ = 'students'
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
@@ -25,12 +26,14 @@ class students(db.Model):
 
     # maybe change unicode to string
 
-class alumni(db.Model): 
+
+class alumni(db.Model):
     __tablename__ = 'alumni'
     # alumid = db.Column('alumid', db.Unicode, primary_key=True)
     aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
     aluminfonamelast = db.Column('aluminfonamelast', db.Unicode)
-    aluminfoemail = db.Column('aluminfoemail', db.Unicode, primary_key=True, nullable=False)
+    aluminfoemail = db.Column(
+        'aluminfoemail', db.Unicode, primary_key=True, nullable=False)
     alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
     alumcareerfield = db.Column('alumcareerfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
@@ -40,7 +43,7 @@ class alumni(db.Model):
     authenticated = False
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
-                 alumacademicsmajor, alumcareerfield, username, password, 
+                 alumacademicsmajor, alumcareerfield, username, password,
                  matched, email_confirmed):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast

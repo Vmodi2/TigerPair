@@ -1,13 +1,13 @@
 function update_careers() {
-	careers = ["Accounting", "Advertising", "Architecture/Planning", "Building/Construction", "Consulting", 
-	"Energy", "Engr.-Chemical", "Engr.-Civil", "Engr.-Electrical", "Engr.-Mech./AerospaceEngr.", 
-	"Engr-Other", "Environmental Affairs", "Finance", "Health-Care"];
+	careers = ["Accounting", "Advertising", "Architecture/Planning", "Building/Construction", "Consulting",
+		"Energy", "Engr.-Chemical", "Engr.-Civil", "Engr.-Electrical", "Engr.-Mech./AerospaceEngr.",
+		"Engr-Other", "Environmental Affairs", "Finance", "Health care"];
 
-	career_string = document.getElementById("career").innerHTML;
+	career_menu = document.getElementById("career");
 	for (var i = 0; i < careers.length; i++) {
-		career = careers[i];
-		career_string += '<option value="' + career + '">' + career + '</option>';
+		option = document.createElement("option");
+		option.value = careers[i];
+		option.innerHTML = careers[i];
+		career_menu.appendChild(option);
 	}
-
-	document.getElementById("career").innerHTML = career_string;
 }

@@ -13,7 +13,7 @@ from itsdangerous import SignatureExpired
 from CASClient import CASClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, matches
-from stable_marriage import get_matches, create_new_matches, clear_matches, clear_match
+from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
 
@@ -53,7 +53,7 @@ def logout():
 
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
-@app.route('/site/pages/student/', methods=['POST', 'GET'])
+@app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_info():
 
     username = CASClient().authenticate()
@@ -80,7 +80,7 @@ def student_info():
 
     if firstname is None:
         if current is not None:
-            html = render_template('/site/pages/student/index.html',
+            html = render_template('pages/student/dashboard.html',
                                    firstname=current.studentinfonamefirst,
                                    lastname=current.studentinfonamelast,
                                    email=current.studentinfoemail,
@@ -92,7 +92,7 @@ def student_info():
                                    matchemail=matchemail)
 
         else:
-            html = render_template('/site/pages/student/index.html', firstname="",
+            html = render_template('pages/student/dashboard.html', firstname="",
                                    lastname="", email="", major="",
                                    career="", side="Student", matched=matched,
                                    username=username,
@@ -114,7 +114,7 @@ def student_info():
             db.session.add(new_student)
             db.session.commit()
 
-        html = render_template('/site/pages/student/index.html',
+        html = render_template('pages/student/dashboard.html',
                                firstname=firstname,
                                lastname=lastname,
                                email=email,
@@ -130,8 +130,8 @@ def student_info():
 
 # -----------------------------------------------------------------------
 
-# Dynamic page function for student info page call
-@app.route('/site/pages/alumni/', methods=['POST', 'GET'])
+
+@app.route('/alum/dashboard', methods=['POST', 'GET'])
 @login_required
 def alumni_info():
     html = ''
@@ -164,7 +164,7 @@ def alumni_info():
             current_user.alumacademicsmajor = major.upper()
             current_user.alumcareerfield = career
             db.session.commit()
-            html = render_template('/site/pages/alumni/index.html', firstname=firstname,
+            html = render_template('pages/alum/dashboard.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major.upper(),
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
@@ -182,7 +182,7 @@ def alumni_info():
             career = current_user.alumcareerfield
             career = "" if career is None else career
 
-            html = render_template('/site/pages/alumni/index.html', firstname=firstname,
+            html = render_template('pages/alum/dashboard.html', firstname=firstname,
                                    lastname=lastname, email=email, major=major,
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
@@ -213,7 +213,7 @@ def confirm_email(token):
     db.session.commit()
 
     html = render_template(
-        '/site/pages/login/confirm_email.html', errormsg=errormsg)
+        'pages/login/confirm_email.html', errormsg=errormsg)
     return make_response(html)
     # add a button in confirm_email that redirects them to login
 
@@ -225,18 +225,18 @@ def confirm_email(token):
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('/site/index.html')
+    html = render_template('pages/index.html')
     return make_response(html)
 
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
-@app.route('/site/pages/signin/', methods=['GET'])
+@app.route('/signin', methods=['GET'])
 def matching():
-    html = render_template('/site/pages/signin/index.html')
+    html = render_template('pages/signin/index.html')
     return make_response(html)
 
 
-@app.route('/site/pages/login/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
 
     if current_user.is_authenticated:
@@ -257,18 +257,18 @@ def login():
         else:
             flash("Invalid username or password")
 
-    html = render_template('/site/pages/login/login.html', form=form)
+    html = render_template('pages/login/login.html', form=form)
     return make_response(html)
 
 # -----------------------------------------------------------------------
 
 
-@app.route('/site/pages/login/gotoemail', methods=['GET', 'POST'])
+@app.route('/login/gotoemail', methods=['GET', 'POST'])
 def gotoemail():
-    return render_template('/site/pages/login/gotoemail.html')
+    return render_template('pages/login/gotoemail.html')
 
 
-@app.route('/site/pages/login/signup', methods=['GET', 'POST'])
+@app.route('/login/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
 
@@ -302,72 +302,136 @@ def signup():
         flash('A user already exists with that email address.')
 
     # WE NEED TO CREATE SIGNUP.HTML
-    return render_template('/site/pages/login/signup.html', form=form)
+    return render_template('pages/login/signup.html', form=form)
 
 # -----------------------------------------------------------------------
-
-
-@app.route('/site/pages/admin/signin', methods=['GET'])
-def admin_signin():
+@app.route('/admin/dashboard', methods=['GET'])
+def admin_dashboard():
     username = CASClient().authenticate()
-    html = render_template('/site/pages/admin/signin.html', side='Admin')
-    return make_response(html)
-
-# -----------------------------------------------------------------------
-@app.route('/site/pages/admin/register', methods=['GET'])
-def admin_register():
-    username = CASClient().authenticate()
-    html = render_template('/site/pages/admin/register.html', side='Admin')
-    return make_response(html)
-
-# -----------------------------------------------------------------------
-@app.route('/site/pages/admin/landing', methods=['GET'])
-def admin_landing():
-    username = CASClient().authenticate()
-    matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/landing.html', matches=matches,
-                           unmatched_alumni=unmatched_alumni,
-                           unmatched_students=unmatched_students,
+    matches = get_matches()
+    html = render_template('pages/admin/dashboard.html', matches=matches,
                            side='Admin')
     return make_response(html)
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
-@app.route('/site/pages/admin/landing/run', methods=['GET'])
-def admin_landing_run():
+@app.route('/admin/dashboard/create', methods=['GET'])
+def admin_dashboard_create():
     username = CASClient().authenticate()
     create_new_matches()
-    matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/landing.html', matches=matches,
-                           unmatched_alumni=unmatched_alumni,
-                           unmatched_students=unmatched_students,
+    matches = get_matches()
+    html = render_template('pages/admin/dashboard.html', matches=matches,
                            side='Admin')
     return make_response(html)
 # -----------------------------------------------------------------------
 
 
-@app.route('/site/pages/admin/landing/clearall', methods=['GET'])
-def admin_landing_clearall():
+@app.route('/admin/modify-matches', methods=['GET'])
+def admin_dashboard_modify_matches():
+    username = CASClient().authenticate()
+    html = render_template('pages/admin/modify-matches.html', side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/dashboard/clearall', methods=['GET'])
+def admin_dashboard_clearall():
     username = CASClient().authenticate()
     clear_matches()
-    matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/landing.html', matches=None,
-                           unmatched_alumni=unmatched_alumni, unmatched_students=unmatched_students, side='Admin')
-    return make_response(html)
-
-# -----------------------------------------------------------------------
-@app.route('/site/pages/admin/landing/clearone', methods=['GET'])
-def admin_landing_clearone():
-    username = CASClient().authenticate()
-    clear_match(request.args.get('student'), request.args.get('alum'))
-    matches, unmatched_alumni, unmatched_students = get_matches()
-    html = render_template('/site/pages/admin/landing.html', matches=matches,
-                           unmatched_alumni=unmatched_alumni,
-                           unmatched_students=unmatched_students,
+    matches = None
+    html = render_template('pages/admin/dashboard.html', matches=matches,
                            side='Admin')
     return make_response(html)
 
-# https://copyninja.info/blog/using-url-for-in-flask.html
-# ^ for serving static pages
+# -----------------------------------------------------------------------
+@app.route('/admin/dashboard/clearone', methods=['GET'])
+def admin_dashboard_clearone():
+    username = CASClient().authenticate()
+    print(request.args.get('student'))
+    print(request.args.get('alum'))
+    clear_match(request.args.get('student'), request.args.get('alum'))
+    matches = get_matches()
+    html = render_template('pages/admin/dashboard.html', matches=matches,
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/manual-match', methods=['GET'])
+def admin_dashboard_manual_match():
+    username = CASClient().authenticate()
+    alumni = get_unmatched_alumni()
+    students = get_unmatched_students()
+    html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
+def admin_dashboard_createone():
+    username = CASClient().authenticate()
+    create_one(request.form.get('student'), request.form.get('alum'))
+    matches = get_matches()
+    html = render_template('pages/admin/dashboard.html', matches=matches,
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/profiles-alum')
+def admin_profiles_alum():
+    username = CASClient().authenticate()
+    alumni = get_alumni()
+    html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
+                           side='Admin')
+    return make_response(html)
+
+# SINGLE alum profile page
+@app.route('/admin/profile-alum')
+def admin_profile_alum():
+    username = CASClient().authenticate()
+    alum, matches = get_alum(request.args['email'])
+    html = render_template('pages/admin/profile-alum.html',
+                           alum=alum, matches=matches,
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/profiles-student')
+def admin_profiles_student():
+    username = CASClient().authenticate()
+    students = get_students()
+    html = render_template(
+        'pages/admin/profiles-student.html', students=students,
+        side='Admin')
+    return make_response(html)
+
+# SINGLE student profile page
+@app.route('/admin/profile-student')
+def admin_profile_student():
+    username = CASClient().authenticate()
+    student, matches = get_student(request.args['netid'])
+    html = render_template('pages/admin/profile-student.html',
+                           student=student, matches=matches,
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/match-statistics', methods=['GET'])
+def admin_match_statistics():
+    username = CASClient().authenticate()
+    html = render_template('pages/admin/match-statistics.html',
+                           side='Admin')
+    return make_response(html)
+
+
+@app.route('/admin/get-registrations', methods=['GET'])
+def admin_get_registrations():
+    username = CASClient().authenticate()
+    registrations = db.engine.execute(
+        "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
+    html = ''
+    for row in registrations:
+        html += str(row) + ';'
+    print(html)
+    response = make_response(html)
+    return response
 
 
 # -----------------------------------------------------------------------

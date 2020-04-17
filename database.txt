@@ -1,0 +1,34 @@
+CREATE TABLE alumni (
+  id serial,
+  aluminfonamefirst varchar(20),
+  aluminfonamelast varchar(20),
+  aluminfoemail varchar(40),
+  alumacademicsmajor varchar(3),
+  alumcareerfield varchar(30),
+  username varchar(30),
+  password varchar(255),
+  email_confirmed smallint,
+  matched smallint default null,
+  date_created date default now(),
+  primary key (id)
+);
+
+CREATE TABLE matches (
+  studentid varchar(20),
+  aluminfoemail varchar(40),
+  date_created date default now(),
+  primary key (studentid)
+);
+
+CREATE TABLE students (
+  studentid varchar(20),
+  studentinfonamefirst varchar(20),
+  studentinfonamelast varchar(20),
+  studentinfoemail varchar(40),
+  studentacademicsmajor varchar(3),
+  studentcareerdesiredfield varchar(30),
+  matched smallint default null,
+  id serial,
+  date_created date default now(),
+  primary key (id)
+);
