@@ -74,7 +74,7 @@ def student_info():
 
     attribute = 0 if current is None else current.matched
 
-    matched = False if attribute == 0 else True
+    matched = False if attribute <= 0 else True
     matchfirstname = ''
     matchlastname = ''
     matchemail = ''
@@ -147,7 +147,7 @@ def alumni_info():
 
         # THIS ASSUMES THERE IS ONLY ONE MATCH FOR EACH ALUM. THIS WILL
         # FAIL OTHERWISE.
-        matched = False if current_user.matched == 0 else True
+        matched = False if current_user.matched <= 0 else True
         matchfirstname = ''
         matchlastname = ''
         matchemail = ''
