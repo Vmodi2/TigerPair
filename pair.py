@@ -55,8 +55,7 @@ def logout():
 # Dynamic page function for student info page call
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_info():
-
-    username = CASClient().authenticate()
+    username = CASClient().authenticate().replace('\n', '')
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
@@ -345,8 +344,6 @@ def admin_dashboard_clearall():
 @app.route('/admin/dashboard/clearone', methods=['GET'])
 def admin_dashboard_clearone():
     username = CASClient().authenticate()
-    print(request.args.get('student'))
-    print(request.args.get('alum'))
     clear_match(request.args.get('student'), request.args.get('alum'))
     matches = get_matches()
     html = render_template('pages/admin/dashboard.html', matches=matches,
@@ -424,8 +421,7 @@ def admin_match_statistics():
 @app.route('/admin/get-registrations', methods=['GET'])
 def admin_get_registrations():
     username = CASClient().authenticate()
-    registrations = db.engine.execute(
-        "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
+    registrations = db.engine.execute("SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
     html = ''
     for row in registrations:
         html += str(row) + ';'

@@ -110,13 +110,14 @@ def get_unmatched_alumni():
 
 
 def create_one(studentid, aluminfoemail):
-    students_table.query.filter_by(studentid=studentid).matched = 1
-    alumni_table.query.filter_by(
-        aluminfoemail=aluminfoemail).first().matched += 1
+    students = students_table.query.filter_by(studentid=studentid)
+    for student in students:
+        student.matched = 1
+    alumni_table.query.filter_by(aluminfoemail=aluminfoemail).first().matched += 1
     new_match = matches_table(studentid, aluminfoemail)
     db.session.add(new_match)
     db.session.commit()
-
+    
 
 def clear_matches():
     db.session.query(matches_table).delete()
