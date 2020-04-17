@@ -51,6 +51,13 @@ def logout():
     # DON'T FORGET TO logout from cas as well
     return redirect(url_for("index"))
 
+@app.route("/admin/logout")
+# @login_required <- this makes it redirect to login when student logs out
+def alumn_logout():
+    casClient = CASClient()
+    casClient.authenticate()
+    casClient.logout()
+    return redirect(url_for("index"))
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/student/dashboard', methods=['POST', 'GET'])
