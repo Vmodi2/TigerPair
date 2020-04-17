@@ -76,15 +76,46 @@ def get_matches():
     matches_list = matches_table.query.all()
     matches_list = [(match.studentid, match.aluminfoemail)
                     for match in matches_list]
-
-    unmatched_alumni = alumni_table.query.filter_by(matched=0).all()
-    unmatched_alumni = [alum.aluminfoemail for alum in unmatched_alumni]
-
-    unmatched_students = students_table.query.filter_by(matched=0).all()
-    unmatched_students = [
-        student.studentinfonamefirst for student in unmatched_students]
     db.session.commit()
-    return matches_list, unmatched_alumni, unmatched_students
+    return matches_list
+
+
+def get_alumni():
+    return [alum for alum in alumni_table.query.all()]
+
+
+def get_alum(email):
+    alum = alumni_table.query.filter_by(aluminfoemail=email).first()
+    matches = matches_table.query.filter_by(aluminfoemail=email).all()
+    return alum, matches
+
+
+def get_students():
+    return [student for student in students_table.query.all()]
+
+
+def get_student(netid):
+    student = students_table.query.filter_by(studentid=netid).first()
+    matches = matches_table.query.filter_by(studentid=netid).all()
+    print(matches)
+    return student, matches
+
+
+def get_unmatched_students():
+    return students_table.query.filter_by(matched=0).all()
+
+
+def get_unmatched_alumni():
+    return alumni_table.query.filter_by(matched=0).all()
+
+
+def create_one(studentid, aluminfoemail):
+    students_table.query.filter_by(studentid=studentid).matched = 1
+    alumni_table.query.filter_by(
+        aluminfoemail=aluminfoemail).first().matched += 1
+    new_match = matches_table(studentid, aluminfoemail)
+    db.session.add(new_match)
+    db.session.commit()
 
 
 def clear_matches():
@@ -107,4 +138,5 @@ def clear_match(student, alum):
 
 if __name__ == '__main__':
     create_new_matches()
-    print(get_matches())
+    print(get_alumni())
+    print(create_one('barkachi', 'mbarkachi@aol.com'))

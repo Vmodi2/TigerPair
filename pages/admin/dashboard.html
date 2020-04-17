@@ -1,0 +1,61 @@
+{% extends "pages/admin/base.html" %}
+
+{% block content %}
+<h1 class="mt-4">Welcome to your dashboard, [admin_name]</h1>
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-chart-area mr-1"></i>New sign-ups over the
+                past few days</div>
+            <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-chart-bar mr-1"></i>New sign-ups over the past
+                few months</div>
+            <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            {% if matches %}
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Alum</th>
+                        <th>Modify</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Student</th>
+                        <th>Alum</th>
+                        <th>Modify</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for match in matches: %}
+                    <tr>
+                        <td><a href='{{url_for('.admin_profile_student', netid=match[0])}}'>{{match[0]}}</a></td>
+                        <td><a href='{{url_for('.admin_profile_alum', email=match[1])}}'>{{match[1]}}</a></td>
+                        <td><a href='
+                            {{url_for('.admin_dashboard_clearone', student=match[0], alum=match[1])}}'>Delete
+                                Match</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h2>No matches
+            </h2>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block dashboard %}active{% endblock %}

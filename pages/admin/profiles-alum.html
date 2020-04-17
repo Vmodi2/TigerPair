@@ -1,0 +1,48 @@
+{% extends "pages/admin/base.html" %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Major</th>
+                        <th>Career</th>
+                        <th>Matched?</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Major</th>
+                        <th>Career</th>
+                        <th>Matched?</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for alum in alumni: %}
+                    <tr {% if alum.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
+                        <td>{{alum.aluminfonamefirst}}</td>
+                        <td>{{alum.aluminfonamelast}}</td>
+                        <td>{{alum.aluminfoemail}}</td>
+                        <td>{{alum.alumacademicsmajor}}</td>
+                        <td>{{alum.alumcareerfield}}</td>
+                        <td>{% if alum.matched==1 %}Yes{% else %}No{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block profiles_alum %}active{% endblock %}

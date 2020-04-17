@@ -1,0 +1,39 @@
+{% extends "pages/admin/base.html" %}
+
+{% block content %}
+<h1 class="mt-4">Create a manual match</h1>
+<form action="/admin/dashboard/createone" id="manual-match-form" method="post">
+    <select class="custom-select custom-select-lg mb-3" id="student-select" name="student">
+        <option selected>Select a student</option>
+        {% if students %}
+        {% for student in students %}
+        <option value="{{student.studentid}}">{{student.studentid}}</option>
+        {% endfor %}
+        {% endif %}
+    </select>
+    <select class="custom-select custom-select-lg mb-3" id="alum-select" name="alum">
+        <option selected>Select an alum</option>
+        {% if alumni %}
+        {% for alum in alumni %}
+        <option value="{{alum.aluminfoemail}}">{{alum.aluminfoemail}}</option>
+        {% endfor %}
+        {% endif %}
+    </select>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}
+{% block manual_match %}active{% endblock %}
+{% block extra_scripts %}
+<script>
+    $('#manual-match-form').submit(function () {
+        if ($('#student-select').val() != 'Select a student' && $('#alum-select').val() != 'Select an alum') {  //Check the value of select
+            return true; //allow to submit the form
+        }
+        else {
+            alert("Both a student and alum must be selected");
+            return false;  //Prevent form being submitted
+        }
+    });
+</script>
+{% endblock %}
