@@ -55,7 +55,7 @@ def logout():
 # @login_required <- this makes it redirect to login when student logs out
 def alumn_logout():
     casClient = CASClient()
-    casClient.authenticate()
+    # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
 # -----------------------------------------------------------------------
