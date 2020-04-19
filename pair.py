@@ -16,6 +16,7 @@ from database import students, alumni, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
+from csv import DictReader, reader
 
 # -----------------------------------------------------------------------
 
@@ -51,9 +52,10 @@ def logout():
     # DON'T FORGET TO logout from cas as well
     return redirect(url_for("index"))
 
+
 @app.route("/admin/logout")
 # @login_required <- this makes it redirect to login when student logs out
-def alumn_logout():
+def admin_logout():
     casClient = CASClient()
     # casClient.authenticate()
     casClient.logout()
@@ -317,7 +319,7 @@ def admin_dashboard():
     username = CASClient().authenticate()
     matches = get_matches()
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
@@ -327,7 +329,7 @@ def admin_dashboard_create():
     create_new_matches()
     matches = get_matches()
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 # -----------------------------------------------------------------------
 
@@ -335,7 +337,8 @@ def admin_dashboard_create():
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
     username = CASClient().authenticate()
-    html = render_template('pages/admin/modify-matches.html', side='Admin')
+    html = render_template('pages/admin/modify-matches.html',
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -345,7 +348,7 @@ def admin_dashboard_clearall():
     clear_matches()
     matches = None
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -357,7 +360,7 @@ def admin_dashboard_clearone():
     clear_match(request.args.get('student'), request.args.get('alum'))
     matches = get_matches()
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -367,7 +370,7 @@ def admin_dashboard_manual_match():
     alumni = get_unmatched_alumni()
     students = get_unmatched_students()
     html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -377,7 +380,7 @@ def admin_dashboard_createone():
     create_one(request.form.get('student'), request.form.get('alum'))
     matches = get_matches()
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -386,7 +389,7 @@ def admin_profiles_alum():
     username = CASClient().authenticate()
     alumni = get_alumni()
     html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 # SINGLE alum profile page
@@ -396,7 +399,7 @@ def admin_profile_alum():
     alum, matches = get_alum(request.args['email'])
     html = render_template('pages/admin/profile-alum.html',
                            alum=alum, matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -406,7 +409,7 @@ def admin_profiles_student():
     students = get_students()
     html = render_template(
         'pages/admin/profiles-student.html', students=students,
-        side='Admin')
+        side='Admin', username=username)
     return make_response(html)
 
 # SINGLE student profile page
@@ -416,7 +419,7 @@ def admin_profile_student():
     student, matches = get_student(request.args['netid'])
     html = render_template('pages/admin/profile-student.html',
                            student=student, matches=matches,
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -424,7 +427,7 @@ def admin_profile_student():
 def admin_match_statistics():
     username = CASClient().authenticate()
     html = render_template('pages/admin/match-statistics.html',
-                           side='Admin')
+                           side='Admin', username=username)
     return make_response(html)
 
 
@@ -441,6 +444,54 @@ def admin_get_registrations():
     return response
 
 
+@app.route('/admin/import-students')
+def admin_import_students():
+    username = CASClient().authenticate()
+    html = render_template('pages/admin/import-students.html',
+                           side="Admin", username=username)
+    return make_response(html)
+
+
+@app.route('/admin/import-alumni')
+def admin_import_alumni():
+    username = CASClient().authenticate()
+    html = render_template('pages/admin/import-alumni.html',
+                           side="Admin", username=username)
+    return make_response(html)
+
+
+@app.route('/admin/import-students/process', methods=["POST"])
+def admin_import_students_process():
+    return process_import(is_alumni=False)
+
+
+@app.route('/admin/import-alumni/process', methods=["POST"])
+def admin_import_alumni_process():
+    return process_import(is_alumni=True)
+
+
+def process_import(is_alumni):
+    try:
+        request_file = request.files['data_file']
+        if not request_file:
+            return "No file"
+        csv_reader = DictReader(chunk.decode() for chunk in request_file)
+        if is_alumni:
+            for row in csv_reader:
+                new_alum = alumni(row['First Name'], row['Last Name'],
+                                  row['Email'], row['Major'].upper(), row['Career'], 0)
+                db.session.add(new_alum)
+        else:
+            for row in csv_reader:
+                new_student = students(row['netid'], row['First Name'],
+                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0)
+                db.session.add(new_student)
+        db.session.commit()
+        return make_response("Success processing your upload!")
+    except:
+        return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.")
+
+
 # -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
@@ -448,5 +499,6 @@ if __name__ == '__main__':
     if len(argv) != 2:
         print('Usage: ' + argv[0] + ' port')
         exit(1)
+    # 32 MB maximum in memory reserved for uploads
     app.run(host='0.0.0.0', port=int(argv[1]), debug=True)
     # db = Database(app)

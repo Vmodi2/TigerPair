@@ -41,21 +41,24 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
                             Student profiles
                         </a>
+                        <a class="nav-link {% block import_students %}{% endblock %}" href="/admin/import-students">
+                            <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
+                            Import students
+                        </a>
                         <div class="sb-sidenav-menu-heading">Alumni</div>
                         <a class="nav-link {% block profiles_alum %}{% endblock %}" href="/admin/profiles-alum">
                             <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
                             Alum profiles
                         </a>
-                        <div class="sb-sidenav-menu-heading">Statistics</div>
-                        <a class="nav-link {% block match_statistics %}{% endblock %}" href="/admin/match-statistics">
-                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                            Match statistics
+                        <a class="nav-link {% block import_alumni %}{% endblock %}" href="/admin/import-alumni">
+                            <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
+                            Import alumni
                         </a>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-                    [admin_name]
+                    {{username}}
                 </div>
             </nav>
         </div>

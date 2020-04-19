@@ -25,10 +25,9 @@ def get_ranking(student):
 
 def get_rankings():
     students = [(student.studentid, student.studentacademicsmajor,
-                 student.studentcareerdesiredfield) for student in students_table.query.filter_by(matched=0)]
+                 student.studentcareerdesiredfield) for student in get_unmatched_students()]
     alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
-              for alum in alumni_table.query.filter_by(matched=0)]
-    db.session.commit()
+              for alum in get_unmatched_alumni()]
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -110,7 +109,7 @@ def get_unmatched_alumni():
 
 
 def create_one(studentid, aluminfoemail):
-    students_table.query.filter_by(studentid=studentid).matched = 1
+    students_table.query.filter_by(studentid=studentid).first().matched = 1
     alumni_table.query.filter_by(
         aluminfoemail=aluminfoemail).first().matched += 1
     new_match = matches_table(studentid, aluminfoemail)
@@ -131,12 +130,14 @@ def clear_matches():
 
 def clear_match(student, alum):
     db.session.query(matches_table).filter_by(studentid=student).delete()
-    students_table.query.filter_by(studentid=student).first().matched = 0
-    alumni_table.query.filter_by(aluminfoemail=alum).first().matched -= 1
+    student = students_table.query.filter_by(studentid=student).first()
+    alum = alumni_table.query.filter_by(aluminfoemail=alum).first()
+    assert (student.matched == 1)
+    assert (alum.matched >= 1)
+    student.matched = 0
+    alum.matched -= 1
     db.session.commit()
 
 
 if __name__ == '__main__':
     create_new_matches()
-    print(get_alumni())
-    print(create_one('barkachi', 'mbarkachi@aol.com'))
