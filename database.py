@@ -1,58 +1,78 @@
-#-----------------------------------------------------------------------
-# database.py
-# Modularizes Database connection/execution/disconnection protocol
-#-----------------------------------------------------------------------
-import os
-import MySQLdb
-from sys import argv, stderr, exit
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from config import db
 
-# Self contained DB class to use in any function that must connect
-# to MySQL server
-class Database():
-    def __init__(self):
-        # if not os.path.isfile(DB_NAME):
-        #     raise Exception('Database connection failed')
-        # self._dbname = DB_NAME
-        try:
-            # db = yaml.load(open(self._dbname))
-            # commented out local db details information
-            # self._args = ['localhost', 'TigerPair_dev', 'cos333', 'profiledb']
-            # Experimental remote db details
-            self._args = ['barkachi.mycpanel.princeton.edu', 3306, 'barkachi', 'Lenibac!7952', 'barkachi_site_database']
-        except Exception as e:
-            raise Exception('Configuration failed:', e)
-    # Initialize Connection
-    def connect(self):
-        try:
-            args = self._args
-            self._connection = MySQLdb.connect(host=args[0], port=args[1], user=args[2], passwd=args[3], db=args[4])
-        except Exception as e:
-            raise Exception('Connection failed:', e)
-    # Disconnect (it is client's responsibility to close connection)
-    def disconnect(self):
-        self._connection.close()
-    # Initialize cursor commit, then execute given 
-    # query string that is a "GET" call
-    # meaning client is requesting values from db 
-    def execute_get(self, query_string):
-        try:
-            cursor = self._connection.cursor()
-            cursor.execute(query_string)
-            self._connection.commit()
-            result = cursor.fetchall()
-            cursor.close()
-            return result
-        except:
-            self._connection.rollback()
-    # Initialize cursor commit, then execute given 
-    # query string with input params 
-    # that is a "SET" call
-    # meaning client is updating values in the DB
-    def execute_set(self, query_string, params):
-        try:
-            cursor = self._connection.cursor()
-            cursor.execute(query_string, params)
-            self._connection.commit()
-            cursor.close()
-        except:
-            self._connection.rollback()
+
+class students(db.Model):
+    __tablename__ = 'students'
+    studentid = db.Column('studentid', db.Unicode, primary_key=True)
+    studentinfonamefirst = db.Column('studentinfonamefirst', db.Unicode)
+    studentinfonamelast = db.Column('studentinfonamelast', db.Unicode)
+    studentinfoemail = db.Column('studentinfoemail', db.Unicode)
+    studentacademicsmajor = db.Column('studentacademicsmajor', db.Unicode)
+    studentcareerdesiredfield = db.Column(
+        'studentcareerdesiredfield', db.Unicode)
+    matched = db.Column('matched', db.SmallInteger)
+
+    def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
+                 studentacademicsmajor, studentcareerdesiredfield, matched):
+        self.studentid = studentid
+        self.studentinfonamefirst = studentinfonamefirst
+        self.studentinfonamelast = studentinfonamelast
+        self.studentinfoemail = studentinfoemail
+        self.studentacademicsmajor = studentacademicsmajor
+        self.studentcareerdesiredfield = studentcareerdesiredfield
+        self.matched = matched
+
+    # maybe change unicode to string
+
+
+class alumni(db.Model):
+    __tablename__ = 'alumni'
+    # alumid = db.Column('alumid', db.Unicode, primary_key=True)
+    aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
+    aluminfonamelast = db.Column('aluminfonamelast', db.Unicode)
+    aluminfoemail = db.Column(
+        'aluminfoemail', db.Unicode, primary_key=True, nullable=False)
+    alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
+    alumcareerfield = db.Column('alumcareerfield', db.Unicode)
+    matched = db.Column('matched', db.SmallInteger)
+    username = db.Column('username', db.Unicode)
+    password = db.Column('password', db.Unicode, nullable=False)
+    email_confirmed = db.Column('email_confirmed', db.Boolean)
+    authenticated = False
+
+    def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
+                 alumacademicsmajor, alumcareerfield, username, password,
+                 matched, email_confirmed):
+        self.aluminfonamefirst = aluminfonamefirst
+        self.aluminfonamelast = aluminfonamelast
+        self.aluminfoemail = aluminfoemail
+        self.alumacademicsmajor = alumacademicsmajor
+        self.alumcareerfield = alumcareerfield
+        self.matched = matched
+        self.username = username
+        self.password = password
+        self.email_confirmed = email_confirmed
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_active(self):
+        return self.email_confirmed
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.aluminfoemail
+
+
+class matches(db.Model):
+    __tablename__ = 'matches'
+    studentid = db.Column('studentid', db.Unicode, primary_key=True)
+    aluminfoemail = db.Column('aluminfoemail', db.Unicode)
+
+    def __init__(self, studentid, aluminfoemail):
+        self.studentid = studentid
+        self.aluminfoemail = aluminfoemail

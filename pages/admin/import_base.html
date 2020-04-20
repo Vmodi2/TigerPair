@@ -1,0 +1,22 @@
+{% extends "pages/admin/base.html" %}
+
+{% block content %}
+<h2 class="mt-4">Upload a list of {% block import_side %}{% endblock %} as a .csv file</h2>
+<ul>
+    <li>
+        <h5>Header must include {% block header_info %}{% endblock %}, although the order is not important</h5>
+    </li>
+    <li>
+        <h5>Ensure that major is listed in a three-letter format (e.g. COS or ECO)</h4>
+    </li>
+</ul>
+<br>
+<form action="/admin/import-{{ self.import_side() }}/process" method="post" enctype="multipart/form-data"
+    target="_blank">
+    <input type="file" name="data_file" />
+    <input type="submit" />
+</form>
+
+<br>
+<h6>Note: an Excel or Google Sheets spreadsheet must be saved and uploaded as a CSV file</h6>
+{% endblock %}

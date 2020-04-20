@@ -4,7 +4,9 @@
 # stable_marriage.py
 # -----------------------------------------------------------------------
 
-from database import Database
+from sqlalchemy import update
+from database import students as students_table, alumni as alumni_table, matches as matches_table
+from config import db
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -22,12 +24,10 @@ def get_ranking(student):
 
 
 def get_rankings():
-    db = Database()
-    db.connect()
-    students = db.execute_get(selectall_query(student_list, "students"))
-    alumni = db.execute_get(selectall_query(alum_list, "alumni"))
-    db.disconnect()
-
+    students = [(student.studentid, student.studentacademicsmajor,
+                 student.studentcareerdesiredfield) for student in get_unmatched_students()]
+    alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
+              for alum in get_unmatched_alumni()]
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -46,128 +46,98 @@ def get_rankings():
     return students_alumni
 
 
-def selectall_query(list, table):
-    return f'SELECT {", ".join(list)} FROM {table} WHERE Matched IS NULL'
-
-
 def create_new_matches():
     students_alumni = get_rankings()
     used_alums = set()
     student_alum = {}
 
-    db = Database()
-    db.connect()
-    # can make this much more efficient (LATER) by keeping track of all the values in lists and making database server call only once
     for student in students_alumni:
         for alum, score in students_alumni[student]:
             if alum not in used_alums:
                 used_alums.add(alum)
                 student_alum[student] = alum
 
-                query_string = """
-                INSERT INTO matches
-                VALUES (%s, %s);
-                """
-                db.execute_set(query_string, (student, student_alum[student]))
+                new_match = matches_table(student, student_alum[student])
+                db.session.add(new_match)
 
-                query_string = """
-                UPDATE students
-                SET Matched=True
-                WHERE StudentInfoNameFirst = %s
-                """
-                db.execute_set(query_string, (student,))
+                student = students_table.query.filter_by(
+                    studentid=student).first()
+                student.matched = 1
 
-                query_string = """
-                UPDATE alumni
-                SET Matched=True
-                WHERE AlumInfoNameFirst = %s
-                """
-                db.execute_set(query_string, (student_alum[student],))
-
+                alum = alumni_table.query.filter_by(
+                    aluminfoemail=alum).first()
+                alum.matched += 1
                 break
-    db.disconnect()
+    db.session.commit()
 
 
 def get_matches():
-    db = Database()
-    db.connect()
+    matches_list = matches_table.query.all()
+    matches_list = [(match.studentid, match.aluminfoemail)
+                    for match in matches_list]
+    db.session.commit()
+    return matches_list
 
-    query_string = """
-    SELECT *
-    FROM matches
-    """
-    matches = db.execute_get(query_string)
 
-    query_string = """
-    SELECT AlumInfoNameFirst
-    FROM alumni
-    WHERE Matched IS NULL
-    """
-    unmatched_alumni = db.execute_get(query_string)
+def get_alumni():
+    return [alum for alum in alumni_table.query.all()]
 
-    query_string = """
-    SELECT StudentInfoNameFirst
-    FROM students
-    WHERE Matched IS NULL
-    """
-    unmatched_students = db.execute_get(query_string)
-    print(unmatched_students)
 
-    db.disconnect()
-    return matches, unmatched_alumni, unmatched_students
+def get_alum(email):
+    alum = alumni_table.query.filter_by(aluminfoemail=email).first()
+    matches = matches_table.query.filter_by(aluminfoemail=email).all()
+    return alum, matches
+
+
+def get_students():
+    return [student for student in students_table.query.all()]
+
+
+def get_student(netid):
+    student = students_table.query.filter_by(studentid=netid).first()
+    matches = matches_table.query.filter_by(studentid=netid).all()
+    print(matches)
+    return student, matches
+
+
+def get_unmatched_students():
+    return students_table.query.filter_by(matched=0).all()
+
+
+def get_unmatched_alumni():
+    return alumni_table.query.filter_by(matched=0).all()
+
+
+def create_one(studentid, aluminfoemail):
+    students_table.query.filter_by(studentid=studentid).first().matched = 1
+    alumni_table.query.filter_by(
+        aluminfoemail=aluminfoemail).first().matched += 1
+    new_match = matches_table(studentid, aluminfoemail)
+    db.session.add(new_match)
+    db.session.commit()
 
 
 def clear_matches():
-    db = Database()
-    db.connect()
-
-    query_string = """
-    DELETE FROM matches
-    """
-    db.execute_set(query_string, ())
-
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    """
-    db.execute_set(query_string, ())
-
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    """
-    db.execute_set(query_string, ())
-
-    db.disconnect()
+    db.session.query(matches_table).delete()
+    students = students_table.query.all()
+    for student in students:
+        student.matched = 0
+    alumni = alumni_table.query.all()
+    for alum in alumni:
+        alum.matched = 0
+    db.session.commit()
 
 
 def clear_match(student, alum):
-    db = Database()
-    db.connect()
-
-    query_string = """
-    DELETE FROM matches
-    WHERE StudentInfoNameFirst = %s
-    """
-    db.execute_set(query_string, (student,))
-
-    query_string = """
-    UPDATE students
-    SET Matched=NULL
-    WHERE StudentInfoNameFirst = %s
-    """
-    db.execute_set(query_string, (student,))
-
-    query_string = """
-    UPDATE alumni
-    SET Matched=NULL
-    WHERE AlumInfoNameFirst = %s
-    """
-    db.execute_set(query_string, (alum,))
-
-    db.disconnect()
+    db.session.query(matches_table).filter_by(studentid=student).delete()
+    student = students_table.query.filter_by(studentid=student).first()
+    alum = alumni_table.query.filter_by(aluminfoemail=alum).first()
+    assert (student.matched == 1)
+    assert (alum.matched >= 1)
+    student.matched = 0
+    alum.matched -= 1
+    db.session.commit()
 
 
 if __name__ == '__main__':
     create_new_matches()
-    print(get_matches()[0])
