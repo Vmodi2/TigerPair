@@ -7,10 +7,48 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarCollapse">
-			<span class="navbar-nav mr-auto"></span>
-
-			<button class="btn btn-outline-success my-2 my-sm-0" onclick="window.location.href = '/logout';">Sign
-				Out</button>
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item{% if matched == False or showInfo: %} active{% endif %}">
+					<a class="nav-link" id="infolink" href="#" onclick="openInfo(); return false;">Info</a>
+				</li>
+				<li class="nav-item{% if matched and showInfo == False: %} active{% endif %}">
+					<a class="nav-link" id="matchlink" href="#" onclick="openMatches(); return false;">Matches</a>
+				</li>
+			</ul>
+			
+			<button class="btn btn-outline-success my-2 my-sm-0" onclick="window.location.href = '/logout';">Sign Out</button>
 		</div>
 	</nav>
 </header>
+
+<script>
+	function openInfo() {
+		match = document.getElementById("matchinfo");
+		match.style.display = "none";
+		
+		info = document.getElementById("maininfo");
+		info.style.display = "block";
+		
+		tablinks = document.getElementsByClassName("nav-item");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active", "");
+		}
+		
+		document.getElementById("infolink").parentElement.className += " active";
+	}
+	
+	function openMatches() {
+		match = document.getElementById("matchinfo");
+		match.style.display = "block";
+		
+		info = document.getElementById("maininfo");
+		info.style.display = "none";
+		
+		tablinks = document.getElementsByClassName("nav-item");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active", "");
+		}
+		
+		document.getElementById("matchlink").parentElement.className += " active";
+	}
+</script>

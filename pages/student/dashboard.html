@@ -25,42 +25,55 @@
 	<!-- Begin page content -->
 	<main role="main" class="flex-shrink-0">
 		<div class="container">
-			{% if matched: %}
-			<p>You have been matched with {{matchname}}!</p>
-			<p>Please reach out to them at <a href="mailto:{{matchemail}}">{{matchemail}}</a></p>
-			{% else: %}
-			<br />
-			<h1>Student Info</h1>
-			<p>Update your info with the desired data and press Submit.</p>
-			<br />
-			<form method="POST" action="#">
-				<label for="firstname">First Name</label>
-				<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" value="{{firstname}}"
-					required>
+			
+			<!-- Match side -->
+			<span id="matchinfo" {% if matched == False or showInfo: %} style="display:none;" {% endif %} >
+				<br/>
+				{% if matched: %}
+					<p>You have been matched with {{matchname}}!</p>
+					<p>Please reach out to them at <a href="mailto:{{matchemail}}">{{matchemail}}</a></p>
+				{% else: %}
+					<p>You have not been matched yet. Please check back later!</p>
+				{% endif %}
+			</span>
+			
+			<!-- Info side -->
+			<span id="maininfo" {% if matched and showInfo == False: %} style="display:none;" {% endif %} >
 				<br />
-				<label for="lastname">Last Name</label>
-				<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" value="{{lastname}}"
-					required>
+				<h1>Student Info</h1>
+				<p>Update your info with the desired data and press Submit.</p>
 				<br />
-				<label for="email">Email</label>
-				<input class="form-control mr-sm-2" type="text" id="email" name="email" value="{{email}}" required>
-				<br />
-				<label for="major">Major</label>
-				<select class="form-control mr-sm-2" id="major" name="major" required>
-					<option value="{{major}}" selected hidden>{{major}}</option>
-				</select>
-				<br />
-				<label for="career">Desired Career Field</label>
-				<select class="form-control mr-sm-2" id="career" name="career" required>
-					<option value="{{career}}" selected hidden>{{career}}</option>
-				</select>
-				<br />
-				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
-			</form>
-			{% endif %}
+				<form method="POST" action="#">
+					<label for="firstname">First Name</label>
+					<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname" value="{{firstname}}"
+						required readonly>
+					<br />
+					<label for="lastname">Last Name</label>
+					<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname" value="{{lastname}}"
+						required readonly>
+					<br />
+					<label for="email">Email</label>
+					<input class="form-control mr-sm-2" type="text" id="email" name="email" value="{{email}}" required readonly>
+					<br />
+					<label for="major">Major</label>
+					<select class="form-control mr-sm-2" id="major" name="major" required disabled>
+						<option value="{{major}}" selected hidden>{{major}}</option>
+					</select>
+					<br />
+					<label for="career">Desired Career Field</label>
+					<select class="form-control mr-sm-2" id="career" name="career" required disabled>
+						<option value="{{career}}" selected hidden>{{career}}</option>
+					</select>
+					<br />
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="submit" hidden>Submit</button>
+				</form>
+				<button class="btn btn-outline-success my-2 my-sm-0" onclick="edit()" id="edit">&nbsp;Edit&nbsp;</button>
+			</span>
+			
 		</div>
 	</main>
-
+	
+	<script src="/static/js/edit_button.js"></script>	
 	<script src="/static/js/majors.js"></script>
 	<script src="/static/js/careers.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
