@@ -5,47 +5,126 @@
   
   body {
     background: #ffa600;
-    background: url("../images/bg-pattern.png"), linear-gradient(to right, rgb(190, 117, 69), #cf722a);
+    /* background: url("../images/bg-pattern.png"), linear-gradient(to right, rgb(190, 117, 69), #cf722a); */
+    background: url(../images/morrison_hall.jpg)
   }
   
   .card-signin {
     border: 0;
-    border-radius: 1rem;
+    /* border-radius: 1rem; */
     box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
   }
   
   .card-signin .card-title {
     margin-bottom: 2rem;
+    display: inline-block;
+    font-family: "montserrat-regular", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .2rem;
+    height: 5.4rem;
     font-weight: 300;
     font-size: 3rem;
   }
   
   .card-signin .card-body {
     display: none;
-    padding: 2rem;
+    padding: 4rem;
   }
   
   .form-signin {
     width: 100%;
   }
   
-  .form-signin .btn {
+  .form-control {
+    font-size: 1.3rem;
+  }
+  /* .form-signin .btn {
     font-size: 80%;
     border-radius: 5rem;
     letter-spacing: .1rem;
     font-weight: bold;
     padding: 1rem;
-    transition: all 0.2s;
-  }
+    transition: all 0.2s; */
+  /* } */
+/* button 
+ * ------------------------------------------------- */
+
+.btn,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+    display: inline-block;
+    font-family: "montserrat-medium", sans-serif;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: .3rem;
+    height: 5.4rem;
+    line-height: calc(5.4rem - .4rem);
+    padding: 0 7rem;
+    margin: 0 .3rem 1.2rem 0;
+    color: #000000;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color: #c5c5c5;
+    border: .2rem solid #c5c5c5;
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.btn:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+    background-color: #b8b8b8;
+    border-color: #b8b8b8;
+    color: #000000;
+    outline: 0;
+}
+/* button primary
+ * ------------------------------------------------- */
+
+  .btn.btn--primary,
+button.btn--primary,
+input[type="submit"].btn--primary,
+input[type="reset"].btn--primary,
+input[type="button"].btn--primary {
+    background: #cf722a;
+    border-color: #cf722a;
+    color: #FFFFFF;
+}
+
+.btn.btn--primary:hover,
+button.btn--primary:hover,
+input[type="submit"].btn--primary:hover,
+input[type="reset"].btn--primary:hover,
+input[type="button"].btn--primary:hover,
+.btn.btn--primary:focus,
+button.btn--primary:focus,
+input[type="submit"].btn--primary:focus,
+input[type="reset"].btn--primary:focus,
+input[type="button"].btn--primary:focus {
+    background: #33a242;
+    border-color: #33a242;
+}
   
   .form-label-group {
-    /* position: relative; */
-    margin-bottom: 1rem;
+
+    position: relative;
+    margin-bottom: 2rem;
   }
   
   .form-label-group input {
-    /* height: auto; */
-    border-radius: 2rem;
+    height: auto;
+    /* border-radius: 2rem; */
   }
   
   .form-label-group>input,
