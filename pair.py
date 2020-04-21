@@ -306,11 +306,10 @@ def signup():
             db.session.add(user)
             db.session.commit()  # Create new user
 
-            return redirect(url_for('gotoemail'), code=400)
+            return redirect(url_for('gotoemail'))
 
         flash('A user already exists with that email address.')
 
-    # WE NEED TO CREATE SIGNUP.HTML
     return render_template('pages/login/signup.html', form=form)
 
 # -----------------------------------------------------------------------

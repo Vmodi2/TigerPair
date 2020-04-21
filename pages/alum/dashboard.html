@@ -27,6 +27,7 @@
 		
 			<!-- Match side -->
 			<span id="matchinfo" {% if matched == False or showInfo: %} style="display:none;" {% endif %} >
+				<br/>
 				{% if matched: %}
 					<p>You have been matched with {{matchname}}!</p>
 					<p>Please reach out to them at <a href="mailto:{{matchemail}}">{{matchemail}}</a></p>
