@@ -8,10 +8,10 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarCollapse">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item{% if matched == False: %} active{% endif %}">
+				<li class="nav-item{% if matched == False or showInfo: %} active{% endif %}">
 					<a class="nav-link" id="infolink" href="#" onclick="openInfo(); return false;">Info</a>
 				</li>
-				<li class="nav-item{% if matched: %} active{% endif %}">
+				<li class="nav-item{% if matched and showInfo == False: %} active{% endif %}">
 					<a class="nav-link" id="matchlink" href="#" onclick="openMatches(); return false;">Matches</a>
 				</li>
 			</ul>
