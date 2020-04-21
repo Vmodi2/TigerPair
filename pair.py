@@ -98,7 +98,7 @@ def student_info():
                                    side="Student", matched=matched, username=username,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail=matchemail)
+                                   matchemail=matchemail, showInfo=False)
 
         else:
             html = render_template('pages/student/dashboard.html', firstname="",
@@ -107,7 +107,7 @@ def student_info():
                                    username=username,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail=matchemail)
+                                   matchemail=matchemail, showInfo=False)
     else:
 
         if current is not None:  # Update row if student is not new
@@ -133,7 +133,7 @@ def student_info():
                                username=username,
                                matchfirstname=matchfirstname,
                                matchlastname=matchlastname,
-                               matchemail=matchemail)
+                               matchemail=matchemail, showInfo=True)
 
     return make_response(html)
 
@@ -178,7 +178,7 @@ def alumni_info():
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail=matchemail)
+                                   matchemail=matchemail, showInfo=True)
         else:
             firstname = current_user.aluminfonamefirst
             firstname = "" if firstname is None else firstname
@@ -196,7 +196,7 @@ def alumni_info():
                                    career=career, side="Alumni", matched=matched,
                                    matchfirstname=matchfirstname,
                                    matchlastname=matchlastname,
-                                   matchemail=matchemail)
+                                   matchemail=matchemail, showInfo=False)
     else:
         return redirect(url_for('login'))
 
@@ -306,11 +306,10 @@ def signup():
             db.session.add(user)
             db.session.commit()  # Create new user
 
-            return redirect(url_for('gotoemail'), code=400)
+            return redirect(url_for('gotoemail'))
 
         flash('A user already exists with that email address.')
 
-    # WE NEED TO CREATE SIGNUP.HTML
     return render_template('pages/login/signup.html', form=form)
 
 # -----------------------------------------------------------------------
