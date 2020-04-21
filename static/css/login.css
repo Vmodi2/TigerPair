@@ -4,8 +4,8 @@
   }
   
   body {
-    background: #007bff;
-    background: linear-gradient(to right, rgb(230, 111, 0), #33AEFF);
+    background: #ffa600;
+    background: url("../images/bg-pattern.png"), linear-gradient(to right, rgb(190, 117, 69), #cf722a);
   }
   
   .card-signin {
@@ -17,10 +17,11 @@
   .card-signin .card-title {
     margin-bottom: 2rem;
     font-weight: 300;
-    font-size: 1.5rem;
+    font-size: 3rem;
   }
   
   .card-signin .card-body {
+    display: none;
     padding: 2rem;
   }
   
@@ -38,12 +39,12 @@
   }
   
   .form-label-group {
-    position: relative;
+    /* position: relative; */
     margin-bottom: 1rem;
   }
   
   .form-label-group input {
-    height: auto;
+    /* height: auto; */
     border-radius: 2rem;
   }
   
@@ -87,16 +88,21 @@
     color: transparent;
   }
   
-  .form-label-group input:not(:placeholder-shown) {
+  /* .form-label-group input:not(:placeholder-shown) {
     padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
     padding-bottom: calc(var(--input-padding-y) / 3);
-  }
+  } */
   
-  .form-label-group input:not(:placeholder-shown)~label {
+  /* .form-label-group input:not(:placeholder-shown)~label {
     padding-top: calc(var(--input-padding-y) / 3);
     padding-bottom: calc(var(--input-padding-y) / 3);
     font-size: 12px;
     color: #777;
+  } */
+
+  .btn-sign{
+    color: white;
+    background-color: #838383;
   }
   
   .btn-google {
