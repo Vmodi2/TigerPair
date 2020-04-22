@@ -1,4 +1,4 @@
-# 333Project
+# TigerPair- Alumni Mentorship Made Simple!
 Project Group Repo for COS 333
 Goals for this week:
 Functional Frontend - Daniel
