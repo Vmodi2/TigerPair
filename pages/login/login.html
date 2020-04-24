@@ -29,7 +29,9 @@ Login
           <h5 class="card-title text-center"><strong>Sign In</strong></h5>
             <form class="form-signin" method="POST" action="#">
               {{ form.hidden_tag() }}
-    
+
+              {% include '/pages/login/flasherror.html' %}
+
               <div class="form-label-group">
                 <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
                 {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
@@ -42,6 +44,7 @@ Login
               </div>
               <center>
                 <p>Don't have an account? <a id ="signup" href="login/signup">Sign up!</a></p>
+                <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>
               </center>
               <div class="custom-control custom-checkbox mb-3">
                 <input type="checkbox" class="custom-control-input" id="customCheck1">
@@ -58,13 +61,13 @@ Login
       </div>
     </div>
   <!-- /container -->
-</div>  
+</div>
 <script>
-  
+
   $( document ).ready(function() {
-    
+
               $(".card-body").slideDown();
-    
+
 });
 
   </script>

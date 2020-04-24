@@ -68,6 +68,7 @@ class alumni(db.Model):
         return self.aluminfoemail
 
 
+
 class matches(db.Model):
     __tablename__ = 'matches'
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
