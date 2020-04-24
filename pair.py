@@ -280,12 +280,15 @@ def gotoemail():
 @app.route('/login/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
-
     if form.validate_on_submit():
         name = form.username.data
+        print("name: ", name)
         email = form.email.data
+        print("email: ", email)
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
+        print("pass: ", hashed_password)
+
         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
         if existing_user is None:
 

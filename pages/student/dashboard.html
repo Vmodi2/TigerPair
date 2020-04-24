@@ -16,6 +16,7 @@
 
 	<!-- Custom styles for this page -->
 	<link href="/static/css/navbar.css" rel="stylesheet">
+	
 </head>
 
 <body class="d-flex flex-column h-100" onload="update_majors(); update_careers();">
@@ -32,15 +33,15 @@
 					<p>You have been matched with {{matchname}}!</p>
 					<p>Please reach out to them at <a href="mailto:{{matchemail}}">{{matchemail}}</a></p>
 				{% else: %}
-					<p>You have not been matched yet. Please check back later!</p>
+					<h3>You have not been matched yet. Please check back later!</h3>
 				{% endif %}
 			</span>
 			
 			<!-- Info side -->
 			<span id="maininfo" {% if matched and showInfo == False: %} style="display:none;" {% endif %} >
 				<br />
-				<h1>Student Info</h1>
-				<p>Update your info with the desired data and press Submit.</p>
+				<h1 style= "font-family:'montserrat-bold', sans-serif;">Student Info</h1>
+				<h5>Update your info with the desired data and press Submit.</h5>
 				<br />
 				<form method="POST" action="#">
 					<label for="firstname">First Name</label>
