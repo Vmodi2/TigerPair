@@ -1,5 +1,7 @@
 # TigerPair- Alumni Mentorship Made Simple!
 Project Group Repo for COS 333
+![TigerPair Logo](https://github.com/Vmodi2/TigerPair/blob/master/static/images/TigerPairLogo.png)
+
 Goals for this week:
 Functional Frontend - Daniel
 Understanding of CAS and Process API - Tara and Abhinaya
