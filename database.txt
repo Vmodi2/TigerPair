@@ -11,7 +11,7 @@ CREATE TABLE alumni (
   matched smallint default null,
   date_created date default now(),
   primary key (id)
-);
+); 
 
 CREATE TABLE matches (
   studentid varchar(20),
