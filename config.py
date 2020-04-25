@@ -1,3 +1,10 @@
+#-----------------------------------------------------------------------
+# Config.py
+# All setup (keys tokens etc) put here for modularity
+#-----------------------------------------------------------------------
+
+
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail

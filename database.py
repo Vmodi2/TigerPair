@@ -1,3 +1,9 @@
+#-----------------------------------------------------------------------
+# Database.py
+# Handles all interactions with PostgreSQL db
+#-----------------------------------------------------------------------
+
+
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from config import db

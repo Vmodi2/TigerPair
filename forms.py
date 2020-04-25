@@ -1,3 +1,11 @@
+#-----------------------------------------------------------------------
+# forms.py
+# Used for sign in/up forms that must be validated  both on client and
+# server side
+#-----------------------------------------------------------------------
+
+
+
 from flask_wtf import FlaskForm 
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length

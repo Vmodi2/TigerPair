@@ -2,6 +2,7 @@
 
 # -----------------------------------------------------------------------
 # stable_marriage.py
+# Runs all matching between Students and Alumni
 # -----------------------------------------------------------------------
 
 from sqlalchemy import update
