@@ -52,15 +52,19 @@ def user_loader(user_id):
     return alumni.query.filter_by(aluminfoemail=user_id).first()
 
 
-@app.route("/logout")
+@app.route("/student/logout")
 # @login_required <- this makes it redirect to login when student logs out
-def logout():
+def student_logout():
+    casClient = CASClient()
+    casClient.authenticate()
+    casClient.logout()
+    return redirect(url_for("index"))
+
+
+@app.route("/alum/logout")
+# @login_required <- this makes it redirect to login when student logs out
+def alum_logout():
     logout_user()
-    # if CASClient().validate(CASClient().stripTicket()) is not None:
-    # username = "barkachi"
-    # if username is not None:
-    #     CASClient().logout()
-    # DON'T FORGET TO logout from cas as well
     return redirect(url_for("index"))
 
 
@@ -77,6 +81,7 @@ def admin_logout():
 def route_new_student():
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
+    print(current)
     if not current:
         student_new()
 
@@ -84,7 +89,7 @@ def route_new_student():
 @app.route('/student/new')
 def student_new():
     username = strip_user(CASClient().authenticate())
-    current = students.query.filter_by(studentid=username)
+    print(username)
     html = render_template('pages/student/new.html')
     return make_response(html)
 
@@ -94,9 +99,17 @@ def student_dashboard():
     route_new_student()  # wut
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/student/dashboard.html',
-                           student=current, username=username, side="student")
-    return make_response(html)
+    print(current)
+    if not current:
+        html = render_template('pages/student/new.html')
+        return make_response(html)
+    else:
+        print("in student dashboard")
+        username = strip_user(CASClient().authenticate())
+        current = students.query.filter_by(studentid=username).first()
+        html = render_template('pages/student/dashboard.html',
+                               student=current, username=username, side="student")
+        return make_response(html)
 
 
 @app.route('/student/information', methods=['POST'])
@@ -160,6 +173,7 @@ def get_match_student(username):
 def alum_info():
     # want to do similar thing as in /student/information route func
     # but our table PK does not match up with the model PK
+    print("in alum info")
     if not current_user.email_confirmed:
         return redirect(url_for('login'))
 
@@ -242,16 +256,20 @@ def matching():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    print("login")
     if current_user.is_authenticated:
         return redirect(url_for('alum_info'))
 
     form = LoginForm()
     if form.validate_on_submit():
+        print("submitted form")
         user = alumni.query.filter_by(aluminfoemail=form.email.data).first()
         if user is not None:
+            print("user is not none")
             if user.email_confirmed:
+                print("email is confirmed")
                 if check_password_hash(user.password, form.password.data):
+                    print("password is correct")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alum_info'))

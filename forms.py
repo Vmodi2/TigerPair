@@ -21,12 +21,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
-    #def validate_email(self, email):
-        #user = alumni.query.filter_by(aluminfoemail=email.data).first()
-        #if user is  None:
-            #raise ValidationError("Invalid Email")
+    def validate_email(self, email):
+        user = alumni.query.filter_by(aluminfoemail=email.data).first()
+        if user is  None:
+            raise ValidationError("Invalid Email")
 
-    #def validate_email(self, email):
+    #def validate_password(self, email):
 
         #user = alumni.query.filter_by(aluminfoemail=email.data).first()
         #if not check_password_hash(user.password, password.data):
