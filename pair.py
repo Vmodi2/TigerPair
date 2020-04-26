@@ -17,6 +17,9 @@ from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
 from csv import DictReader, reader
+from flask_wtf import Form
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired, Email, Length
 
 # -----------------------------------------------------------------------
 
@@ -36,6 +39,17 @@ login_manager.login_view = 'login'
 #     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
 # -----------------------------------------------------------------------
+
+
+class ForgotForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
+
+class PasswordResetForum(Form):
+    password = PasswordField('Password', validators=[
+                             DataRequired(), Length(min=8, max=80)])
+
+
 @login_manager.user_loader
 def user_loader(user_id):
     return alumni.query.filter_by(aluminfoemail=user_id).first()
@@ -267,6 +281,69 @@ def login():
             flash("Invalid username or password")
 
     html = render_template('pages/login/login.html', form=form)
+    return make_response(html)
+
+# -----------------------------------------------------------------------
+
+# THIS IS NEW !!!!!!!
+@app.route('/pages/login/update', methods=['GET', 'POST'])
+def update():
+    form = ForgotForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = alumni.query.filter_by(aluminfoemail=email).first()
+        if user is not None:
+
+            token = s.dumps(email, salt='password-update')
+
+            msg = Message(
+                'Update Password', sender='tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('update_password', token=token, _external=True)
+            msg.body = 'Click here to update password {}'.format(link)
+            mail.send(msg)
+            return redirect(url_for('gotoemail'))
+
+        else:
+            flash("Invalid email")
+
+    html = render_template(
+        'pages/login/email_update.html', form=form)  # MAKE THIS
+    return make_response(html)
+
+# -----------------------------------------------------------------------
+
+
+@app.route('/login/password-update/<token>', methods=['GET', 'POST'])
+def update_password(token):
+
+    html = ''
+    errormsg = ''
+    try:
+        email = s.loads(token, salt='password-update',
+                        max_age=3600)  # one hour to confirm
+    except SignatureExpired:
+        errormsg = 'The token is expired'
+        abort(404)
+
+    form = PasswordResetForum()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(
+            form.password.data, method='sha256')
+        user = alumni.query.filter_by(aluminfoemail=email).first_or_404()
+        user.password = hashed_password
+        db.session.commit()
+        return redirect(url_for('password_changed'))
+
+    html = render_template(
+        'pages/login/password-update.html', errormsg=errormsg, form=form)  # MAKE THIS ALSO
+    return make_response(html)
+
+# -----------------------------------------------------------------------
+
+
+@app.route('/login/password_changed')
+def password_changed():
+    html = render_template('pages/login/password_changed.html')
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -506,6 +583,24 @@ def process_import(is_alumni):
         return make_response("Success processing your upload!")
     except:
         return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.")
+
+# REDIRECT HERE FROM THE BUTTON
+# @app.route('/admin/group-login', methods=['GET', 'POST'])
+# def login():
+
+    #form = LoginForm()
+    # if form.validate_on_submit():
+        #group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+        # if group_id is not None:
+        # if check_password_hash(user.password, form.password.data): We should hash groupids for safety
+        #login_user(user, remember=form.remember.data)
+        # return redirect(url_for('/admin/dashboard'))
+        # else:
+        #flash("Group ID does not exist")
+
+
+    html = render_template('pages/admin/group-login.html', form=form)
+    return make_response(html)
 
 
 # -----------------------------------------------------------------------
