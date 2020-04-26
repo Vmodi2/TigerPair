@@ -31,11 +31,11 @@
 /* Position of buttons relative to div */
 #landing-btn-little {
     top: 95%;
-    left: 30%
+    /*left: 28%*/
 }
 #landing-btn-big {
   top: 95%;
-  left: 40%
+  /*left: 40%*/
 }
 
 /* @media only screen and (max-width: 1200px) {
@@ -44,7 +44,7 @@
   }
 } */
 /* bounce animation */
-@keyframes miniBounce {
+/* @keyframes miniBounce {
     0%{transform:translateY(-3px);}
     30%{transform:translateY(-10px);}
     60%{transform:translateY(-15px);}
@@ -53,7 +53,8 @@
 }
 .miniBounce {
   animation: miniBounce 0.35s ease-in; 
-}
+} */
+
 /* cards */
 .column {
     float: left;
