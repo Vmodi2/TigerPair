@@ -112,10 +112,12 @@ def get_student_info():
     url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+username
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
-    nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=') for i in range(32)]).encode('utf-8')
+    nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
+                     for i in range(32)]).encode('utf-8')
 
     password = key.encode('utf-8')    # use your own from /getkey
-    generated_digest = b64encode(hashlib.sha256(nonce + created + password).digest())
+    generated_digest = b64encode(hashlib.sha256(
+        nonce + created + password).digest())
 
     generated_digest = str(generated_digest).replace("b\'", '')
     generated_digest = str(generated_digest).replace("\'", '')
@@ -124,10 +126,10 @@ def get_student_info():
     created = str(created).replace("b\'", '')
     created = str(created).replace("\'", '')
     headers = {
-    'Authorization': 'WSSE profile="UsernameToken"',
-    'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
+        'Authorization': 'WSSE profile="UsernameToken"',
+        'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
-    r = requests.get(url, headers = headers)
+    r = requests.get(url, headers=headers)
     if r:
         student_info = json.loads(r.text)
         firstname = student_info['first_name']
@@ -136,11 +138,9 @@ def get_student_info():
         major = student_info['major_code']
 
         new_student = students(username, firstname, lastname,
-                            email, major, None, 0)      
+                               email, major, None, 0)
         db.session.merge(new_student)
         db.session.commit()
-    
-
 
 
 @app.route('/student/dashboard', methods=['POST', 'GET'])
@@ -151,8 +151,8 @@ def student_dashboard():
     if not current:
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/student/new.html', 
-        student=current, username=username, side="student")
+        html = render_template('pages/student/new.html',
+                               student=current, username=username, side="student")
         return make_response(html)
     else:
         print("in student dashboard")
