@@ -12,7 +12,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from itsdangerous import SignatureExpired
 from CASClient import CASClient
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import students, alumni, matches, admins, groups
+from database import students, alumni, admins, groups
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
@@ -572,17 +572,17 @@ def process_import(is_alumni):
         if is_alumni:
             for row in csv_reader:
                 new_alum = alumni(row['First Name'], row['Last Name'],
-                                  row['Email'], row['Major'].upper(), row['Career'], 0)
+                                  row['Email'], row['Major'].upper(), row['Career'], 0, 0)
                 db.session.add(new_alum)
         else:
             for row in csv_reader:
                 new_student = students(row['netid'], row['First Name'],
-                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0)
+                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0, 0)
                 db.session.add(new_student)
         db.session.commit()
         return make_response("Success processing your upload!")
-    except:
-        return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.")
+    except Exception as e:
+        return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
 
 # REDIRECT HERE FROM THE BUTTON
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
@@ -597,7 +597,6 @@ def process_import(is_alumni):
         # return redirect(url_for('/admin/dashboard'))
         # else:
         #flash("Group ID does not exist")
-
 
     html = render_template('pages/admin/group-login.html', form=form)
     return make_response(html)

@@ -57,7 +57,7 @@ def create_new_matches(id):
                 used_alums.add(alum)
                 student_alum[student] = alum
 
-                new_match = matches_table(id, student, student_alum[student])
+                new_match = matches_table(student, student_alum[student], id)
                 db.session.add(new_match)
 
                 student = students_table.query.filter_by(

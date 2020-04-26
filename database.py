@@ -18,7 +18,7 @@ class students(db.Model):
     group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
-                 studentacademicsmajor, studentcareerdesiredfield, matched):
+                 studentacademicsmajor, studentcareerdesiredfield, matched, group_id=0):
         self.studentid = studentid
         self.studentinfonamefirst = studentinfonamefirst
         self.studentinfonamelast = studentinfonamelast
@@ -26,10 +26,7 @@ class students(db.Model):
         self.studentacademicsmajor = studentacademicsmajor
         self.studentcareerdesiredfield = studentcareerdesiredfield
         self.matched = matched
-        if not group_id:
-            self.group_id = DEFAULT_GROUPID
-        else:
-            self.group_id = group_id
+        self.group_id = 0
 
 
 class alumni(db.Model):
@@ -50,7 +47,7 @@ class alumni(db.Model):
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
                  alumacademicsmajor, alumcareerfield, username, password,
-                 matched, email_confirmed):
+                 matched, email_confirmed, group_id=0):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail
@@ -60,10 +57,7 @@ class alumni(db.Model):
         self.username = username
         self.password = password
         self.email_confirmed = email_confirmed
-        if not group_id:
-            self.group_id = DEFAULT_GROUPID
-        else:
-            self.group_id = group_id
+        self.group_id = 0
 
     def is_authenticated(self):
         return self.authenticated
@@ -84,7 +78,7 @@ class matches(db.Model):
     aluminfoemail = db.Column('aluminfoemail', db.Unicode)
     group_id = db.Column('group_id', db.Unicode)
 
-    def __init__(self, id, studentid, aluminfoemail):
+    def __init__(self, studentid, aluminfoemail, id):
         self.studentid = studentid
         self.aluminfoemail = aluminfoemail
         self.group_id = id
