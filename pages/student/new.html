@@ -9,16 +9,18 @@
         <label for="name">Name</label>
         <div class="row">
             <div class="col">
-                <input type="text" class="form-control" placeholder="First name" name="firstname">
+                <input type="text" class="form-control" placeholder="First name"
+                 value="{{student.studentinfonamefirst}}" name="firstname">
             </div>
             <div class="col">
-                <input type="text" class="form-control" placeholder="Last name" name="lastname">
+                <input type="text" class="form-control" placeholder="Last name" 
+                value="{{student.studentinfonamelast}}" name="lastname">
             </div>
         </div>
         <br />
         <label for="major">Major</label>
         <select class="form-control mr-sm-2" id="major" name="major" required>
-            <option disabled selected value> -- select an option -- </option>
+            <option value="{{student.studentacademicsmajor}}" >{{student.studentacademicsmajor}}</option>
         </select>
         <br />
         <label for="career">Desired Career Field</label>
