@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from flask import Flask, jsonify
 from config import db
+
+DEFAULT_GROUPID = 0  # change this?
 
 
 class students(db.Model):
@@ -13,6 +15,7 @@ class students(db.Model):
     studentcareerdesiredfield = db.Column(
         'studentcareerdesiredfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
+    group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
                  studentacademicsmajor, studentcareerdesiredfield, matched):
@@ -23,8 +26,10 @@ class students(db.Model):
         self.studentacademicsmajor = studentacademicsmajor
         self.studentcareerdesiredfield = studentcareerdesiredfield
         self.matched = matched
-
-    # maybe change unicode to string
+        if not group_id:
+            self.group_id = DEFAULT_GROUPID
+        else:
+            self.group_id = group_id
 
 
 class alumni(db.Model):
@@ -41,6 +46,7 @@ class alumni(db.Model):
     password = db.Column('password', db.Unicode, nullable=False)
     email_confirmed = db.Column('email_confirmed', db.Boolean)
     authenticated = False
+    group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
                  alumacademicsmajor, alumcareerfield, username, password,
@@ -54,6 +60,10 @@ class alumni(db.Model):
         self.username = username
         self.password = password
         self.email_confirmed = email_confirmed
+        if not group_id:
+            self.group_id = DEFAULT_GROUPID
+        else:
+            self.group_id = group_id
 
     def is_authenticated(self):
         return self.authenticated
@@ -72,7 +82,31 @@ class matches(db.Model):
     __tablename__ = 'matches'
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
     aluminfoemail = db.Column('aluminfoemail', db.Unicode)
+    group_id = db.Column('group_id', db.Unicode)
 
-    def __init__(self, studentid, aluminfoemail):
+    def __init__(self, id, studentid, aluminfoemail):
         self.studentid = studentid
         self.aluminfoemail = aluminfoemail
+        self.group_id = id
+
+
+class admins(db.Model):
+    __tablename__ = 'admins'
+    id = db.Column('id', db.Unicode)
+    username = db.Column('username', db.Unicode, primary_key=True)
+
+    def __init__(self, username):
+        self.username = username
+
+
+class groups(db.Model):
+    __tablename__ = 'groups'
+    id = db.Column('group_id', db.Unicode, primary_key=True)
+    adminid = db.Column('adminid', db.Unicode)
+    password = db.Column('password', db.Unicode)
+
+    def __init__(self, group_id, adminid, password):
+        self.id = id
+        self.group_id = group_id
+        self.adminid = adminid
+        self.password = password
