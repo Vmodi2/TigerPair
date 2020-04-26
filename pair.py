@@ -99,18 +99,24 @@ def student_new():
     html = render_template('pages/student/new.html')
     return make_response(html)
 
+
 def get_student_info():
     username = CASClient().authenticate()
     username = username[0:len(username)-1]
-    # adding tigerbook code
+    # adding tigerbook code (grabbed from tigerbook API)
+
+# /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
+# * https://jqueryvalidation.org/
+# * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
     key = "1cf0a08b74009367d00279d0926f88cb"
-    url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+"dfafdkahfalsfhdk"
+    url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+username
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=') for i in range(32)]).encode('utf-8')
 
     password = key.encode('utf-8')    # use your own from /getkey
     generated_digest = b64encode(hashlib.sha256(nonce + created + password).digest())
+
     generated_digest = str(generated_digest).replace("b\'", '')
     generated_digest = str(generated_digest).replace("\'", '')
     nonce = str(b64encode(nonce)).replace("b\'", '')
@@ -122,17 +128,17 @@ def get_student_info():
     'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
     r = requests.get(url, headers = headers)
-    if not r:
-        return None
-    student_info = json.loads(r.text)
-    firstname = student_info['first_name']
-    lastname = student_info['last_name']
-    email = student_info['email']
-    major = student_info['major_code']
-    return [firstname, lastname, email, major]
+    if r:
+        student_info = json.loads(r.text)
+        firstname = student_info['first_name']
+        lastname = student_info['last_name']
+        email = student_info['email']
+        major = student_info['major_code']
 
-    new_student = students(username, firstname, lastname,
-                           email, major, info.get('career'), 0)
+        new_student = students(username, firstname, lastname,
+                            email, major, None, 0)      
+        db.session.merge(new_student)
+        db.session.commit()
     
 
 
@@ -142,12 +148,12 @@ def student_dashboard():
     # route_new_student()  # wut
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
-    print(current)
     if not current:
-        # student_info = get_student_info()
-        if student_info:
-            html = render_template('pages/student/new.html')
-            return make_response(html)
+        get_student_info()
+        current = students.query.filter_by(studentid=username).first()
+        html = render_template('pages/student/new.html', 
+        student=current, username=username, side="student")
+        return make_response(html)
     else:
         print("in student dashboard")
         username = strip_user(CASClient().authenticate())
@@ -159,7 +165,7 @@ def student_dashboard():
 
 @app.route('/student/information', methods=['POST'])
 def student_information():
-    route_new_student()
+    # route_new_student()
     username = strip_user(CASClient().authenticate())
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
@@ -171,7 +177,7 @@ def student_information():
 
 @app.route('/student/matches')
 def student_matches(match=None):
-    route_new_student()
+    # route_new_student()
     username = strip_user(CASClient().authenticate())
     if not match:
         match = get_match_student(username)
