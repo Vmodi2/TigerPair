@@ -21,9 +21,9 @@
 	</li>
 </ul>
 
-<form method="post" action="/student/information">
-	<div class="tab-content" id="myTabContent">
-		<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+<div class="tab-content" id="myTabContent">
+	<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+		<form method="post" action="/student/information">
 			<label for="firstname">First Name</label>
 			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
 				value="{{student.studentinfonamefirst}}" required readonly>
@@ -34,38 +34,49 @@
 			<br />
 			<label for="major">Major</label>
 			<select class="form-control mr-sm-2" id="major" name="major" required disabled>
-				<option value="{{student.studentacademicsmajor}}" selected hidden>{{student.studentacademicsmajor}}
+				<option value="{{student.studentacademicsmajor}}" selected>{{student.studentacademicsmajor}}
 				</option>
 			</select>
 			<br />
 			<label for="career">Desired Career Field</label>
 			<select class="form-control mr-sm-2" id="career" name="career" required disabled>
-				<option value="{{student.studentcareerdesiredfield}}" selected hidden>
+				<option value="{{student.studentcareerdesiredfield}}" selected>
 					{{student.studentcareerdesiredfield}}
 				</option>
 			</select>
 			<br />
+			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit"
+				hidden>&nbsp;Submit&nbsp;</button>
 			<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		</div>
-		<div class="tab-pane fade" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-			cute
-			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		</div>
-		<div class="tab-pane fade" id="page-2" role="tabpanel" aria-labelledby="page-2-tab">
-			cuter
-			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		</div>
-		<div class="tab-pane fade" id="change-email" role="tabpanel" aria-labelledby="change-email-tab">
-			<label for="email">Current Email</label>
-			<input class="form-control mr-sm-2" type="text" id="email" name="email" value="{{student.studentinfoemail}}"
-				required readonly>
-			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		</div>
+		</form>
 	</div>
-	<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit" hidden>&nbsp;Submit&nbsp;</button>
-</form>
+	<div class="tab-pane fade" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
+		cute
+		<br />
+		<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
+	</div>
+	<div class="tab-pane fade" id="page-2" role="tabpanel" aria-labelledby="page-2-tab">
+		cuter
+		<br />
+		<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
+	</div>
+	<div class="tab-pane fade" id="change-email" role="tabpanel" aria-labelledby="change-email-tab">
+		<form>
+			<div class="form-group row">
+				<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
+						value="{{student.studentinfoemail}}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputPassword" class="col-sm-2 col-form-label">New Email</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="inputPassword" placeholder="Password">
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
 {% endblock %}
 {% block edit_profile %}active{% endblock %}

@@ -2,15 +2,6 @@ $(document).ready(() => {
     update_majors();
     update_careers();
 });
-$('.edit-btn').on('click', () => {
-    $("#firstname").attr('readOnly', false);
-    $("#lastname").attr('readOnly', false);
-    $("#email").attr('readOnly', false);
-    $("#major").attr('disabled', false);
-    $("#career").attr('disabled', false);
-    $(".edit-btn").attr('hidden', true);
-    $("#submit").attr('hidden', false);
-});
 
 function update_careers() {
     careers = ["Accounting", "Advertising", "Architecture/Planning", "Building/Construction", "Consulting",
@@ -33,7 +24,9 @@ function update_majors() {
 
     major_string = document.getElementById("major").innerHTML;
     for (var i = 0; i < majors.length; i++) {
+
         major = majors[i];
+        console.log(major);
         major_string += '<option value="' + major + '">' + major + '</option>';
     }
 

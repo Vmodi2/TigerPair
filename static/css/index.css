@@ -20,14 +20,16 @@
     max-width: 100%;
     max-height: 100%;
 }
-
 /* buttons */
 .landing-btn {
     position: relative;
     bottom: -9px;
     text-align: center;
 }
-
+.btn-custom {
+    border:10px double black;
+    background:transparent;
+  }
 /* bounce animation */
 @keyframes miniBounce {
     0%{transform:translateY(-3px);}

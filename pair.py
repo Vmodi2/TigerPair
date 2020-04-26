@@ -60,9 +60,26 @@ def admin_logout():
     casClient.logout()
     return redirect(url_for("index"))
 # -----------------------------------------------------------------------
-# Dynamic page function for student info page call
+
+
+def route_new_student():
+    username = strip_user(CASClient().authenticate())
+    current = students.query.filter_by(studentid=username).first()
+    if not current:
+        student_new()
+
+
+@app.route('/student/new')
+def student_new():
+    username = strip_user(CASClient().authenticate())
+    current = students.query.filter_by(studentid=username)
+    html = render_template('pages/student/new.html')
+    return make_response(html)
+
+
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
+    route_new_student()
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/dashboard.html',
@@ -72,10 +89,11 @@ def student_dashboard():
 
 @app.route('/student/information', methods=['POST'])
 def student_information():
+    route_new_student()
     username = strip_user(CASClient().authenticate())
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           info.get('email'), info.get('major'), info.get('career'), 0)
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0)
     db.session.merge(new_student)
     db.session.commit()
     return redirect(url_for('student_dashboard'))
@@ -83,11 +101,22 @@ def student_information():
 
 @app.route('/student/matches')
 def student_matches(match=None):
+    route_new_student()
     username = strip_user(CASClient().authenticate())
     if not match:
         match = get_match_student(username)
     html = render_template('pages/student/matches.html',
                            match=match, side="student")
+    return make_response(html)
+
+
+@app.route('/student/email')
+def student_email():
+    route_new_student()
+    username = strip_user(CASClient().authenticate())
+    student = students.query.filter_by(studentid=username).first()
+    student.studentinfoemail = request.form.get('email')
+    html = render_template('pages/student/dashboard.html')
     return make_response(html)
 
 
