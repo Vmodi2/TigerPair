@@ -206,49 +206,113 @@ def get_match_student(username):
     # return make_response(html)
 
 
+# NEW ALUM START
 # @app.route('/alum/information', methods=['GET', 'POST'])
-@app.route('/alum/dashboard', methods=['GET', 'POST'])
+# @app.route('/alum/dashboard', methods=['GET', 'POST'])
+# @login_required
+# def alum_info():
+#     # want to do similar thing as in /student/information route func
+#     # but our table PK does not match up with the model PK
+#     print("in alum info")
+#     if not current_user.email_confirmed:
+#         return redirect(url_for('login'))
+
+#     if (flask.request.method == 'POST'):
+#         alum = alumni.query.filter_by(
+#             aluminfoemail=current_user.aluminfoemail).first()
+#         alum.aluminfonamefirst = request.form.get('firstname')
+#         alum.aluminfonamelast = request.form.get('lastname')
+#         alum.aluminfoemail = request.form.get('email')
+#         alum.alumacademicsmajor = request.form.get('major')
+#         alum.alumcareerfield = request.form.get('career')
+#         db.session.commit()
+#         # return redirect(url_for('alum_dashboard'))
+
+#     html = render_template('pages/alum/dashboard.html', alum=current_user,
+#                            username=current_user.aluminfoemail, side="alum")
+#     return make_response(html)
+
+
+# @app.route('/alum/matches')
+# @login_required
+# def alum_matches(match=None):
+#     # username = strip_user(CASClient().authenticate())
+#     if not match:
+#         match = get_match_alum(current_user.aluminfoemail)
+#     html = render_template('pages/alum/matches.html',
+#                            match=match, side="alum")
+#     return make_response(html)
+
+
+# def get_match_alum(email):
+#     match = matches.query.filter_by(aluminfoemail=email).first()
+#     if not match:
+#         return None
+#     return students.query.filter_by(studentid=match.studentid).first()
+# NEW ALUM END
+# -----------------------------------------------------------------------
+
+@app.route('/alum/dashboard', methods=['POST', 'GET'])
 @login_required
-def alum_info():
-    # want to do similar thing as in /student/information route func
-    # but our table PK does not match up with the model PK
-    print("in alum info")
-    if not current_user.email_confirmed:
+def alumni_info():
+    html = ''
+
+    if current_user.email_confirmed:
+
+        # THIS ASSUMES THERE IS ONLY ONE MATCH FOR EACH ALUM. THIS WILL
+        # FAIL OTHERWISE.
+        matched = False if current_user.matched <= 0 else True
+        matchfirstname = ''
+        matchlastname = ''
+        matchemail = ''
+        if matched:
+            match = matches.query.filter_by(
+                aluminfoemail=current_user.aluminfoemail).first()
+            match = students.query.filter_by(studentid=match.studentid).first()
+            matchfirstname = match.studentinfonamefirst
+            matchlastname = match.studentinfonamelast
+            matchemail = match.studentinfoemail
+
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        major = request.form.get("major")
+        career = request.form.get("career")
+
+        if firstname is not None:
+            current_user.aluminfonamefirst = firstname
+            current_user.aluminfonamelast = lastname
+            current_user.alumacademicsmajor = major.upper()
+            current_user.alumcareerfield = career
+            db.session.commit()
+            html = render_template('pages/alum/dashboard.html', firstname=firstname,
+                                   lastname=lastname, email=email, major=major.upper(),
+                                   career=career, side="Alumni", matched=matched,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail=matchemail, showInfo=True)
+        else:
+            firstname = current_user.aluminfonamefirst
+            firstname = "" if firstname is None else firstname
+            lastname = current_user.aluminfonamelast
+            lastname = "" if lastname is None else lastname
+            email = current_user.aluminfoemail
+            email = "" if email is None else email
+            major = current_user.alumacademicsmajor
+            major = "" if major is None else major.upper()
+            career = current_user.alumcareerfield
+            career = "" if career is None else career
+
+            html = render_template('pages/alum/dashboard.html', firstname=firstname,
+                                   lastname=lastname, email=email, major=major,
+                                   career=career, side="Alumni", matched=matched,
+                                   matchfirstname=matchfirstname,
+                                   matchlastname=matchlastname,
+                                   matchemail=matchemail, showInfo=False)
+    else:
         return redirect(url_for('login'))
 
-    if (flask.request.method == 'POST'):
-        alum = alumni.query.filter_by(
-            aluminfoemail=current_user.aluminfoemail).first()
-        alum.aluminfonamefirst = request.form.get('firstname')
-        alum.aluminfonamelast = request.form.get('lastname')
-        alum.aluminfoemail = request.form.get('email')
-        alum.alumacademicsmajor = request.form.get('major')
-        alum.alumcareerfield = request.form.get('career')
-        db.session.commit()
-        # return redirect(url_for('alum_dashboard'))
-
-    html = render_template('pages/alum/dashboard.html', alum=current_user,
-                           username=current_user.aluminfoemail, side="alum")
     return make_response(html)
-
-
-@app.route('/alum/matches')
-@login_required
-def alum_matches(match=None):
-    # username = strip_user(CASClient().authenticate())
-    if not match:
-        match = get_match_alum(current_user.aluminfoemail)
-    html = render_template('pages/alum/matches.html',
-                           match=match, side="alum")
-    return make_response(html)
-
-
-def get_match_alum(email):
-    match = matches.query.filter_by(aluminfoemail=email).first()
-    if not match:
-        return None
-    return students.query.filter_by(studentid=match.studentid).first()
-
 # -----------------------------------------------------------------------
 
 
@@ -297,7 +361,7 @@ def matching():
 def login():
     print("login")
     if current_user.is_authenticated:
-        return redirect(url_for('alum_info'))
+        return redirect(url_for('alumni_info'))
 
     form = LoginForm()
     if form.validate_on_submit():

@@ -21,6 +21,12 @@
     max-height: 100%;
 }
 /* buttons */
+/* .btn-landing {
+	  background-color: #000000;
+	  color: #ffffff;
+	  border: #000000;
+    transition: margin-top 1s, background 0.2s, font-weight 0.2s;
+} */
 #landing-btn-little {
     top: 95%;
     left: 30%
