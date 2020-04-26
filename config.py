@@ -11,6 +11,7 @@ from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
+from CASClient import CASClient
 
 # Flask program  runnable
 app = Flask(__name__, template_folder='.')
@@ -33,3 +34,5 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 bootstrap = Bootstrap(app)
+
+
