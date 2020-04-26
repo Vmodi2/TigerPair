@@ -23,7 +23,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto text-right mb-2">
                     <li class="nav-item">
                         <a class="nav-link" href="#">What is TigerPair?<span class="sr-only"></span></a>
                     </li>
@@ -48,46 +48,36 @@
     </header>
 
     <main>
-        <div id="main" class="container-fluid landing d-flex align-items-center justify-content-center">
-            <div class="row d-flex justify-content-md-around align-items-md-end mh-100">
-                <div class="col-12 col-lg-6">
-                    <br>
-                    <br>
-                    <br>
-                    <h1 class="display-1 text-white text-center">TigerPair</h1>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                </div>
-                <div class="col-6 col-md-4 col-lg-2 d-flex align-items-end flex-wrap">
-                    <div class="d-flex align-items-end flex-wrap">
-                        <img src="/static/images/littletiger.png" alt="little tiger" id="littletiger-img"
-                            class="landing-tiger d-none d-md-block">
+        <div class="landing d-flex align-items-center">
+            <div class="container-fluid">
+                <div class="row d-flex">
+                    <div class="col-12 col-lg-6 d-flex align-items-end justify-content-center">
+                        <h1 class="display-1 text-white text-center">TigerPair</h1>
                     </div>
-                    <div class="landing-btn">
-                        <form action="/student/dashboard">
-                            <button type="submit" class="btn btn-outline-light btn-custom"
-                                id="littletiger-btn"><strong>Student</strong></button>
-                        </form>
+                    <div class="col-6 col-md-5 col-lg-2 d-flex align-items-end flex-wrap position-relative">
+                        <div class="d-flex align-items-end flex-wrap">
+                            <img src="/static/images/littletiger.png" alt="little tiger" id="littletiger-img"
+                                class="landing-tiger d-none d-md-block">
+                        </div>
+                        <div id="landing-btn-little" class="mt-md-3 position-absolute">
+                            <button href="/alum/dashboard"
+                                class="btn btn-outline-light btn-lg btn-custom">Student</button>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6 col-md-8 col-lg-4">
-                    <div class="d-flex align-items-end flex-wrap">
+                    <div class="col-6 col-md-7 col-lg-4 d-flex align-items-end flex-wrap position-relative">
+                        <div class="d-flex align-items-end flex-wrap">
                             <img src="/static/images/bigtiger.png" alt="big tiger" id="bigtiger-img"
-                                class="landing-tiger d-none d-md-block">    
-                    </div>
-                    <div class="landing-btn mt-md-3">
-                        <form action="/alum/dashboard">
-                            <button type="submit" class="btn btn-outline-light btn-custom"
-                                id="bigtiger-btn"><strong>Alum</strong></button>
-                        </form>
+                                class="landing-tiger d-none d-md-block">
+                        </div>
+                        <div id="landing-btn-big" class="mt-md-3 position-absolute">
+                            <button href="/alum/dashboard" class="btn btn-lg btn-outline-light btn-custom">Alum</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         <div class="container">
             <div class="row">
@@ -95,9 +85,7 @@
                     <br>
                     <br>
                     <br>
-                    <h1 id ="team" class="display-2 text-center">Meet the Team</h1>
-                    <br>
-                    <br>
+                    <h1 id="team" class="display-2 text-center">Meet the Team</h1>
                 </div>
             </div>
             <div class="row d-flex justify-content-center" ; background-color:transparent;>
@@ -188,8 +176,8 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"
-        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>

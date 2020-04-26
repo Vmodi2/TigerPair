@@ -21,15 +21,20 @@
     max-height: 100%;
 }
 /* buttons */
-.landing-btn {
-    position: relative;
-    bottom: -9px;
-    text-align: center;
+#landing-btn-little {
+    top: 95%;
+    left: 30%
 }
-.btn-custom {
-    border:10px double black;
-    background:transparent;
+#landing-btn-big {
+  top: 95%;
+  left: 40%
+}
+
+/* @media only screen and (max-width: 1200px) {
+  .landing-btn {
+    left: 100px
   }
+} */
 /* bounce animation */
 @keyframes miniBounce {
     0%{transform:translateY(-3px);}

@@ -26,11 +26,10 @@ from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 login_manager.login_view = 'login'
 
-#class LoginForm(Form):
-    #username = StringField('Email', validators=[DataRequired()])
-    #password = PasswordField('Password', validators=[
-                             #DataRequired(), Length(min=8, max=80)])
-
+# class LoginForm(Form):
+#username = StringField('Email', validators=[DataRequired()])
+# password = PasswordField('Password', validators=[
+# DataRequired(), Length(min=8, max=80)])
 
 
 class ForgotForm(Form):
@@ -41,12 +40,11 @@ class PasswordResetForum(Form):
     password = PasswordField('Password', validators=[
                              DataRequired(), Length(min=8, max=80)])
 
-#class InfoForm(Form):
+# class InfoForm(Form):
     #firstname = StringField('First Name', validators=[DataRequired()])
     #lastname = StringField('Lasr Name', validators=[DataRequired()])
     #major = StringField('Major', validators=[DataRequired()])
     #career = StringField('Career Field', validators=[DataRequired()])
-
 
 
 @login_manager.user_loader
@@ -93,7 +91,7 @@ def student_new():
 
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
-    route_new_student() # wut
+    route_new_student()  # wut
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/dashboard.html',
@@ -143,20 +141,20 @@ def get_match_student(username):
 
 # Dynamic page function for alum info page call
 
-## WHY DO WE NEED THIS FUNCTION? Alumn info is trying to get info from
+# WHY DO WE NEED THIS FUNCTION? Alumn info is trying to get info from
 # a form that does not exist until dashboard is called but we  call information first?
 
-#@app.route('/alum/dashboard', methods=['POST', 'GET'])
-#@login_required
-#def alum_dashboard():
-    #if not current_user.email_confirmed:
-        #return redirect(url_for('login'))
-    #html = render_template('pages/alum/dashboard.html',
-                          # alum=current_user, username=current_user.aluminfoemail, side="alum")
-    #return make_response(html)
+# @app.route('/alum/dashboard', methods=['POST', 'GET'])
+# @login_required
+# def alum_dashboard():
+    # if not current_user.email_confirmed:
+    # return redirect(url_for('login'))
+    # html = render_template('pages/alum/dashboard.html',
+    # alum=current_user, username=current_user.aluminfoemail, side="alum")
+    # return make_response(html)
 
 
-#@app.route('/alum/information', methods=['GET', 'POST'])
+# @app.route('/alum/information', methods=['GET', 'POST'])
 @app.route('/alum/dashboard', methods=['GET', 'POST'])
 @login_required
 def alum_info():
@@ -174,9 +172,10 @@ def alum_info():
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
         db.session.commit()
-        #return redirect(url_for('alum_dashboard'))
+        # return redirect(url_for('alum_dashboard'))
 
-    html = render_template('pages/alum/dashboard.html', alum=current_user, username=current_user.aluminfoemail, side="alum")
+    html = render_template('pages/alum/dashboard.html', alum=current_user,
+                           username=current_user.aluminfoemail, side="alum")
     return make_response(html)
 
 
@@ -256,7 +255,7 @@ def login():
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alum_info'))
-                    #url_for('alum_info')
+                    # url_for('alum_info')
             else:
                 flash("email not verified")
 
@@ -361,7 +360,8 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(None, None, email, None, None, hashed_password, False, 0)
+            user = alumni(None, None, email, None, None,
+                          hashed_password, False, 0)
             db.session.merge(user)
             db.session.commit()  # Create new user
 
@@ -589,8 +589,10 @@ def process_import(is_alumni):
 def strip_user(username):
     return username.replace('\n', '')
 
+
 def strip_user(username):
     return username.replace('\n', '')
+
 
 def strip_user(username):
     return username.replace('\n', '')

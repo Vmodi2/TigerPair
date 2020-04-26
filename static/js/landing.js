@@ -1,14 +1,14 @@
 $(document).ready(() => {
     function initialize(button, image) {
         button.on('mouseover', () => {
-            image.addClass('miniBounce');
+            image.addClass('miniBounceUp');
             setTimeout((() => {
-                image.removeClass('miniBounce');
+                image.removeClass('miniBounceUp');
             }), 1000);
         });
     }
-    initialize($('#littletiger-btn'), $('#littletiger-img'));
-    initialize($('#bigtiger-btn'), $('#bigtiger-img'));
+    initialize($('#landing-btn-little'), $('#littletiger-img'));
+    initialize($('#landing-btn-big'), $('#bigtiger-img'));
 
     let myNav = $('#landing-nav');
     $(window).on('scroll', () => {
