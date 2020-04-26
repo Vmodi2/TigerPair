@@ -3,26 +3,14 @@ Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSyste
 Chart.defaults.global.defaultFontColor = '#292b2c';
 
 // Area Chart Example
-function handleResponse(response) {
-  let days = response.split(';');
-  numbers = [];
-  for (let i = 0; i < 5 - days.length + 1; i++) {
-    numbers.push(0);
-  }
-  let max = 0;
-  for (let i = 0; i < days.length - 1; i++) {
-    let num = (parseInt(days[i].split(',')[1].trim().split('(')[0]));
-    numbers.push(num);
-    if (num > max) {
-      max = num;
-    }
-  }
-  let ctx = document.getElementById("myAreaChart");
-  let today = new Date();
+function handleResponse(response, type) {
+  let keys = Object.keys(response);
+  let values = Object.values(response);
+  let ctx = document.getElementById("myAreaChart" + type);
   let myLineChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['4 days ago', '3 days ago', '2 days ago', 'yesterday', 'today'],
+      labels: keys,
       datasets: [{
         label: "Registrations",
         lineTension: 0.3,
@@ -35,7 +23,7 @@ function handleResponse(response) {
         pointHoverBackgroundColor: "rgba(2,117,216,1)",
         pointHitRadius: 50,
         pointBorderWidth: 2,
-        data: numbers,
+        data: values,
       }],
     },
     options: {
@@ -54,7 +42,7 @@ function handleResponse(response) {
         yAxes: [{
           ticks: {
             min: 0,
-            max: max * 1.3,
+            max: Math.ceil(values.reduce((acc, cur) => acc > cur ? acc : cur) * 1.3),
             maxTicksLimit: 5
           },
           gridLines: {
@@ -69,21 +57,13 @@ function handleResponse(response) {
   });
 }
 
-let request = null;
-
 function getRegistrations() {
-  let today = new Date();
-  let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-  let url = '/admin/get-registrations';
-  if (request != null)
-    request.abort();
-  request = $.ajax(
-    {
-      type: "GET",
-      url: url,
-      success: handleResponse
-    }
-  );
+  fetch('/admin/get-registrations-alum')
+    .then(response => response.json())
+    .then(data => handleResponse(data, 'Alum'));
+  fetch('/admin/get-registrations-student')
+    .then(response => response.json())
+    .then(data => handleResponse(data, 'Student'));
 }
 
 $('document').ready(getRegistrations);
