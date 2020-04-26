@@ -21,6 +21,12 @@ from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
+import hashlib
+import random
+from base64 import b64encode
+from datetime import datetime
+import requests
+import json
 
 # -----------------------------------------------------------------------
 
@@ -93,14 +99,47 @@ def student_new():
     html = render_template('pages/student/new.html')
     return make_response(html)
 
+def get_student_info():
+    username = CASClient().authenticate()
+    username = username[0:len(username)-1]
+    # adding tigerbook code
+    key = "1cf0a08b74009367d00279d0926f88cb"
+    url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+"dfafdkahfalsfhdk"
+    created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
+
+    nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=') for i in range(32)]).encode('utf-8')
+
+    password = key.encode('utf-8')    # use your own from /getkey
+    generated_digest = b64encode(hashlib.sha256(nonce + created + password).digest())
+    generated_digest = str(generated_digest).replace("b\'", '')
+    generated_digest = str(generated_digest).replace("\'", '')
+    nonce = str(b64encode(nonce)).replace("b\'", '')
+    nonce = str(nonce).replace("\'", '')
+    created = str(created).replace("b\'", '')
+    created = str(created).replace("\'", '')
+    headers = {
+    'Authorization': 'WSSE profile="UsernameToken"',
+    'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
+    }
+    r = requests.get(url, headers = headers)
+    if r:
+        student_info = json.loads(r.text)
+        firstname = student_info['first_name']
+        lastname = student_info['last_name']
+        email = student_info['email']
+        major = student_info['major_code']
+        return [firstname, lastname, email, major]
+
+
 
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
-    route_new_student()  # wut
+    # route_new_student()  # wut
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
     print(current)
     if not current:
+        get_student_info()
         html = render_template('pages/student/new.html')
         return make_response(html)
     else:
