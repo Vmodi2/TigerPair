@@ -2,7 +2,6 @@
 
 # -----------------------------------------------------------------------
 # stable_marriage.py
-# Runs all matching between Students and Alumni
 # -----------------------------------------------------------------------
 
 from sqlalchemy import update
@@ -24,11 +23,11 @@ def get_ranking(student):
         return None
 
 
-def get_rankings():
+def get_rankings(id):
     students = [(student.studentid, student.studentacademicsmajor,
-                 student.studentcareerdesiredfield) for student in get_unmatched_students()]
+                 student.studentcareerdesiredfield) for student in get_unmatched_students(id)]
     alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
-              for alum in get_unmatched_alumni()]
+              for alum in get_unmatched_alumni(id)]
     students_alumni = {}
     for i in range(len(students)):
         student_alumni = []
@@ -47,8 +46,8 @@ def get_rankings():
     return students_alumni
 
 
-def create_new_matches():
-    students_alumni = get_rankings()
+def create_new_matches(id):
+    students_alumni = get_rankings(id)
     used_alums = set()
     student_alum = {}
 
@@ -58,7 +57,7 @@ def create_new_matches():
                 used_alums.add(alum)
                 student_alum[student] = alum
 
-                new_match = matches_table(student, student_alum[student])
+                new_match = matches_table(id, student, student_alum[student])
                 db.session.add(new_match)
 
                 student = students_table.query.filter_by(
@@ -72,16 +71,16 @@ def create_new_matches():
     db.session.commit()
 
 
-def get_matches():
-    matches_list = matches_table.query.all()
+def get_matches(id):
+    matches_list = matches_table.query.filter_by(group_id=id)
     matches_list = [(match.studentid, match.aluminfoemail)
                     for match in matches_list]
     db.session.commit()
     return matches_list
 
 
-def get_alumni():
-    return [alum for alum in alumni_table.query.all()]
+def get_alumni(id):
+    return [alum for alum in alumni_table.query.filter_by(group_id=id)]
 
 
 def get_alum(email):
@@ -90,8 +89,8 @@ def get_alum(email):
     return alum, matches
 
 
-def get_students():
-    return [student for student in students_table.query.all()]
+def get_students(id):
+    return [student for student in students_table.query.filter_by(group_id=id)]
 
 
 def get_student(netid):
@@ -101,29 +100,29 @@ def get_student(netid):
     return student, matches
 
 
-def get_unmatched_students():
-    return students_table.query.filter_by(matched=0).all()
+def get_unmatched_students(id):
+    return students_table.query.filter_by(matched=0).filter_by(group_id=id)
 
 
-def get_unmatched_alumni():
-    return alumni_table.query.filter_by(matched=0).all()
+def get_unmatched_alumni(id):
+    return alumni_table.query.filter_by(matched=0).filter_by(group_id=id)
 
 
-def create_one(studentid, aluminfoemail):
+def create_one(id, studentid, aluminfoemail):
     students_table.query.filter_by(studentid=studentid).first().matched = 1
     alumni_table.query.filter_by(
         aluminfoemail=aluminfoemail).first().matched += 1
-    new_match = matches_table(studentid, aluminfoemail)
+    new_match = matches_table(studentid, aluminfoemail, id)
     db.session.add(new_match)
     db.session.commit()
 
 
-def clear_matches():
+def clear_matches(id):
     db.session.query(matches_table).delete()
-    students = students_table.query.all()
+    students = students_table.query.filter_by(group_id=id)
     for student in students:
         student.matched = 0
-    alumni = alumni_table.query.all()
+    alumni = alumni_table.query.filter_by(group_id=id)
     for alum in alumni:
         alum.matched = 0
     db.session.commit()
