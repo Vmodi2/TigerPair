@@ -79,7 +79,7 @@ def admin_logout():
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_info():
 
-    username = "barkachi".replace('\n', '')
+    username = CASClient().authenticate().replace('\n', '')
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email")
