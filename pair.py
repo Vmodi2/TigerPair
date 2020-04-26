@@ -12,7 +12,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from itsdangerous import SignatureExpired
 from CASClient import CASClient
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import students, alumni, admins, groups
+from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
