@@ -1,0 +1,52 @@
+{% extends 'pages/site_base.html' %}
+
+{% block body %}
+{% include "pages/header.html" %}
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Profile</div>
+                    <a class="nav-link {% block edit_profile %}{% endblock %}" href="/{{side}}/dashboard">
+                        <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
+                        Edit profile
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Matches</div>
+                    <a class="nav-link {% block view_matches %}{% endblock %}" href="/{{side}}/matches">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-friends"></i></div>
+                        View matches
+                    </a>
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                {{username}}
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">A project by Abhinaya, Chris, Daniel, Tara, and Vikash</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/scripts.js"></script>
+<script src="/static/js/form.js"></script>
+{% endblock %}

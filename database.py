@@ -39,14 +39,13 @@ class alumni(db.Model):
     alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
     alumcareerfield = db.Column('alumcareerfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
-    username = db.Column('username', db.Unicode)
     password = db.Column('password', db.Unicode, nullable=False)
     email_confirmed = db.Column('email_confirmed', db.Boolean)
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
-                 alumacademicsmajor, alumcareerfield, username, password,
+                 alumacademicsmajor, alumcareerfield, password,
                  matched, email_confirmed, group_id=0):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
@@ -54,7 +53,6 @@ class alumni(db.Model):
         self.alumacademicsmajor = alumacademicsmajor
         self.alumcareerfield = alumcareerfield
         self.matched = matched
-        self.username = username
         self.password = password
         self.email_confirmed = email_confirmed
         self.group_id = 0

@@ -3,30 +3,33 @@
 
 <body id="top">
 
-{% block title %}
-Login
-{% endblock %}
+  {% block title %}
+  Login
+  {% endblock %}
 
-{% block styles %}
-{{super()}}
-<head>
+  {% block styles %}
+  {{super()}}
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"></link>
-  <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
-</head>
+  <head>
 
-{% endblock %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </link>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    </link>
+    <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
+  </head>
 
-{% block content %}
-<div class="container">
-  <div class="row" style="padding-top: 13%">
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-      <div class="card card-signin my-5">
-        <div class="card-body">
-          <h5 class="card-title text-center"><strong>Sign In</strong></h5>
+  {% endblock %}
+
+  {% block content %}
+  <div class="container">
+    <div class="row" style="padding-top: 13%">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center"><strong>Sign In</strong></h5>
             <form class="form-signin" method="POST" action="#">
               {{ form.hidden_tag() }}
 
@@ -43,7 +46,7 @@ Login
                 <!-- <label for="inputPassword">Password</label> -->
               </div>
               <center>
-                <p>Don't have an account? <a id ="signup" href="login/signup">Sign up!</a></p>
+                <p>Don't have an account? <a id="signup" href="login/signup">Sign up!</a></p>
                 <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>
               </center>
               <div class="custom-control custom-checkbox mb-3">
@@ -53,22 +56,24 @@ Login
               </div>
               <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
               <hr class="my-4">
-              <button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>
-              <button class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
+              <button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i
+                  class="fab fa-google mr-2"></i> Sign in with Google</button>
+              <button class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i
+                  class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
             </form>
           </div>
         </div>
       </div>
     </div>
-  <!-- /container -->
-</div>
-<script>
+    <!-- /container -->
+  </div>
+  <script>
 
-  $( document ).ready(function() {
+    $(document).ready(function () {
 
-              $(".card-body").slideDown();
+      $(".card-body").slideDown();
 
-});
+    });
 
   </script>
-{% endblock %}
+  {% endblock %}

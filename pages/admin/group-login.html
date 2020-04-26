@@ -1,32 +1,34 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "pages/admin/base.html" %}
 
 <body id="top">
 
-{% block title %}
-Group Login
-{% endblock %}
+  {% block title %}
+  Group Login
+  {% endblock %}
 
-{% block styles %}
-{{super()}}
-<head>
+  {% block styles %}
+  {{super()}}
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"></link>
-  <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
-</head>
+  <head>
 
-{% endblock %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </link>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    </link>
+    <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
+  </head>
 
-{% block content %}
-<div class="container">
-  <div class="row" style="padding-top: 13%">
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-      <div class="card card-signin my-5">
-        <div class="card-body">
-          <h5 class="card-title text-center"><strong>Enter Group ID</strong></h5>
+  {% endblock %}
+
+  {% block content %}
+  <div class="container">
+    <div class="row" style="padding-top: 13%">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center"><strong>Enter Group ID</strong></h5>
             <form class="form-signin" method="POST" action="#">
               {{ form.hidden_tag() }}
 
@@ -36,7 +38,8 @@ Group Login
                 <!-- <label for="username">Username</label> -->
               </div>
               <center>
-                <p>Don't have a group id? <a id ="signup" href="login/signup">Request one!</a></p> <!-- lets make people request one -->
+                <p>Don't have a group id? <a id="signup" href="login/signup">Request one!</a></p>
+                <!-- lets make people request one -->
               </center>
               <div class="custom-control custom-checkbox mb-3">
                 <input type="checkbox" class="custom-control-input" id="customCheck1">
@@ -50,15 +53,15 @@ Group Login
         </div>
       </div>
     </div>
-  <!-- /container -->
-</div>
-<script>
+    <!-- /container -->
+  </div>
+  <script>
 
-  $( document ).ready(function() {
+    $(document).ready(function () {
 
-              $(".card-body").slideDown();
+      $(".card-body").slideDown();
 
-});
+    });
 
   </script>
-{% endblock %}
+  {% endblock %}

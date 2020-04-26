@@ -3882,6 +3882,10 @@ input[type=button].btn-block {
   }
 }
 
+.match-info {
+  margin-top: 20px;
+}
+
 .nav {
   display: flex;
   flex-wrap: wrap;
@@ -3905,6 +3909,7 @@ input[type=button].btn-block {
 
 .nav-tabs {
   border-bottom: 1px solid #dee2e6;
+  margin-top: 15px;
 }
 .nav-tabs .nav-item {
   margin-bottom: -1px;
@@ -3959,6 +3964,7 @@ input[type=button].btn-block {
 }
 .tab-content > .active {
   display: block;
+  margin-top: 20px;
 }
 
 .navbar {

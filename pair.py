@@ -12,7 +12,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from itsdangerous import SignatureExpired
 from CASClient import CASClient
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import students, alumni, admins, groups
+from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
 from forms import LoginForm, RegisterForm
@@ -24,21 +24,6 @@ from wtforms.validators import DataRequired, Email, Length
 # -----------------------------------------------------------------------
 
 login_manager.login_view = 'login'
-
-# # -----------------------------------------------------------------------
-
-# class LoginForm(FlaskForm):
-#     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-#     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-#     remember = BooleanField('remember me')
-
-# # -----------------------------------------------------------------------
-# class RegisterForm(FlaskForm):
-#     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-#     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-#     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-
-# -----------------------------------------------------------------------
 
 
 class ForgotForm(Form):
@@ -77,144 +62,86 @@ def admin_logout():
 # -----------------------------------------------------------------------
 # Dynamic page function for student info page call
 @app.route('/student/dashboard', methods=['POST', 'GET'])
-def student_info():
-
-    username = "barkachi".replace('\n', '')
-    firstname = request.form.get("firstname")
-    lastname = request.form.get("lastname")
-    email = request.form.get("email")
-    major = request.form.get("major")
-    career = request.form.get("career")
-
+def student_dashboard():
+    username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(studentid=username).first()
-
-    attribute = 0 if current is None else current.matched
-
-    matched = False if attribute <= 0 else True
-    matchfirstname = ''
-    matchlastname = ''
-    matchemail = ''
-    if matched:
-        match = matches.query.filter_by(studentid=username).first()
-        matchemail = match.aluminfoemail
-        match = alumni.query.filter_by(aluminfoemail=matchemail).first()
-        matchfirstname = match.aluminfonamefirst
-        matchlastname = match.aluminfonamelast
-
-    if firstname is None:
-        if current is not None:
-            html = render_template('pages/student/dashboard.html',
-                                   firstname=current.studentinfonamefirst,
-                                   lastname=current.studentinfonamelast,
-                                   email=current.studentinfoemail,
-                                   major=current.studentacademicsmajor.upper(),
-                                   career=current.studentcareerdesiredfield,
-                                   side="Student", matched=matched, username=username,
-                                   matchfirstname=matchfirstname,
-                                   matchlastname=matchlastname,
-                                   matchemail=matchemail)
-
-        else:
-            html = render_template('pages/student/dashboard.html', firstname="",
-                                   lastname="", email="", major="",
-                                   career="", side="Student", matched=matched,
-                                   username=username,
-                                   matchfirstname=matchfirstname,
-                                   matchlastname=matchlastname,
-                                   matchemail=matchemail)
-    else:
-
-        if current is not None:  # Update row if student is not new
-            current.studentinfonamefirst = firstname
-            current.studentinfonamelast = lastname
-            current.studentinfoemail = email
-            current.studentacademicsmajor = major.upper()
-            current.studentcareerdesiredfield = career
-            db.session.commit()
-        else:  # Otherwise, add new row
-            new_student = students(username, firstname,
-                                   lastname, email, major.upper(), career, 0)
-            db.session.add(new_student)
-            db.session.commit()
-
-        html = render_template('pages/student/dashboard.html',
-                               firstname=firstname,
-                               lastname=lastname,
-                               email=email,
-                               major=major.upper(),
-                               career=career,
-                               side="Student", matched=matched,
-                               username=username,
-                               matchfirstname=matchfirstname,
-                               matchlastname=matchlastname,
-                               matchemail=matchemail)
-
+    html = render_template('pages/student/dashboard.html',
+                           student=current, username=username, side="student")
     return make_response(html)
 
+
+@app.route('/student/information', methods=['POST'])
+def student_information():
+    username = strip_user(CASClient().authenticate())
+    info = request.form
+    new_student = students(username, info.get('firstname'), info.get('lastname'),
+                           info.get('email'), info.get('major'), info.get('career'), 0)
+    db.session.merge(new_student)
+    db.session.commit()
+    return redirect(url_for('student_dashboard'))
+
+
+@app.route('/student/matches')
+def student_matches(match=None):
+    username = strip_user(CASClient().authenticate())
+    if not match:
+        match = get_match_student(username)
+    html = render_template('pages/student/matches.html',
+                           match=match, side="student")
+    return make_response(html)
+
+
+def get_match_student(username):
+    match = matches.query.filter_by(studentid=username).first()
+    if not match:
+        return None
+    return alumni.query.filter_by(aluminfoemail=match.aluminfoemail).first()
 # -----------------------------------------------------------------------
 
-
+# Dynamic page function for alum info page call
 @app.route('/alum/dashboard', methods=['POST', 'GET'])
 @login_required
-def alumni_info():
-    html = ''
-
-    if current_user.email_confirmed:
-
-        # THIS ASSUMES THERE IS ONLY ONE MATCH FOR EACH ALUM. THIS WILL
-        # FAIL OTHERWISE.
-        matched = False if current_user.matched <= 0 else True
-        matchfirstname = ''
-        matchlastname = ''
-        matchemail = ''
-        if matched:
-            match = matches.query.filter_by(
-                aluminfoemail=current_user.aluminfoemail).first()
-            match = students.query.filter_by(studentid=match.studentid).first()
-            matchfirstname = match.studentinfonamefirst
-            matchlastname = match.studentinfonamelast
-            matchemail = match.studentinfoemail
-
-        firstname = request.form.get("firstname")
-        lastname = request.form.get("lastname")
-        email = request.form.get("email")
-        major = request.form.get("major")
-        career = request.form.get("career")
-
-        if firstname is not None:
-            current_user.aluminfonamefirst = firstname
-            current_user.aluminfonamelast = lastname
-            current_user.alumacademicsmajor = major.upper()
-            current_user.alumcareerfield = career
-            db.session.commit()
-            html = render_template('pages/alum/dashboard.html', firstname=firstname,
-                                   lastname=lastname, email=email, major=major.upper(),
-                                   career=career, side="Alumni", matched=matched,
-                                   matchfirstname=matchfirstname,
-                                   matchlastname=matchlastname,
-                                   matchemail=matchemail, showInfo=True)
-        else:
-            firstname = current_user.aluminfonamefirst
-            firstname = "" if firstname is None else firstname
-            lastname = current_user.aluminfonamelast
-            lastname = "" if lastname is None else lastname
-            email = current_user.aluminfoemail
-            email = "" if email is None else email
-            major = current_user.alumacademicsmajor
-            major = "" if major is None else major.upper()
-            career = current_user.alumcareerfield
-            career = "" if career is None else career
-
-            html = render_template('pages/alum/dashboard.html', firstname=firstname,
-                                   lastname=lastname, email=email, major=major,
-                                   career=career, side="Alumni", matched=matched,
-                                   matchfirstname=matchfirstname,
-                                   matchlastname=matchlastname,
-                                   matchemail=matchemail, showInfo=False)
-    else:
+def alum_dashboard():
+    if not current_user.email_confirmed:
         return redirect(url_for('login'))
-
+    html = render_template('pages/alum/dashboard.html',
+                           alum=current_user, username=current_user.aluminfoemail, side="alum")
     return make_response(html)
+
+
+@app.route('/alum/information', methods=['GET', 'POST'])
+@login_required
+def alum_info():
+    # want to do similar thing as in /student/information route func
+    # but our table PK does not match up with the model PK
+    alum = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
+    alum.aluminfonamefirst = request.form.get('firstname')
+    alum.aluminfonamelast = request.form.get('lastname')
+    alum.aluminfoemail = request.form.get('email')
+    alum.alumacademicsmajor = request.form.get('major')
+    alum.alumcareerfield = request.form.get('career')
+    db.session.commit()
+    return redirect(url_for('alum_dashboard'))
+
+
+@app.route('/alum/matches')
+@login_required
+def alum_matches(match=None):
+    # username = strip_user(CASClient().authenticate())
+    if not match:
+        match = get_match_alum(current_user.aluminfoemail)
+    html = render_template('pages/alum/matches.html',
+                           match=match, side="alum")
+    return make_response(html)
+
+
+def get_match_alum(email):
+    match = matches.query.filter_by(aluminfoemail=email).first()
+    if not match:
+        return None
+    return students.query.filter_by(studentid=match.studentid).first()
+
 # -----------------------------------------------------------------------
 
 
@@ -263,17 +190,17 @@ def matching():
 def login():
 
     if current_user.is_authenticated:
-        return redirect(url_for('alumni_info'))
+        return redirect(url_for('alum_info'))
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = alumni.query.filter_by(username=form.username.data).first()
+        user = alumni.query.filter_by(aluminfoemail=form.email.data).first()
         if user is not None:
             if user.email_confirmed:
                 if check_password_hash(user.password, form.password.data):
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
-                    return redirect(url_for('alumni_info'))
+                    return redirect(url_for('alum_info'))
             else:
                 flash("email not verified")
 
@@ -380,7 +307,7 @@ def signup():
 
             user = alumni(None, None, email, None, None,
                           name, hashed_password, 0, False)
-            db.session.add(user)
+            db.session.merge(user)
             db.session.commit()  # Create new user
 
             return redirect(url_for('gotoemail'))
@@ -564,6 +491,7 @@ def admin_import_alumni_process():
 
 
 def process_import(is_alumni):
+    username, id = verify_admin()
     try:
         request_file = request.files['data_file']
         if not request_file:
@@ -572,13 +500,13 @@ def process_import(is_alumni):
         if is_alumni:
             for row in csv_reader:
                 new_alum = alumni(row['First Name'], row['Last Name'],
-                                  row['Email'], row['Major'].upper(), row['Career'], 0, 0)
-                db.session.add(new_alum)
+                                  row['Email'], row['Major'].upper(), row['Career'], 0, id)
+                db.session.merge(new_alum)
         else:
             for row in csv_reader:
                 new_student = students(row['netid'], row['First Name'],
-                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0, 0)
-                db.session.add(new_student)
+                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0, id)
+                db.session.merge(new_student)
         db.session.commit()
         return make_response("Success processing your upload!")
     except Exception as e:
@@ -600,6 +528,10 @@ def process_import(is_alumni):
 
     html = render_template('pages/admin/group-login.html', form=form)
     return make_response(html)
+
+
+def strip_user(username):
+    return username.replace('\n', '')
 
 
 # -----------------------------------------------------------------------
