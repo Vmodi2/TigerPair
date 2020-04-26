@@ -122,13 +122,18 @@ def get_student_info():
     'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
     r = requests.get(url, headers = headers)
-    if r:
-        student_info = json.loads(r.text)
-        firstname = student_info['first_name']
-        lastname = student_info['last_name']
-        email = student_info['email']
-        major = student_info['major_code']
-        return [firstname, lastname, email, major]
+    if not r:
+        return None
+    student_info = json.loads(r.text)
+    firstname = student_info['first_name']
+    lastname = student_info['last_name']
+    email = student_info['email']
+    major = student_info['major_code']
+    return [firstname, lastname, email, major]
+
+    new_student = students(username, firstname, lastname,
+                           email, major, info.get('career'), 0)
+    
 
 
 
@@ -139,9 +144,10 @@ def student_dashboard():
     current = students.query.filter_by(studentid=username).first()
     print(current)
     if not current:
-        get_student_info()
-        html = render_template('pages/student/new.html')
-        return make_response(html)
+        # student_info = get_student_info()
+        if student_info:
+            html = render_template('pages/student/new.html')
+            return make_response(html)
     else:
         print("in student dashboard")
         username = strip_user(CASClient().authenticate())
