@@ -1,4 +1,4 @@
-{% extends "bootstrappages/admin/base.html" %}
+{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 <body id="top">
@@ -34,17 +34,17 @@
 
               <div class="form-label-group">
                 <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
-                {{wtf.form_field(form.username, id='Username', class='form-control', placeholder='Username')}}
+                {{wtf.form_field(form.email, id='Email', class='form-control', placeholder='Username')}}
                 <!-- <label for="username">Username</label> -->
               </div>
               <div class="form-label-group">
                 <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
-                {{wtf.form_field(form.email, id='Email', class='form-control', placeholder='email')}}
+                {{wtf.form_field(form.password, id='password', class='form-control', placeholder='Password')}}
                 <!-- <label for="username">Username</label> -->
               </div>
               <div class="form-label-group">
                 <!-- <input type="password" id="inputPassword" class="form-control" placeholder="Password" required> -->
-                {{ wtf.form_field(form.password, id="password", class="form-control", placeholder="Password") }}
+                {{ wtf.form_field(form.confirm_password, id="confirm_password", class="form-control", placeholder="Confirm Password") }}
                 <!-- <label for="inputPassword">Password</label> -->
               </div>
               <button class="btn btn-lg btn-sign btn-block text-uppercase" type="submit">Sign Up</button>

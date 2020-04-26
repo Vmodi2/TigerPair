@@ -14,7 +14,7 @@
     <header>
         <nav class="navbar fixed-top transparent navbar-expand-lg navbar-dark bg-dark" id="landing-nav">
             <a class="navbar-brand" href="#">
-                <img src="/static/images/TigerPairLogo.png" width="50" height="50" alt="">
+                <img href="#main" src="/static/images/TigerPairLogo.png" width="100" height="50" alt="">
             </a>
             <!-- <a class="navbar-brand" href="#">Navbar</a> -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -28,7 +28,7 @@
                         <a class="nav-link" href="#">What is TigerPair?<span class="sr-only"></span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Meet the Team<span class="sr-only"></span></a>
+                        <a class="nav-link" href="#team">Meet the Team<span class="sr-only"></span></a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -48,10 +48,19 @@
     </header>
 
     <main>
-        <div class="container-fluid landing d-flex align-items-center justify-content-center">
+        <div id="main" class="container-fluid landing d-flex align-items-center justify-content-center">
             <div class="row d-flex justify-content-md-around align-items-md-end mh-100">
                 <div class="col-12 col-lg-6">
+                    <br>
+                    <br>
+                    <br>
                     <h1 class="display-1 text-white text-center">TigerPair</h1>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2 d-flex align-items-end flex-wrap">
                     <div class="d-flex align-items-end flex-wrap">
@@ -59,18 +68,22 @@
                             class="landing-tiger d-none d-md-block">
                     </div>
                     <div class="landing-btn">
-                        <button type="button" class="btn btn-outline-light btn-custom"
-                            id="littletiger-btn"><strong>Student</strong></button>
+                        <form action="/student/dashboard">
+                            <button type="submit" class="btn btn-outline-light btn-custom"
+                                id="littletiger-btn"><strong>Student</strong></button>
+                        </form>
                     </div>
                 </div>
                 <div class="col-6 col-md-8 col-lg-4">
                     <div class="d-flex align-items-end flex-wrap">
-                        <img src="/static/images/bigtiger.png" alt="big tiger" id="bigtiger-img"
-                            class="landing-tiger d-none d-md-block">
+                            <img src="/static/images/bigtiger.png" alt="big tiger" id="bigtiger-img"
+                                class="landing-tiger d-none d-md-block">    
                     </div>
                     <div class="landing-btn mt-md-3">
-                        <button type="button" class="btn btn-outline-light btn-custom"
-                            id="bigtiger-btn"><strong>Alum</strong></button>
+                        <form action="/alum/dashboard">
+                            <button type="submit" class="btn btn-outline-light btn-custom"
+                                id="bigtiger-btn"><strong>Alum</strong></button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -79,7 +92,12 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1 class="display-2 text-center">Meet the Team</h1>
+                    <br>
+                    <br>
+                    <br>
+                    <h1 id ="team" class="display-2 text-center">Meet the Team</h1>
+                    <br>
+                    <br>
                 </div>
             </div>
             <div class="row d-flex justify-content-center" ; background-color:transparent;>
@@ -87,6 +105,7 @@
                     <div class="card">
                         <img src="../static/images/team/abhinaya.jpg" alt="Jane" style="width:100%">
                         <div class="container">
+                            <br>
                             <h3>Abhinaya Raghunathan</h3>
                             <p class="title">Unit Testing and Design</p>
                             <p>Some text that describes me lorem ipsum ipsum lorem.</p>
@@ -100,6 +119,7 @@
                     <div class="card">
                         <img src="../static/images/team/chris.jpg" alt="Mike" style="width:100%">
                         <div class="container">
+                            <br>
                             <h3>Chris Barkachi</h3>
                             <p class="title">DevOps and Logistics</p>
                             <p>Some text that describes me lorem ipsum ipsum lorem.</p>
@@ -113,6 +133,7 @@
                     <div class="card">
                         <img src="../static/images/team/daniel.jpg" alt="Daniel" style="width:100%">
                         <div class="container">
+                            <br>
                             <h3>Daniel Goodman</h3>
                             <p class="title">Frontend</p>
                             <p>Some text that describes me lorem ipsum ipsum lorem.</p>
@@ -125,6 +146,7 @@
                     <div class="card">
                         <img src="../static/images/team/tara.jpg" alt="Tara" style="width:100%">
                         <div class="container">
+                            <br>
                             <h3>Tara Cubeisy</h3>
                             <p class="title">Backend</p>
                             <p>Some text that describes me lorem ipsum ipsum lorem.</p>
@@ -138,6 +160,7 @@
                     <div class="card">
                         <img src="../static/images/team/vikash.jpg" alt="Vikash" style="width:100%">
                         <div class="container">
+                            <br>
                             <h3>Vikash Modi</h3>
                             <p class="title">Team Leader</p>
                             <p>Some text that describes me lorem ipsum ipsum lorem.</p>

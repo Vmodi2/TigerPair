@@ -46,7 +46,7 @@ class alumni(db.Model):
 
     def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
                  alumacademicsmajor, alumcareerfield, password,
-                 matched, email_confirmed, group_id=0):
+                 email_confirmed, matched, group_id=0):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail
