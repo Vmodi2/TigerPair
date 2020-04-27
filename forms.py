@@ -13,6 +13,12 @@ from wtforms.validators import DataRequired, Email, Length, ValidationError, Inp
 from werkzeug.security import check_password_hash
 
 
+#class AlumLoginForm(FlaskForm):
+    #username = StringField('username', validators=[InputRequired()])
+    #password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+
+
+
 # -----------------------------------------------------------------------
 
 class LoginForm(FlaskForm):
