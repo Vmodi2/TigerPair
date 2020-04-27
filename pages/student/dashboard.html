@@ -9,11 +9,7 @@
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab" aria-controls="page-1"
-			aria-selected="false">More info</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" id="page-2-tab" data-toggle="tab" href="#page-2" role="tab" aria-controls="page-2"
-			aria-selected="false">And some more info</a>
+			aria-selected="false">More Info</a>
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" id="change-email-tab" data-toggle="tab" href="#change-email" role="tab"
@@ -51,18 +47,32 @@
 		</form>
 	</div>
 	<div class="tab-pane fade" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-		cute
-		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
-		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-2"
-			hidden>&nbsp;Submit&nbsp;</button>
-	</div>
-	<div class="tab-pane fade" id="page-2" role="tabpanel" aria-labelledby="page-2-tab">
-		cuter
-		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-3">&nbsp;Edit&nbsp;</button>
-		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-3"
-			hidden>&nbsp;Submit&nbsp;</button>
+		<form method="post" action="/student/information">
+			<label for="firstname">Custom Information 1</label>
+			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
+				value="{{student.studentinfocustom1}}" readonly>
+			<br />
+			<label for="lastname">Custom Information 2</label>
+			<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
+				value="{{student.studentinfocustom2}}" readonly>
+			<br />
+			<label for="major">Custom Information 3</label>
+			<select class="form-control mr-sm-2" id="major" name="major" disabled>
+				<option value="{{student.studentinfocustom3}}" selected>{{student.studentinfocustom3}}
+				</option>
+			</select>
+			<br />
+			<label for="career">Custom Information 4</label>
+			<select class="form-control mr-sm-2" id="career" name="career" disabled>
+				<option value="{{student.studentinfocustom4}}" selected>
+					{{student.studentinfocustom4}}
+				</option>
+			</select>
+			<br />
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-1"
+				hidden>&nbsp;Submit&nbsp;</button>
+		</form>
 	</div>
 	<div class="tab-pane fade" id="change-email" role="tabpanel" aria-labelledby="change-email-tab">
 		<form action="/student/email" method="post">
@@ -76,12 +86,13 @@
 			<div class="form-group row">
 				<label for="email" class="col-sm-2 col-form-label">New Email</label>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com">
+					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com" required>
 				</div>
+				<br><br>
 				<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" id="email-repeated" name="email-repeated"
-						placeholder="email@domain.com">
+						placeholder="email@domain.com" required>
 				</div>
 			</div>
 			<button type="submit" class="btn btn-outline-success my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
