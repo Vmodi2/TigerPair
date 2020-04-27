@@ -26,7 +26,6 @@ function update_majors() {
     for (var i = 0; i < majors.length; i++) {
 
         major = majors[i];
-        console.log(major);
         major_string += '<option value="' + major + '">' + major + '</option>';
     }
 

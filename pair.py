@@ -185,8 +185,9 @@ def student_matches(match=None):
     username = strip_user(CASClient().authenticate())
     if not match:
         match = get_match_student(username)
-    html = render_template('pages/student/matches.html',
-                           match=match, side="student")
+    current = students.query.filter_by(studentid=username).first()
+    html = render_template('pages/student/matches.html', student=current,
+                           username=username, side="student", match=match)
     return make_response(html)
 
 
@@ -511,7 +512,7 @@ def admin_dashboard_create():
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
     username, id = verify_admin()
-    html = render_template('pages/admin/modify-matches.html',
+    html = render_template('pages/admin/modify-matches.html', matches=matches,
                            side='Admin', username=username, id=id)
     return make_response(html)
 
@@ -551,7 +552,7 @@ def admin_dashboard_createone():
     username, id = verify_admin()
     create_one(id, request.form.get('student'), request.form.get('alum'))
     matches = get_matches(id)
-    html = render_template('pages/admin/dashboard.html', matches=matches,
+    html = render_template('pages/admin/dashboard.html',
                            side='Admin', username=username, id=id)
     return make_response(html)
 

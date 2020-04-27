@@ -1,9 +1,9 @@
-$('.edit-btn').on('click', () => {
+$('[id^=edit-btn]').on('click', function () {
     $("#firstname").attr('readOnly', false);
     $("#lastname").attr('readOnly', false);
     $("#email").attr('readOnly', false);
     $("#major").attr('disabled', false);
     $("#career").attr('disabled', false);
-    $(".edit-btn").attr('hidden', true);
-    $("#submit").attr('hidden', false);
+    $(this).attr('hidden', true);
+    $(this).next().attr('hidden', false);
 });
