@@ -84,14 +84,13 @@ def admin_logout():
 # -----------------------------------------------------------------------
 
 
-def get_student():
-    # username = get_student()
-    username = strip_user("barkachi")
+def get_cas():
+    username = strip_user(CASClient().authenticate())
     return username
 
 
 def route_new_student():
-    # username = get_student()
+    # username = get_cas()
     # current = students.query.filter_by(studentid=username).first()
     # if not current:
     #     student_new()
@@ -100,59 +99,58 @@ def route_new_student():
 
 @app.route('/student/new')
 def student_new():
-    username = get_student()
+    username = get_cas()
     html = render_template('pages/student/new.html',
                            student=students.query.filter_by(studentid=username))
     return make_response(html)
 
 
 def get_student_info():
-    pass
-#     username = CASClient().authenticate()
-#     username = username[0:len(username)-1]
-#     # adding tigerbook code (grabbed from tigerbook API)
+    username = CASClient().authenticate()
+    username = username[0:len(username)-1]
+    # adding tigerbook code (grabbed from tigerbook API)
 
-# # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
-# # * https://jqueryvalidation.org/
-# # * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
-#     key = "2c6f9faa30e5f4b2d7d6e6bb54d72861"
-#     url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/{username}+TigerPair'
-#     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
+# /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
+# * https://jqueryvalidation.org/
+# * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
+    key = "2c6f9faa30e5f4b2d7d6e6bb54d72861"
+    url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/{username}+TigerPair'
+    created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
-#     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
-#                      for i in range(32)]).encode('utf-8')
+    nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
+                     for i in range(32)]).encode('utf-8')
 
-#     password = key.encode('utf-8')    # use your own from /getkey
-#     generated_digest = b64encode(hashlib.sha256(
-#         nonce + created + password).digest())
+    password = key.encode('utf-8')    # use your own from /getkey
+    generated_digest = b64encode(hashlib.sha256(
+        nonce + created + password).digest())
 
-#     generated_digest = str(generated_digest).replace("b\'", '')
-#     generated_digest = str(generated_digest).replace("\'", '')
-#     nonce = str(b64encode(nonce)).replace("b\'", '')
-#     nonce = str(nonce).replace("\'", '')
-#     created = str(created).replace("b\'", '')
-#     created = str(created).replace("\'", '')
-#     headers = {
-#         'Authorization': 'WSSE profile="UsernameToken"',
-#         'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
-#     }
-#     r = requests.get(url, headers=headers)
-#     if r:
-#         student_info = json.loads(r.text)
-#         firstname = student_info['first_name']
-#         lastname = student_info['last_name']
-#         email = student_info['email']
-#         major = student_info['major_code']
+    generated_digest = str(generated_digest).replace("b\'", '')
+    generated_digest = str(generated_digest).replace("\'", '')
+    nonce = str(b64encode(nonce)).replace("b\'", '')
+    nonce = str(nonce).replace("\'", '')
+    created = str(created).replace("b\'", '')
+    created = str(created).replace("\'", '')
+    headers = {
+        'Authorization': 'WSSE profile="UsernameToken"',
+        'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
+    }
+    r = requests.get(url, headers=headers)
+    if r:
+        student_info = json.loads(r.text)
+        firstname = student_info['first_name']
+        lastname = student_info['last_name']
+        email = student_info['email']
+        major = student_info['major_code']
 
-#         new_student = students(username, firstname, lastname,
-#                                email, major)
-#         upsert_student(new_student)
+        new_student = students(username, firstname, lastname,
+                               email, major)
+        upsert_student(new_student)
 
 
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
     route_new_student()
-    username = get_student()
+    username = get_cas()
     current = students.query.filter_by(studentid=username).first()
     if not current:
         get_student_info()
@@ -162,7 +160,7 @@ def student_dashboard():
         return make_response(html)
     else:
         # print("in student dashboard")
-        username = get_student()
+        username = get_cas()
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/dashboard.html',
                                student=current, username=username, side="student")
@@ -172,7 +170,7 @@ def student_dashboard():
 @app.route('/student/information', methods=['POST'])
 def student_information():
     route_new_student()
-    username = get_student()
+    username = get_cas()
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
                            f'{username}@princeton.edu', info.get('major'), info.get('career'))
@@ -188,7 +186,7 @@ def student_information():
 @app.route('/student/matches')
 def student_matches(match=None):
     route_new_student()
-    username = get_student()
+    username = get_cas()
     if not match:
         match = get_match_student(username)
     current = students.query.filter_by(studentid=username).first()
@@ -202,7 +200,7 @@ def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = get_student()
+    username = get_cas()
     current = students.query.filter_by(
         studentid=username).first()
     current.studentinfoemail = request.form.get('email')
@@ -285,7 +283,7 @@ def alumni_email():
 @app.route('/alum/matches')
 @login_required
 def alum_matches(match=None):
-    # username = get_student()
+    # username = get_cas()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
@@ -483,7 +481,7 @@ def signup():
 
 
 def verify_admin():
-    username = "barkachi"
+    username = strip_user()
     current = admins.query.filter_by(username=username).first()
     if not current:
         current = admins(username)
