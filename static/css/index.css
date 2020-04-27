@@ -52,10 +52,9 @@
 .move-up {
   position: relative; 
   top: -5px;
-  /* transition: top 1s ease-in */
 }
-.btn-lg {
-  transition: top 1s ease-in;
+.move-up {
+  transition: top 8s ease-in-out;
 }
 
 /* cards */

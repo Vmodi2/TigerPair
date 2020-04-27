@@ -33,7 +33,7 @@ import json
 login_manager.login_view = 'login'
 
 # class LoginForm(Form):
-#username = StringField('Email', validators=[DataRequired()])
+# username = StringField('Email', validators=[DataRequired()])
 # password = PasswordField('Password', validators=[
 # DataRequired(), Length(min=8, max=80)])
 
@@ -47,10 +47,10 @@ class PasswordResetForum(Form):
                              DataRequired(), Length(min=8, max=80)])
 
 # class InfoForm(Form):
-    #firstname = StringField('First Name', validators=[DataRequired()])
-    #lastname = StringField('Lasr Name', validators=[DataRequired()])
-    #major = StringField('Major', validators=[DataRequired()])
-    #career = StringField('Career Field', validators=[DataRequired()])
+    # firstname = StringField('First Name', validators=[DataRequired()])
+    # lastname = StringField('Lasr Name', validators=[DataRequired()])
+    # major = StringField('Major', validators=[DataRequired()])
+    # career = StringField('Career Field', validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -219,30 +219,41 @@ def get_match_student(username):
 
 
 # NEW ALUM START
-@app.route('/alum/information', methods=['GET', 'POST'])
 @app.route('/alum/dashboard', methods=['GET', 'POST'])
 @login_required
-def alumni_info():
-    # want to do similar thing as in /student/information route func
-    # but our table PK does not match up with the model PK
-    print("in alum info")
+def alumni_dashboard():
     if not current_user.email_confirmed:
         return redirect(url_for('login'))
+    html = render_template('pages/alum/dashboard.html', alum=current_user,
+                           username=current_user.aluminfoemail, side="alum")
+    return make_response(html)
 
+
+@app.route('/alum/information', methods=['GET', 'POST'])
+@login_required
+def alumni_info():
+    if not current_user.email_confirmed:
+        return redirect(url_for('login'))
     if (flask.request.method == 'POST'):
         alum = alumni.query.filter_by(
             aluminfoemail=current_user.aluminfoemail).first()
         alum.aluminfonamefirst = request.form.get('firstname')
         alum.aluminfonamelast = request.form.get('lastname')
-        alum.aluminfoemail = request.form.get('email')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
         db.session.commit()
-        # return redirect(url_for('alum_dashboard'))
+    return redirect(url_for('alumni_dashboard'))
 
-    html = render_template('pages/alum/dashboard.html', alum=current_user,
-                           username=current_user.aluminfoemail, side="alum")
-    return make_response(html)
+
+@app.route('/alum/email', methods=['GET', 'POST'])
+@login_required
+def alumni_email():
+    # check model to see if you can modify current_user directly
+    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    current = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
+    current.aluminfoemail = request.form.get('email')
+    return redirect(url_for('alumni_dashboard'))
 
 
 @app.route('/alum/matches')
@@ -414,7 +425,7 @@ def signup():
 
     if form.validate_on_submit():
         email = form.email.data
-        #username = form.username.data
+        # username = form.username.data
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
@@ -644,15 +655,15 @@ def process_import(is_alumni):
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
 # def login():
 
-    #form = LoginForm()
+    # form = LoginForm()
     # if form.validate_on_submit():
-        #group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+        # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
         # if group_id is not None:
         # if check_password_hash(user.password, form.password.data): We should hash groupids for safety
-        #login_user(user, remember=form.remember.data)
+        # login_user(user, remember=form.remember.data)
         # return redirect(url_for('/admin/dashboard'))
         # else:
-        #flash("Group ID does not exist")
+        # flash("Group ID does not exist")
 
     html = render_template('pages/admin/group-login.html', form=form)
     return make_response(html)
