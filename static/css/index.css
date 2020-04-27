@@ -14,7 +14,23 @@
     max-width:100vw;
    /* font-family:  'Montserrat', sans-serif;*/
 }
+.team{
+  background-image: url("/static/images/20140610_NAB_013.jpg");
+  background-size: cover;
+    background-repeat: no-repeat; 
+    max-width:100vw;
+    font-style: bold;
+}
 
+/* .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;;
+  opacity: .2;
+  background-color: #000000;
+} */
 /* navbar */
 .navbar {
     padding: 0 1rem !important;
