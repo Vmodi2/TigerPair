@@ -288,7 +288,7 @@ def alum_matches(match=None):
     # username = get_student()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
-    html = render_template('pages/alum/matches.html',
+    html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                            match=match, side="alum")
     return make_response(html)
 

@@ -46,23 +46,23 @@
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit"
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-1"
 				hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
 	<div class="tab-pane fade" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
 		cute
 		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit"
+		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-2"
 			hidden>&nbsp;Submit&nbsp;</button>
 	</div>
 	<div class="tab-pane fade" id="page-2" role="tabpanel" aria-labelledby="page-2-tab">
 		cuter
 		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0 edit-btn">&nbsp;Edit&nbsp;</button>
-		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit"
+		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-3">&nbsp;Edit&nbsp;</button>
+		<button type=" submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-3"
 			hidden>&nbsp;Submit&nbsp;</button>
 	</div>
 	<div class="tab-pane fade" id="change-email" role="tabpanel" aria-labelledby="change-email-tab">
@@ -91,3 +91,8 @@
 </div>
 {% endblock %}
 {% block edit_profile %}active{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/options.js"></script>
+<script src="/static/js/update.js"></script>
+<script src="/static/js/scripts.js"></script>
+{% endblock %}
