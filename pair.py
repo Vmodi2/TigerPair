@@ -481,7 +481,7 @@ def signup():
 
 
 def verify_admin():
-    username = strip_user()
+    username = get_cas()
     current = admins.query.filter_by(username=username).first()
     if not current:
         current = admins(username)
