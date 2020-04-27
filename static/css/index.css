@@ -54,6 +54,9 @@
   top: -5px;
   /* transition: top 1s ease-in */
 }
+.btn-lg {
+  transition: top 1s ease-in;
+}
 
 /* cards */
 .column {
