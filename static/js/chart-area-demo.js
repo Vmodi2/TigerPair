@@ -42,7 +42,7 @@ function handleResponse(response, type) {
         yAxes: [{
           ticks: {
             min: 0,
-            max: Math.ceil(values.reduce((acc, cur) => acc > cur ? acc : cur) * 1.3),
+            max: Math.ceil(values.reduce((acc, cur) => acc > cur ? acc : cur) * 1.6),
             maxTicksLimit: 5
           },
           gridLines: {
