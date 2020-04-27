@@ -65,24 +65,24 @@
                 </button>
             </div>
             <form action="/{{side}}/id" method="post">
-                <div class="modal-body">
+                <div class="modal-body d-flex flex-column justify-content-start">
                     <div class="form-group row ml-auto">
-                        <label for="staticId" class="col-sm-6 col-form-label text-right">Current Group ID</label>
-                        <div class="col-sm-6">
+                        <label for="staticId" class="col-sm-8 col-form-label">Current Group ID</label>
+                        <div class="col-sm-4">
                             <input type="text" readonly class="form-control-plaintext" id="staticId"
                                 value="{{student.group_id if student}}{{alum.group_id if alum}}">
                         </div>
                     </div>
                     <div class="form-group row ml-auto">
-                        <label for="id" class="col-sm-6 col-form-label text-right">New Group ID</label>
-                        <div class="col-sm-6">
+                        <label for="id" class="col-sm-8 col-form-label">New Group ID</label>
+                        <div class="col-sm-4">
                             <input type="text" class="form-control" id="id" name="id" placeholder="">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Change</button>
+                    <button type="submit" class="btn btn-primary btn-warning">Change</button>
                 </div>
             </form>
         </div>
