@@ -108,8 +108,8 @@ def get_student_info():
 # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
 # * https://jqueryvalidation.org/
 # * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
-    key = "bef729ddad1c3c80fb5e3e24b4b28be2"
-    url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+username
+    key = "2c6f9faa30e5f4b2d7d6e6bb54d72861"
+    url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/{username}+TigerPair'
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
