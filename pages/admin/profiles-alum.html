@@ -6,6 +6,7 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                {% if alumni %}
                 <thead>
                     <tr>
                         <th>First Name</th>
@@ -39,6 +40,9 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                {% else %}
+                <h2>No alumni</h2>
+                {% endif %}
             </table>
         </div>
     </div>

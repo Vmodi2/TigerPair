@@ -5,25 +5,25 @@
     <h1 class="display-4">Before we begin</h1>
     <p class="lead">Fill out some required information below so that algorithm can begin to find you a perfect match</p>
     <hr class="my-4">
-    <form method="post" action="/student/information">
+    <form method="post" action="/alum/information">
         <label for="name">Name</label>
         <div class="row">
             <div class="col">
                 <input type="text" class="form-control" placeholder="First name"
-                    value="{{student.studentinfonamefirst}}" name="firstname">
+                    value="{{user.aluminfonamefirst if user.aluminfonamefirst}}" name="firstname">
             </div>
             <div class="col">
-                <input type="text" class="form-control" placeholder="Last name" value="{{student.studentinfonamelast}}"
+                <input type="text" class="form-control" placeholder="Last name" value="{{user.aluminfonamelast}}"
                     name="lastname">
             </div>
         </div>
         <br />
         <label for="major">Major</label>
         <select class="form-control mr-sm-2" id="major" name="major" required>
-            <option value="{{student.studentacademicsmajor}}">{{student.studentacademicsmajor}}</option>
+            <option value="{{user.alumacademicsmajor}}">{{user.alumacademicsmajor}}</option>
         </select>
         <br />
-        <label for="career">Desired Career Field</label>
+        <label for="career">Career Field</label>
         <select class="form-control mr-sm-2" id="career" name="career" required>
             <option disabled selected value> -- select an option -- </option>
         </select>
