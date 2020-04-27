@@ -51,7 +51,3 @@ class RegisterForm(FlaskForm):
         if user:
             raise ValidationError("That email is taken. Please use another")
 
-
-
-
-# ------------------------------------------------------------------------
