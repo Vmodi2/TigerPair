@@ -189,6 +189,10 @@ def student_matches(match=None):
     username = get_cas()
     if not match:
         match = get_match_student(username)
+    current = students.query.filter_by(studentid=username).first()
+    html = render_template('pages/student/matches.html',
+                           match=match, username=username, student=current, side="student")
+    return make_response(html)
 
 
 @app.route('/student/email', methods=['GET', 'POST'])
@@ -202,11 +206,6 @@ def student_email():
     current.studentinfoemail = request.form.get('email')
     db.session.commit()
     return redirect(url_for('student_dashboard'))
-
-    current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/student/matches.html', student=current,
-                           username=username, side="student", match=match)
-    return make_response(html)
 
 
 @app.route('/student/id', methods=['GET', 'POST'])
