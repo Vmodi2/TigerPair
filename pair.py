@@ -168,7 +168,7 @@ def student_information():
     username = strip_user(CASClient().authenticate())
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0)
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0, info.get('groupid'))
     db.session.merge(new_student)
     db.session.commit()
     return redirect(url_for('student_dashboard'))
@@ -249,6 +249,7 @@ def alumni_info():
         alum.aluminfonamelast = request.form.get('lastname')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
+        alum.groupid = request.form.get('groupid')
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
@@ -471,7 +472,7 @@ def signup():
 def verify_admin():
     username = CASClient().authenticate()
     current = admins.query.filter_by(username=username).first()
-    if (not current):
+    if not current:
         current = admins(username)
         db.session.add(current)
         db.session.commit()

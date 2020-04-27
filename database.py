@@ -26,7 +26,7 @@ class students(db.Model):
         self.studentacademicsmajor = studentacademicsmajor
         self.studentcareerdesiredfield = studentcareerdesiredfield
         self.matched = matched
-        self.group_id = 0
+        self.group_id = group_id
 
 
 class alumni(db.Model):
@@ -56,7 +56,7 @@ class alumni(db.Model):
         self.matched = matched
         self.password = password
         self.email_confirmed = email_confirmed
-        self.group_id = 0
+        self.group_id = group_id
 
     def is_authenticated(self):
         return self.authenticated
