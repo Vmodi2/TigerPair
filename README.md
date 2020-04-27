@@ -14,7 +14,7 @@ Abhinaya Raghunathan Chris Barkachi Daniel Goodman Tara Cubeisy and Vikash Modi
 
 ## Link
 
-TigerPair can be accessed at: [TigerPair](tigerpair.herokuapp.com)
+TigerPair can be accessed at: [tigerpair.herokuapp.com](tigerpair.herokuapp.com)
 
 
 ## Weekly Work
