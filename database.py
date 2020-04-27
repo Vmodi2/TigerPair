@@ -31,15 +31,16 @@ class students(db.Model):
 
 class alumni(db.Model):
     __tablename__ = 'alumni'
-    # alumid = db.Column('alumid', db.Unicode, primary_key=True)
+    id = db.Column('id', db.Unicode, db.Sequence(
+        'alumni_id_seq'), primary_key=True)
     aluminfonamefirst = db.Column('aluminfonamefirst', db.Unicode)
     aluminfonamelast = db.Column('aluminfonamelast', db.Unicode)
     aluminfoemail = db.Column(
-        'aluminfoemail', db.Unicode, primary_key=True, nullable=False)
+        'aluminfoemail', db.Unicode)
     alumacademicsmajor = db.Column('alumacademicsmajor', db.Unicode)
     alumcareerfield = db.Column('alumcareerfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
-    password = db.Column('password', db.Unicode, nullable=False)
+    password = db.Column('password', db.Unicode)
     email_confirmed = db.Column('email_confirmed', db.Boolean)
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)

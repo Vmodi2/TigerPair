@@ -2,24 +2,7 @@
 
 {% block body %}
 
-<head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
-
-	<title>Alumni Hub</title>
-
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-	<!-- Custom styles for this page -->
-	<link href="/static/css/navbar.css" rel="stylesheet">
-</head>
-
-<body class="d-flex flex-column h-100" onload="update_majors()">
+<body class="d-flex flex-column h-100">
 
 	<header>
 		<!-- Fixed navbar -->
@@ -32,8 +15,11 @@
 	<main role="main" class="flex-shrink-0">
 		<div class="jumbotron m-0 bg-light">
 			<br>
-			<strong>{{errormsg}}</strong>
-			<h1 class="display-4">Before we begin</h1>
+			<br>
+			<br>
+			<br>
+			<h1 class="display-4">Email Confirmed!</h1>
+			</p>
 			<p class="lead">Please <a href="/login">click here</a> to sign in.</p>
 		</div>
 	</main>
@@ -50,3 +36,4 @@
 </body>
 
 </html>
+{% endblock %}

@@ -253,6 +253,7 @@ def alumni_email():
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     current.aluminfoemail = request.form.get('email')
+    db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
 
