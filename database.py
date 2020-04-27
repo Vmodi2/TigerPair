@@ -16,7 +16,7 @@ class students(db.Model):
     group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
-                 studentacademicsmajor, studentcareerdesiredfield, matched, group_id=0):
+                 studentacademicsmajor, studentcareerdesiredfield=None, matched=0, group_id=0):
         self.studentid = studentid
         self.studentinfonamefirst = studentinfonamefirst
         self.studentinfonamelast = studentinfonamelast
@@ -43,9 +43,8 @@ class alumni(db.Model):
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)
 
-    def __init__(self, aluminfonamefirst, aluminfonamelast, aluminfoemail,
-                 alumacademicsmajor, alumcareerfield, password,
-                 email_confirmed, matched, group_id=0):
+    def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
+                 email_confirmed=False, group_id=0):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail

@@ -137,9 +137,8 @@ def get_student_info():
         major = student_info['major_code']
 
         new_student = students(username, firstname, lastname,
-                               email, major, None, 0)
-        db.session.merge(new_student)
-        db.session.commit()
+                               email, major)
+        upsert_student(new_student)
 
 
 @app.route('/student/dashboard', methods=['POST', 'GET'])
@@ -168,14 +167,13 @@ def student_information():
     username = strip_user(CASClient().authenticate())
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0)
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'))
     try:
         new_student.group_id = int(info.get('group_id'))
     except:
         pass
     print(new_student.group_id)
-    db.session.merge(new_student)
-    db.session.commit()
+    upsert_student(new_student)
     return redirect(url_for('student_dashboard'))
 
 
@@ -463,10 +461,8 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(None, None, email, None, None,
-                          hashed_password, False, 0)
-            db.session.merge(user)
-            db.session.commit()  # Create new user
+            user = alumni(email, password=hashed_password)
+            upsert_alum(user)
 
             return redirect(url_for('gotoemail'))
 
@@ -479,7 +475,7 @@ def signup():
 
 
 def verify_admin():
-    username = CASClient().authenticate()
+    username = CASClient().authenticate().strip()
     current = admins.query.filter_by(username=username).first()
     if not current:
         current = admins(username)
@@ -493,7 +489,7 @@ def admin_dashboard():
     username, id = verify_admin()
     matches = get_matches(id)
     html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -502,10 +498,7 @@ def admin_dashboard():
 def admin_dashboard_create():
     username, id = verify_admin()
     create_new_matches(id)
-    matches = get_matches(id)
-    html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin', username=username, id=id)
-    return make_response(html)
+    return redirect(url_for('admin_dashboard'))
 # -----------------------------------------------------------------------
 
 
@@ -513,7 +506,7 @@ def admin_dashboard_create():
 def admin_dashboard_modify_matches():
     username, id = verify_admin()
     html = render_template('pages/admin/modify-matches.html', matches=matches,
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 
@@ -521,20 +514,14 @@ def admin_dashboard_modify_matches():
 def admin_dashboard_clearall():
     username, id = verify_admin()
     clear_matches(id)
-    matches = None
-    html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin', username=username, id=id)
-    return make_response(html)
+    return redirect(url_for('admin_dashboard'))
 
 # -----------------------------------------------------------------------
 @app.route('/admin/dashboard/clearone', methods=['GET'])
 def admin_dashboard_clearone():
     username, id = verify_admin()
     clear_match(request.args.get('student'), request.args.get('alum'))
-    matches = get_matches(id)
-    html = render_template('pages/admin/dashboard.html', matches=matches,
-                           side='Admin', username=username, id=id)
-    return make_response(html)
+    return redirect(url_for('admin_dashboard'))
 
 
 @app.route('/admin/manual-match', methods=['GET'])
@@ -543,7 +530,7 @@ def admin_dashboard_manual_match():
     alumni = get_unmatched_alumni(id)
     students = get_unmatched_students(id)
     html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 
@@ -551,10 +538,7 @@ def admin_dashboard_manual_match():
 def admin_dashboard_createone():
     username, id = verify_admin()
     create_one(id, request.form.get('student'), request.form.get('alum'))
-    matches = get_matches(id)
-    html = render_template('pages/admin/dashboard.html',
-                           side='Admin', username=username, id=id)
-    return make_response(html)
+    return redirect(url_for('admin_dashboard'))
 
 
 @app.route('/admin/profiles-alum')
@@ -562,7 +546,7 @@ def admin_profiles_alum():
     username, id = verify_admin()
     alumni = get_alumni(id)
     html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 # SINGLE alum profile page
@@ -572,7 +556,7 @@ def admin_profile_alum():
     alum, matches = get_alum(request.args['email'])
     html = render_template('pages/admin/profile-alum.html',
                            alum=alum, matches=matches,
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 
@@ -582,7 +566,7 @@ def admin_profiles_student():
     students = get_students(id)
     html = render_template(
         'pages/admin/profiles-student.html', students=students,
-        side='Admin', username=username, id=id)
+        side='admin', username=username, id=id)
     return make_response(html)
 
 # SINGLE student profile page
@@ -592,15 +576,7 @@ def admin_profile_student():
     student, matches = get_student(request.args['netid'])
     html = render_template('pages/admin/profile-student.html',
                            student=student, matches=matches,
-                           side='Admin', username=username, id=id)
-    return make_response(html)
-
-
-@app.route('/admin/match-statistics', methods=['GET'])
-def admin_match_statistics():
-    username, id = verify_admin()
-    html = render_template('pages/admin/match-statistics.html',
-                           side='Admin', username=username, id=id)
+                           side='admin', username=username, id=id)
     return make_response(html)
 
 
@@ -659,14 +635,14 @@ def process_import(is_alumni):
         csv_reader = DictReader(chunk.decode() for chunk in request_file)
         if is_alumni:
             for row in csv_reader:
-                new_alum = alumni(row['First Name'], row['Last Name'],
-                                  row['Email'], row['Major'].upper(), row['Career'], 0, id)
-                db.session.merge(new_alum)
+                new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
+                                  aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                upsert_alum(new_alum)
         else:
             for row in csv_reader:
                 new_student = students(row['netid'], row['First Name'],
-                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], 0, id)
-                db.session.merge(new_student)
+                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], group_id=id)
+                upsert_student(new_student)
         db.session.commit()
         return make_response("Success processing your upload!")
     except Exception as e:
@@ -694,12 +670,32 @@ def strip_user(username):
     return username.replace('\n', '')
 
 
-def strip_user(username):
-    return username.replace('\n', '')
+def upsert_student(student):
+    table_student = students.query.filter_by(
+        studentid=student.studentid).first()
+    if table_student:
+        table_student.studentinfonamefirst = student.studentinfonamefirst
+        table_student.studentinfonamelast = student.studentinfonamelast
+        table_student.studentinfoemail = student.studentinfoemail
+        table_student.studentacademicsmajor = student.studentacademicsmajor
+        table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
+    else:
+        db.session.add(student)
+        db.session.commit()
 
 
-def strip_user(username):
-    return username.replace('\n', '')
+def upsert_alum(alum):
+    table_alum = alumni.query.filter_by(
+        aluminfoemail=alum.aluminfoemail).first()
+    if table_alum:
+        table_alum.aluminfonamefirst = alum.aluminfonamefirst
+        table_alum.aluminfonamelast = alum.aluminfonamelast
+        table_alum.aluminfoemail = alum.aluminfoemail
+        table_alum.alumacademicsmajor = alum.alumacademicsmajor
+        table_alum.alumcareerfield = alum.alumcareerfield
+    else:
+        db.session.add(alum)
+        db.session.commit()
 
 
 # -----------------------------------------------------------------------

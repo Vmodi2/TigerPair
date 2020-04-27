@@ -1,52 +1,39 @@
-{% extends 'pages/site_base.html' %}
+{% extends 'pages/newuser_base.html' %}
 
-{% block body %}
-<div class="jumbotron m-0 bg-light">
-    <h1 class="display-4">Before we begin</h1>
-    <p class="lead">Fill out some required information below so that algorithm can begin to find you a perfect match</p>
-    <hr class="my-4">
-    <form method="post" action="/student/information">
-        <label for="name">Name</label>
-        <div class="row">
-            <div class="col">
-                <input type="text" class="form-control" placeholder="First name"
-                    value="{{student.studentinfonamefirst}}" name="firstname">
-            </div>
-            <div class="col">
-                <input type="text" class="form-control" placeholder="Last name" value="{{student.studentinfonamelast}}"
-                    name="lastname">
-            </div>
+{% block specific_form %}
+<form method="post" action="/student/information">
+    <label for="name">Name</label>
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="First name" value="{{student.studentinfonamefirst}}"
+                name="firstname">
         </div>
-        <br />
-        <label for="major">Major</label>
-        <select class="form-control mr-sm-2" id="major" name="major" required>
-            <option disabled selected value> -- select an option -- </option>
-        </select>
-        <br />
-        <label for="career">Desired Career Field</label>
-        <select class="form-control mr-sm-2" id="career" name="career" required>
-            <option disabled selected value> -- select an option -- </option>
-        </select>
-        <br />
-        <label for="group_id">Your
-            Group
-            ID</label>
-        <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
-            data-placement="top"
-            data-content="If you don't specify a group ID you'll be placed in the general matching group">
-            <i class="fas fa-question fa-xs"></i>
-        </button>
-        <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
-        <br />
-        <button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
-    </form>
-</div>
-{% endblock %}
-{% block extra_scripts %}
-<script src="/static/js/options.js"></script>
-<script>
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    })
-</script>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Last name" value="{{student.studentinfonamelast}}"
+                name="lastname">
+        </div>
+    </div>
+    <br />
+    <label for="major">Major</label>
+    <select class="form-control mr-sm-2" id="major" name="major" required>
+        <option disabled selected value> -- select an option -- </option>
+    </select>
+    <br />
+    <label for="career">Desired Career Field</label>
+    <select class="form-control mr-sm-2" id="career" name="career" required>
+        <option disabled selected value> -- select an option -- </option>
+    </select>
+    <br />
+    <label for="group_id">Your
+        Group
+        ID</label>
+    <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
+        data-placement="top"
+        data-content="If you don't specify a group ID you'll be placed in the general matching group">
+        <i class="fas fa-question fa-xs"></i>
+    </button>
+    <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
+    <br />
+    <button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
+</form>
 {% endblock %}

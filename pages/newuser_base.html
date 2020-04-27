@@ -1,0 +1,19 @@
+{% extends 'pages/site_base.html' %}
+
+{% block body %}
+<div class="jumbotron m-0 bg-light">
+    <h1 class="display-4">Before we begin</h1>
+    <p class="lead">Fill out some required information below so the algorithm can begin to find you a perfect match</p>
+    <hr class="my-4">
+    {% block specific_form %}
+    {% endblock %}
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/options.js"></script>
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+</script>
+{% endblock %}
