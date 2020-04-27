@@ -32,3 +32,9 @@ CREATE TABLE students (
   date_created date default now(),
   primary key (id)
 );
+
+CREATE TABLE admins (
+  id serial,
+  username varchar(30),
+  primary key (id)
+);
