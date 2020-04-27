@@ -189,6 +189,8 @@ def student_matches(match=None):
     username = get_cas()
     if not match:
         match = get_match_student(username)
+
+
 @app.route('/student/email', methods=['GET', 'POST'])
 def student_email():
     # check model to see if you can modify current_user directly
@@ -207,15 +209,17 @@ def student_email():
     return make_response(html)
 
 
-@app.route('/student/email', methods=['GET', 'POST'])
-def student_email():
+@app.route('/student/id', methods=['GET', 'POST'])
+def student_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    print('tit1')
     route_new_student()
-    username = get_cas()
+    print('tit2')
+    username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
         studentid=username).first()
-    current.studentinfoemail = request.form.get('email')
+    current.group_id = request.form.get('id')
     db.session.commit()
     return redirect(url_for('student_dashboard'))
 
@@ -288,6 +292,20 @@ def alumni_email():
         aluminfoemail=current_user.aluminfoemail).first()
     current.aluminfoemail = request.form.get('email')
     current_user.aluminfoemail = request.form.get('email')
+    db.session.commit()
+    return redirect(url_for('alumni_dashboard'))
+
+
+@app.route('/alum/id', methods=['GET', 'POST'])
+@login_required
+def alumni_id():
+    # check model to see if you can modify current_user directly
+    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    current = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
+    current.group_id = request.form.get('id')
+    current_user.group_id = request.form.get('id')
+    print(current.group_id)
     db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
@@ -712,7 +730,7 @@ def upsert_alum(alum):
 
 # ---------------------------------------------------------------------
 
-# THIS IS WHERE THE ADMIN INTERFACE BEGINS! 
+# THIS IS WHERE THE ADMIN INTERFACE BEGINS!
 
 # @app.route('/login/admin', methods=['POST', 'GET'])
 # def adminlogin():
@@ -721,10 +739,10 @@ def upsert_alum(alum):
 #     form = LoginForm()
 #     if form.validate_on_submit():
 #         # print("submitted form")
-#         user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY 
+#         user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
 #         if user is not None:
 #             # print("user is not none")
-            
+
 #             # print("email is confirmed")
 #             if check_password_hash(user.password, form.password.data):
 #                 # print("password is correct")
@@ -732,7 +750,7 @@ def upsert_alum(alum):
 #                 login_user(user, remember=form.remember.data)
 #                 return redirect(url_for('alumni_info'))
 #                 # url_for('alum_info')
-        
+
 
 #         else:
 #             flash("Invalid username or password")
@@ -776,7 +794,6 @@ def upsert_alum(alum):
 #     return make_response(html)
 
 
-
 # -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,
 #  and site page. As well as what GET/POST request is sent
@@ -785,5 +802,5 @@ if __name__ == '__main__':
         print('Usage: ' + argv[0] + ' port')
         exit(1)
     # 32 MB maximum in memory reserved for uploads
-    app.run(host='0.0.0.0', port=int(argv[1]), debug=False)
+    app.run(host='0.0.0.0', port=int(argv[1]), debug=True)
     # db = Database(app)
