@@ -108,7 +108,7 @@ def get_student_info():
 # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
 # * https://jqueryvalidation.org/
 # * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
-    key = "1cf0a08b74009367d00279d0926f88cb"
+    key = "bef729ddad1c3c80fb5e3e24b4b28be2"
     url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates/'+username
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
