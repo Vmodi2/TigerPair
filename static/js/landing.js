@@ -1,14 +1,16 @@
 $(document).ready(() => {
     function initialize(button, image) {
         button.on('mouseover', () => {
-            image.addClass('miniBounceUp');
-            setTimeout((() => {
-                image.removeClass('miniBounceUp');
-            }), 1000);
+            // image.removeClass('miniBounceDown');
+            image.addClass('move-up');
+        });
+        button.on('mouseout', () => {
+            // image.removeClass('miniBounceUp');
+            image.removeClass('move-up');
         });
     }
-    initialize($('#landing-btn-little'), $('#littletiger-img'));
-    initialize($('#landing-btn-big'), $('#bigtiger-img'));
+    initialize($('#student-btn'), $('#littletiger-img'));
+    initialize($('#alum-btn'), $('#bigtiger-img'));
 
     let myNav = $('#landing-nav');
     $(window).on('scroll', () => {
@@ -20,4 +22,9 @@ $(document).ready(() => {
             myNav.addClass("transparent", 5000);
         }
     });
+
+
+
 });
+
+
