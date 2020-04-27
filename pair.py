@@ -213,9 +213,7 @@ def student_email():
 def student_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    print('tit1')
     route_new_student()
-    print('tit2')
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
         studentid=username).first()
@@ -698,8 +696,8 @@ def process_import(is_alumni):
         # else:
         # flash("Group ID does not exist")
 
-    html = render_template('pages/admin/group-login.html', form=form)
-    return make_response(html)
+    # html = render_template('pages/admin/group-login.html', form=form)
+    # return make_response(html)
 
 
 def strip_user(username):
@@ -717,7 +715,7 @@ def upsert_student(student):
         table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
     else:
         db.session.add(student)
-        db.session.commit()
+    db.session.commit()
 
 
 def upsert_alum(alum):
@@ -725,7 +723,13 @@ def upsert_alum(alum):
         aluminfoemail=alum.aluminfoemail).first()
     if table_alum:
         table_alum.aluminfonamefirst = alum.aluminfonamefirst
-        table_alum.aluminfo
+        table_alum.aluminfonamelast = alum.aluminfonamelast
+        table_alum.aluminfoemail = alum.aluminfoemail
+        table_alum.alumacademicsmajor = alum.alumacademicsmajor
+        table_alum.alumcareerfield = alum.alumcareerfield
+    else:
+        db.session.add(alum)
+    db.session.commit()
 
 
 # ---------------------------------------------------------------------
