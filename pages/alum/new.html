@@ -20,7 +20,7 @@
         <br />
         <label for="major">Major</label>
         <select class="form-control mr-sm-2" id="major" name="major" required>
-            <option value="{{user.alumacademicsmajor}}">{{user.alumacademicsmajor}}</option>
+            <option disabled selected value> -- select an option -- </option>
         </select>
         <br />
         <label for="career">Career Field</label>
@@ -28,7 +28,7 @@
             <option disabled selected value> -- select an option -- </option>
         </select>
         <br />
-        <label for="groupid">Your
+        <label for="group_id">Your
             Group
             ID</label>
         <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
@@ -36,7 +36,7 @@
             data-content="If you don't specify a group ID you'll be placed in the general matching group">
             <i class="fas fa-question fa-xs"></i>
         </button>
-        <input class="form-control mr-sm-2" type="text" id="groupid" name="groupid">
+        <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
         <br />
         <button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
     </form>

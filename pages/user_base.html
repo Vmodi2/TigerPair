@@ -22,6 +22,10 @@
             <div class="sb-sidenav-footer">
                 <div class="small">Logged in as:</div>
                 {{username}}
+                <div class="small">Your group ID:</div>
+                <!-- print id -->
+                {{student.group_id if student}}
+                {{alum.group_id if alum}}
             </div>
         </nav>
     </div>

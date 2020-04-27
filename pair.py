@@ -154,7 +154,7 @@ def student_dashboard():
                                student=current, username=username, side="student")
         return make_response(html)
     else:
-        print("in student dashboard")
+        # print("in student dashboard")
         username = strip_user(CASClient().authenticate())
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/dashboard.html',
@@ -168,7 +168,12 @@ def student_information():
     username = strip_user(CASClient().authenticate())
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0, info.get('groupid'))
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'), 0)
+    try:
+        new_student.group_id = int(info.get('group_id'))
+    except:
+        pass
+    print(new_student.group_id)
     db.session.merge(new_student)
     db.session.commit()
     return redirect(url_for('student_dashboard'))
@@ -249,7 +254,10 @@ def alumni_info():
         alum.aluminfonamelast = request.form.get('lastname')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
-        alum.groupid = request.form.get('groupid')
+        try:
+            alum.group_id = int(request.form.get('group_id'))
+        except:
+            alum.group_id = 0
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
@@ -332,20 +340,20 @@ def matching():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    print("login")
+    # print("login")
     if current_user.is_authenticated:
         return redirect(url_for('alumni_info'))
 
     form = LoginForm()
     if form.validate_on_submit():
-        print("submitted form")
+        # print("submitted form")
         user = alumni.query.filter_by(aluminfoemail=form.email.data).first()
         if user is not None:
-            print("user is not none")
+            # print("user is not none")
             if user.email_confirmed:
-                print("email is confirmed")
+                # print("email is confirmed")
                 if check_password_hash(user.password, form.password.data):
-                    print("password is correct")
+                    # print("password is correct")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alumni_info'))
@@ -671,7 +679,7 @@ def process_import(is_alumni):
     # if form.validate_on_submit():
         # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
         # if group_id is not None:
-        # if check_password_hash(user.password, form.password.data): We should hash groupids for safety
+        # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
         # login_user(user, remember=form.remember.data)
         # return redirect(url_for('/admin/dashboard'))
         # else:

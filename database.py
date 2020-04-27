@@ -2,8 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, jsonify
 from config import db
 
-DEFAULT_GROUPID = 0  # change this?
-
 
 class students(db.Model):
     __tablename__ = 'students'
@@ -85,8 +83,9 @@ class matches(db.Model):
 
 class admins(db.Model):
     __tablename__ = 'admins'
-    id = db.Column('id', db.Unicode)
-    username = db.Column('username', db.Unicode, primary_key=True)
+    id = db.Column('id', db.Unicode, db.Sequence(
+        'alumni_id_seq'), primary_key=True)
+    username = db.Column('username', db.Unicode)
 
     def __init__(self, username):
         self.username = username
