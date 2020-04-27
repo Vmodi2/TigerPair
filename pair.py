@@ -85,23 +85,30 @@ def admin_logout():
 
 
 def route_new_student():
-    username = strip_user(CASClient().authenticate())
+    username = "barkachi"
     current = students.query.filter_by(studentid=username).first()
     if not current:
         student_new()
 
 
+def get_student():
+    # username = "barkachi"
+    username = "barkachi"
+    return username
+
+
 @app.route('/student/new')
 def student_new():
-    username = strip_user(CASClient().authenticate())
+    username = get_student()
     html = render_template('pages/student/new.html',
                            student=students.query.filter_by(studentid=username))
     return make_response(html)
 
 
 def get_student_info():
-    username = CASClient().authenticate()
-    username = username[0:len(username)-1]
+    # username = CASClient().authenticate()
+    # username = username[0:len(username)-1]
+    username = "barkachi"
     # adding tigerbook code (grabbed from tigerbook API)
 
 # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
@@ -144,7 +151,7 @@ def get_student_info():
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = "barkachi"
     current = students.query.filter_by(studentid=username).first()
     if not current:
         get_student_info()
@@ -154,7 +161,7 @@ def student_dashboard():
         return make_response(html)
     else:
         # print("in student dashboard")
-        username = strip_user(CASClient().authenticate())
+        username = "barkachi"
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/dashboard.html',
                                student=current, username=username, side="student")
@@ -164,7 +171,7 @@ def student_dashboard():
 @app.route('/student/information', methods=['POST'])
 def student_information():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = "barkachi"
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
                            f'{username}@princeton.edu', info.get('major'), info.get('career'))
@@ -180,7 +187,7 @@ def student_information():
 @app.route('/student/matches')
 def student_matches(match=None):
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = "barkachi"
     if not match:
         match = get_match_student(username)
     current = students.query.filter_by(studentid=username).first()
@@ -194,7 +201,7 @@ def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = "barkachi"
     current = students.query.filter_by(
         studentid=username).first()
     current.studentinfoemail = request.form.get('email')
@@ -277,10 +284,12 @@ def alumni_email():
 @app.route('/alum/matches')
 @login_required
 def alum_matches(match=None):
-    # username = strip_user(CASClient().authenticate())
+    # username = "barkachi"
+    current = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
-    html = render_template('pages/alum/matches.html',
+    html = render_template('pages/alum/matches.html', username=current.aluminfoemail, alum=current,
                            match=match, side="alum")
     return make_response(html)
 
@@ -475,7 +484,7 @@ def signup():
 
 
 def verify_admin():
-    username = CASClient().authenticate().strip()
+    username = "barkachi"
     current = admins.query.filter_by(username=username).first()
     if not current:
         current = admins(username)
