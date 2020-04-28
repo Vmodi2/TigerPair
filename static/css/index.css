@@ -57,7 +57,7 @@
   color: rgb(255, 255, 255);
 }
 .transparent {
-    background-color: rgba(59, 57, 57, 1) !important;
+    /* background-color: rgba(59, 57, 57, 1) !important; */
     transition: all 0.5s ease-in-out
 }
 
