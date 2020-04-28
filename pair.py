@@ -363,7 +363,7 @@ def confirm_email(token):
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('pages/index.html')
+    html = render_template('pages/index.html', side="landing")
     return make_response(html)
 
 @app.route('/team', methods=['GET'])
