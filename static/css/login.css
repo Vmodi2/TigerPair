@@ -5,8 +5,9 @@
   
   body {
     background: #ffa600;
-    /* background: url("../images/bg-pattern.png"), linear-gradient(to right, rgb(190, 117, 69), #cf722a); */
-    background: url(../images/morrison_hall.jpg)
+    background: url("../images/bg-pattern.png"), linear-gradient(to right, #ffba58, #ffa050);
+    /* background: url("/static/images/blankorangegrid.png"); */
+    /* background-size: cover;  */
   }
   
   .card-signin {

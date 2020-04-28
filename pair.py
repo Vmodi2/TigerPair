@@ -27,6 +27,7 @@ from base64 import b64encode
 from datetime import datetime
 import requests
 import json
+from re import search
 
 # -----------------------------------------------------------------------
 
@@ -75,7 +76,6 @@ def alum_logout():
 
 
 @app.route("/admin/logout")
-@login_required
 def admin_logout():
     casClient = CASClient()
     # casClient.authenticate()
@@ -84,16 +84,22 @@ def admin_logout():
 # -----------------------------------------------------------------------
 
 
-def route_new_student():
+def get_cas():
     username = strip_user(CASClient().authenticate())
-    current = students.query.filter_by(studentid=username).first()
-    if not current:
-        student_new()
+    return username
+
+
+def route_new_student():
+    # username = get_cas()
+    # current = students.query.filter_by(studentid=username).first()
+    # if not current:
+    #     student_new()
+    pass
 
 
 @app.route('/student/new')
 def student_new():
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     html = render_template('pages/student/new.html',
                            student=students.query.filter_by(studentid=username))
     return make_response(html)
@@ -144,7 +150,7 @@ def get_student_info():
 @app.route('/student/dashboard', methods=['POST', 'GET'])
 def student_dashboard():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(studentid=username).first()
     if not current:
         get_student_info()
@@ -154,7 +160,7 @@ def student_dashboard():
         return make_response(html)
     else:
         # print("in student dashboard")
-        username = strip_user(CASClient().authenticate())
+        username = get_cas()
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/dashboard.html',
                                student=current, username=username, side="student")
@@ -164,7 +170,7 @@ def student_dashboard():
 @app.route('/student/information', methods=['POST'])
 def student_information():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     info = request.form
     new_student = students(username, info.get('firstname'), info.get('lastname'),
                            f'{username}@princeton.edu', info.get('major'), info.get('career'))
@@ -180,12 +186,12 @@ def student_information():
 @app.route('/student/matches')
 def student_matches(match=None):
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     if not match:
         match = get_match_student(username)
     current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/student/matches.html', student=current,
-                           username=username, side="student", match=match)
+    html = render_template('pages/student/matches.html',
+                           match=match, username=username, student=current, side="student")
     return make_response(html)
 
 
@@ -197,8 +203,35 @@ def student_email():
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
         studentid=username).first()
-    current.studentinfoemail = request.form.get('email')
-    db.session.commit()
+    errorMsg = ''
+    email1 = request.form.get('email')
+    email2 = request.form.get('email-repeated')
+    if not email1 == email2:
+        errorMsg = "Your emails must match"
+    elif not verify_email_regex(request):
+        errorMsg = "Please enter a valid email address"
+    else:
+        current.studentinfoemail = email1
+        db.session.commit()
+    html = render_template('pages/student/dashboard.html',
+                           active_email=True, errorMsg=errorMsg, student=current)
+    return make_response(html)
+
+
+@app.route('/student/id', methods=['GET', 'POST'])
+def student_id():
+    # check model to see if you can modify current_user directly
+    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    route_new_student()
+    username = strip_user(CASClient().authenticate())
+    current = students.query.filter_by(
+        studentid=username).first()
+    new_id = request.form.get('id').strip()
+    if new_id:
+        group = admins.query.filter_by(id=new_id).first()
+        if group:
+            current.group_id = new_id
+            db.session.commit()
     return redirect(url_for('student_dashboard'))
 
 
@@ -268,19 +301,46 @@ def alumni_email():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
-    current.aluminfoemail = request.form.get('email')
-    current_user.aluminfoemail = request.form.get('email')
-    db.session.commit()
+    errorMsg = ''
+    email1 = request.form.get('email')
+    email2 = request.form.get('email-repeated')
+    if not email1 == email2:
+        errorMsg = "Your emails must match"
+    elif not verify_email_regex(request):
+        errorMsg = "Please enter a valid email address"
+    else:
+        urrent.aluminfoemail = email1
+        current_user.aluminfoemail = email1
+        db.session.commit()
+    html = render_template('pages/alum/dashboard.html',
+                           active_email=True, errorMsg=errorMsg, alum=current)
+    return make_response(html)
+
+
+@app.route('/alum/id', methods=['GET', 'POST'])
+@login_required
+def alumni_id():
+    # check model to see if you can modify current_user directly
+    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    current = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
+    new_id = request.form.get('id').strip()
+    if new_id:
+        admin = admins.query.filter_by(id=new_id).first()
+        if new_id and admin:
+            current.group_id = new_id
+            current_user.group_id = new_id
+            db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
 
 @app.route('/alum/matches')
 @login_required
 def alum_matches(match=None):
-    # username = strip_user(CASClient().authenticate())
+    # username = get_cas()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
-    html = render_template('pages/alum/matches.html',
+    html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                            match=match, side="alum")
     return make_response(html)
 
@@ -292,6 +352,11 @@ def get_match_alum(email):
     return students.query.filter_by(studentid=match.studentid).first()
 
 
+def verify_email_regex(request):
+    email1 = request.form.get('email')
+    regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    return search(regex, email1)
+
 # NEW ALUM END
 # -----------------------------------------------------------------------
 
@@ -302,8 +367,9 @@ def confirm_email(token):
     html = ''
     errormsg = ''
     try:
-        email = s.loads(token, salt='email-confirm',
-                        max_age=3600)  # one hour to confirm
+        # changed to infinite (got rid of max_age)
+        # email = s.loads(token, salt='email-confirm', max_age=3600)
+        email = s.loads(token, salt='email-confirm')
     except SignatureExpired:
         errormsg = 'The token is expired'
         abort(404)
@@ -326,8 +392,18 @@ def confirm_email(token):
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('pages/index.html')
+    html = render_template('pages/index.html', side="landing")
     return make_response(html)
+
+
+@app.route('/team', methods=['GET'])
+def team():
+    return render_template('pages/team.html')
+
+
+@app.route('/admin-info', methods=['GET'])
+def admininfo():
+    return render_template('pages/admininfo.html')
 
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
@@ -475,7 +551,7 @@ def signup():
 
 
 def verify_admin():
-    username = CASClient().authenticate().strip()
+    username = get_cas()
     current = admins.query.filter_by(username=username).first()
     if not current:
         current = admins(username)
@@ -662,8 +738,8 @@ def process_import(is_alumni):
         # else:
         # flash("Group ID does not exist")
 
-    html = render_template('pages/admin/group-login.html', form=form)
-    return make_response(html)
+    # html = render_template('pages/admin/group-login.html', form=form)
+    # return make_response(html)
 
 
 def strip_user(username):
@@ -681,7 +757,7 @@ def upsert_student(student):
         table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
     else:
         db.session.add(student)
-        db.session.commit()
+    db.session.commit()
 
 
 def upsert_alum(alum):
@@ -695,7 +771,73 @@ def upsert_alum(alum):
         table_alum.alumcareerfield = alum.alumcareerfield
     else:
         db.session.add(alum)
-        db.session.commit()
+    db.session.commit()
+
+
+# ---------------------------------------------------------------------
+
+# THIS IS WHERE THE ADMIN INTERFACE BEGINS!
+
+# @app.route('/login/admin', methods=['POST', 'GET'])
+# def adminlogin():
+#     # print("login")
+
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         # print("submitted form")
+#         user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
+#         if user is not None:
+#             # print("user is not none")
+
+#             # print("email is confirmed")
+#             if check_password_hash(user.password, form.password.data):
+#                 # print("password is correct")
+#                 db.session.commit() # could we remove this
+#                 login_user(user, remember=form.remember.data)
+#                 return redirect(url_for('alumni_info'))
+#                 # url_for('alum_info')
+
+
+#         else:
+#             flash("Invalid username or password")
+
+#     html = render_template('pages/login/login.html', form=form)
+#     return make_response(html)
+
+# @app.route('/login/asignup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
+
+#     if form.validate_on_submit():
+#         email = form.email.data
+#         # username = form.username.data
+#         hashed_password = generate_password_hash(
+#             form.password.data, method='sha256')
+#         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
+#         if existing_user is None:
+#             if user.email_confirmed:
+
+#             # email verification code
+
+#                 token = s.dumps(email, salt='email-confirm')
+
+#                 msg = Message(
+#                     'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
+#                 link = url_for('confirm_email', token=token, _external=True)
+#                 msg.body = 'Confirmation link is {}'.format(link)
+#                 mail.send(msg)
+
+#                 # update the database with new user info
+
+#                 user = alumni(email, password=hashed_password)
+#                 upsert_alum(user)
+
+#                 return redirect(url_for('gotoemail'))
+
+#         flash('A user already exists with that email address.')
+
+#     html = render_template('pages/login/signup.html', form=form)
+#     return make_response(html)
 
 
 # -----------------------------------------------------------------------
