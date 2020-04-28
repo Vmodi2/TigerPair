@@ -156,7 +156,7 @@ def student_dashboard():
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/new.html',
-                               student=current, username=username, side="student")
+                               student=current)
         return make_response(html)
     else:
         # print("in student dashboard")
@@ -171,14 +171,22 @@ def student_dashboard():
 def student_information():
     route_new_student()
     username = get_cas()
+    group_id = -1
+    current = students.query.filter_by(studentid=username).first()
     info = request.form
+    if not current:
+        try:
+            group_id = int(info.get('group_id'))
+        except:
+            group_id = 0
+        if not admins.query.filter_by(id=group_id).first():
+            html = render_template(
+                'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+            return make_response(html)
+    else:
+        group_id = current.group_id
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'))
-    try:
-        new_student.group_id = int(info.get('group_id'))
-    except:
-        pass
-    print(new_student.group_id)
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'), group_id=group_id)
     upsert_student(new_student)
     return redirect(url_for('student_dashboard'))
 
@@ -210,6 +218,8 @@ def student_email():
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
+    elif students.query.filter_by(studentinfoemail=email1).first():
+        errorMsg = "That email already belongs to another account"
     else:
         current.studentinfoemail = email1
         db.session.commit()
@@ -304,14 +314,17 @@ def alumni_email():
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
-    if not email1 == email2:
+    if email1 != email2:
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
+    elif alumni.query.filter_by(aluminfoemail=email1).first():
+        errorMsg = "That email already belongs to another account"
     else:
         current.aluminfoemail = email1
         current_user.aluminfoemail = email1
         db.session.commit()
+        return redirect(url_for('alum_logout'))
     html = render_template('pages/alum/dashboard.html',
                            active_email=True, errorMsg=errorMsg, alum=current, side="alum")
     return make_response(html)
