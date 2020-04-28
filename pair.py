@@ -362,6 +362,10 @@ def index():
     html = render_template('pages/index.html')
     return make_response(html)
 
+@app.route('/team', methods=['GET'])
+def team():
+    return render_template('pages/team.html')
+
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
 @app.route('/signin', methods=['GET'])
