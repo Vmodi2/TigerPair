@@ -27,6 +27,7 @@ from base64 import b64encode
 from datetime import datetime
 import requests
 import json
+from re import search
 
 # -----------------------------------------------------------------------
 
@@ -202,9 +203,19 @@ def student_email():
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
         studentid=username).first()
-    current.studentinfoemail = request.form.get('email')
-    db.session.commit()
-    return redirect(url_for('student_dashboard'))
+    errorMsg = ''
+    email1 = request.form.get('email')
+    email2 = request.form.get('email-repeated')
+    if not email1 == email2:
+        errorMsg = "Your emails must match"
+    elif not verify_email_regex(request):
+        errorMsg = "Please enter a valid email address"
+    else:
+        current.studentinfoemail = email1
+        db.session.commit()
+    html = make_response('pages/student/dashboard.html',
+                         active_email="active show", errorMsg=errorMsg)
+    return make_response(html)
 
 
 @app.route('/student/id', methods=['GET', 'POST'])
@@ -216,7 +227,8 @@ def student_id():
     current = students.query.filter_by(
         studentid=username).first()
     new_id = request.form.get('id').strip()
-    if new_id:
+    group = admins.query.filter_by(id=new_id).first()
+    if group:
         current.group_id = new_id
         db.session.commit()
     return redirect(url_for('student_dashboard'))
@@ -328,6 +340,11 @@ def get_match_alum(email):
     return students.query.filter_by(studentid=match.studentid).first()
 
 
+def verify_email_regex(request):
+    email1 = request.form.get('email')
+    regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    return search(regex, email1)
+
 # NEW ALUM END
 # -----------------------------------------------------------------------
 
@@ -366,9 +383,11 @@ def index():
     html = render_template('pages/index.html', side="landing")
     return make_response(html)
 
+
 @app.route('/team', methods=['GET'])
 def team():
     return render_template('pages/team.html')
+
 
 @app.route('/admin-info', methods=['GET'])
 def admininfo():
