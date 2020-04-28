@@ -75,7 +75,6 @@ def alum_logout():
 
 
 @app.route("/admin/logout")
-@login_required
 def admin_logout():
     casClient = CASClient()
     # casClient.authenticate()
@@ -216,8 +215,10 @@ def student_id():
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
         studentid=username).first()
-    current.group_id = request.form.get('id')
-    db.session.commit()
+    new_id = request.form.get('id').strip()
+    if new_id:
+        current.group_id = new_id
+        db.session.commit()
     return redirect(url_for('student_dashboard'))
 
 
@@ -300,10 +301,12 @@ def alumni_id():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
-    current.group_id = request.form.get('id')
-    current_user.group_id = request.form.get('id')
-    print(current.group_id)
-    db.session.commit()
+    new_id = request.form.get('id').strip()
+    admin = admins.query.filter_by(id=new_id).first()
+    if new_id and admin:
+        current.group_id = new_id
+        current_user.group_id = new_id
+        db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
 
@@ -335,8 +338,9 @@ def confirm_email(token):
     html = ''
     errormsg = ''
     try:
-        email = s.loads(token, salt='email-confirm',
-                        max_age=3600)  # one hour to confirm
+        # changed to infinite (got rid of max_age)
+        # email = s.loads(token, salt='email-confirm', max_age=3600)
+        email = s.loads(token, salt='email-confirm')
     except SignatureExpired:
         errormsg = 'The token is expired'
         abort(404)
