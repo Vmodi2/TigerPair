@@ -214,7 +214,7 @@ def student_email():
         current.studentinfoemail = email1
         db.session.commit()
     html = render_template('pages/student/dashboard.html',
-                           active_email=True, errorMsg=errorMsg, student=current)
+                           active_email=True, errorMsg=errorMsg, student=current, side="student")
     return make_response(html)
 
 
@@ -309,11 +309,11 @@ def alumni_email():
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
     else:
-        urrent.aluminfoemail = email1
+        current.aluminfoemail = email1
         current_user.aluminfoemail = email1
         db.session.commit()
     html = render_template('pages/alum/dashboard.html',
-                           active_email=True, errorMsg=errorMsg, alum=current)
+                           active_email=True, errorMsg=errorMsg, alum=current, side="alum")
     return make_response(html)
 
 
