@@ -24,6 +24,13 @@
     font-style: bold;
 }
 
+.about{
+    background-size: cover;
+    background-repeat: no-repeat; 
+    color: #cf722a;
+    font-size: 30px;
+    /* padding: 20px 100px; */
+}
 #member a {
   color:white;
   text-decoration:none;

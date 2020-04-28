@@ -370,6 +370,10 @@ def index():
 def team():
     return render_template('pages/team.html')
 
+@app.route('/admin-info', methods=['GET'])
+def admininfo():
+    return render_template('pages/admininfo.html')
+
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
 @app.route('/signin', methods=['GET'])
