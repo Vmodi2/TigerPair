@@ -412,6 +412,19 @@
   margin-top: -.6rem;
 }
 
+/*admin info icon*/
+.icons{
+  font-size: 4rem;
+  color: #cf722a;
+}
+
+/*admin info icon*/
+.admin-title{
+  font-size: 1.3rem;
+  text-transform:uppercase;
+  color: #cf722a;
+}
+
 
 /* ------------------------------------------------------------------- 
 * responsive:
