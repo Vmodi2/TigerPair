@@ -213,8 +213,8 @@ def student_email():
     else:
         current.studentinfoemail = email1
         db.session.commit()
-    html = make_response('pages/student/dashboard.html',
-                         active_email="active show", errorMsg=errorMsg)
+    html = render_template('pages/student/dashboard.html',
+                           active_email=True, errorMsg=errorMsg, student=current)
     return make_response(html)
 
 
@@ -300,10 +300,20 @@ def alumni_email():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
-    current.aluminfoemail = request.form.get('email')
-    current_user.aluminfoemail = request.form.get('email')
-    db.session.commit()
-    return redirect(url_for('alumni_dashboard'))
+    errorMsg = ''
+    email1 = request.form.get('email')
+    email2 = request.form.get('email-repeated')
+    if not email1 == email2:
+        errorMsg = "Your emails must match"
+    elif not verify_email_regex(request):
+        errorMsg = "Please enter a valid email address"
+    else:
+        urrent.aluminfoemail = email1
+        current_user.aluminfoemail = email1
+        db.session.commit()
+    html = render_template('pages/alum/dashboard.html',
+                           active_email=True, errorMsg=errorMsg, alum=current)
+    return make_response(html)
 
 
 @app.route('/alum/id', methods=['GET', 'POST'])
