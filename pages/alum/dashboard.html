@@ -47,24 +47,35 @@
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-1"
-				hidden>&nbsp;Submit&nbsp;</button>
+			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-		cute
-		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
-		<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-2"
-			hidden>&nbsp;Submit&nbsp;</button>
-	</div>
-	<div class="tab-pane fade" id="page-2" role="tabpanel" aria-labelledby="page-2-tab">
-		cuter
-		<br />
-		<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-3">&nbsp;Edit&nbsp;</button>
-		<button type=" submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-3"
-			hidden>&nbsp;Submit&nbsp;</button>
+	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
+		<form method="post" action="/alum/more-information">
+			<label for="info-1">Custom Information 1</label>
+			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1" value="{{alum.aluminfocustom1}}"
+				readonly>
+			<br />
+			<label for="info-2">Custom Information 2</label>
+			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2" value="{{alum.aluminfocustom2}}"
+				readonly>
+			<br />
+			<label for="info-3">Custom Information 3</label>
+			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3" value="{{alum.aluminfocustom3}}"
+				readonly>
+			<br />
+			<label for="info-4">Custom Information 4</label>
+			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
+				<option value="{{alum.aluminfocustom4}}" selected>
+					{{alum.aluminfocustom4}}
+				</option>
+			</select>
+			<br />
+			<button type="button" class="btn btn-outline-warning my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-outline-warning my-2 my-sm-0" id="submit-2"
+				hidden>&nbsp;Submit&nbsp;</button>
+		</form>
 	</div>
 	<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
 		aria-labelledby="change-email-tab">
@@ -88,7 +99,7 @@
 						placeholder="email@domain.com">
 				</div>
 			</div>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
+			<button type="submit" class="btn btn-warning my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
 </div>

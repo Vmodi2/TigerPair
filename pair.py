@@ -227,10 +227,11 @@ def student_id():
     current = students.query.filter_by(
         studentid=username).first()
     new_id = request.form.get('id').strip()
-    group = admins.query.filter_by(id=new_id).first()
-    if group:
-        current.group_id = new_id
-        db.session.commit()
+    if new_id:
+        group = admins.query.filter_by(id=new_id).first()
+        if group:
+            current.group_id = new_id
+            db.session.commit()
     return redirect(url_for('student_dashboard'))
 
 
@@ -324,11 +325,12 @@ def alumni_id():
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     new_id = request.form.get('id').strip()
-    admin = admins.query.filter_by(id=new_id).first()
-    if new_id and admin:
-        current.group_id = new_id
-        current_user.group_id = new_id
-        db.session.commit()
+    if new_id:
+        admin = admins.query.filter_by(id=new_id).first()
+        if new_id and admin:
+            current.group_id = new_id
+            current_user.group_id = new_id
+            db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
 

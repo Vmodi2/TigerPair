@@ -12,8 +12,8 @@
 			aria-controls="page-1" aria-selected="false">More Info</a>
 	</li>
 	<li class="nav-item">
-		<a class="nav-link {{active_email}}" id="change-email-tab" data-toggle="tab" href="#change-email" role="tab"
-			aria-controls="change-email" aria-selected="false">Change Email</a>
+		<a class="nav-link {% if active_email %}active{% endif %}" id="change-email-tab" data-toggle="tab"
+			href="#change-email" role="tab" aria-controls="change-email" aria-selected="false">Change Email</a>
 	</li>
 </ul>
 
@@ -42,40 +42,37 @@
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-1"
-				hidden>&nbsp;Submit&nbsp;</button>
+			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
 	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-		<form method="post" action="/student/information">
-			<label for="firstname">Custom Information 1</label>
-			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
+		<form method="post" action="/student/more-information">
+			<label for="info-1">Custom Information 1</label>
+			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1"
 				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<label for="lastname">Custom Information 2</label>
-			<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
-				value="{{student.studentinfocustom2}}" readonly>
+			<label for="info-2">Custom Information 2</label>
+			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2"
+				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<label for="major">Custom Information 3</label>
-			<select class="form-control mr-sm-2" id="major" name="major" disabled>
-				<option value="{{student.studentinfocustom3}}" selected>{{student.studentinfocustom3}}
-				</option>
-			</select>
+			<label for="info-3">Custom Information 3</label>
+			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3"
+				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<label for="career">Custom Information 4</label>
-			<select class="form-control mr-sm-2" id="career" name="career" disabled>
+			<label for="info-4">Custom Information 4</label>
+			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
 				<option value="{{student.studentinfocustom4}}" selected>
 					{{student.studentinfocustom4}}
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0" id="submit-1"
-				hidden>&nbsp;Submit&nbsp;</button>
+			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
-	<div class="tab-pane fade {{active_email}}" id="change-email" role="tabpanel" aria-labelledby="change-email-tab">
+	<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
+		aria-labelledby="change-email-tab">
 		<form action="/student/email" method="post">
 			<p class="text-danger font-weight-bold">{{errorMsg}}</p>
 			<div class="form-group row">
@@ -98,7 +95,7 @@
 						placeholder="email@domain.com" required>
 				</div>
 			</div>
-			<button type="submit" class="btn btn-outline-success my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
+			<button type="submit" class="btn btn-warning my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
 </div>
