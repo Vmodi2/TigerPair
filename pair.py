@@ -363,7 +363,7 @@ def alumni_id():
     return redirect(url_for('alumni_dashboard'))
 
 
-@app.route('/alum/matches')
+@app.route('/alum/matches', methods=['GET','POST'])
 @login_required
 def alum_matches(match=None):
     # username = get_cas()
@@ -371,6 +371,20 @@ def alum_matches(match=None):
         match = get_match_alum(current_user.aluminfoemail)
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                            match=match, side="alum")
+    if request.form.get("message") is not None:
+        try: # Due to database issues (that won't be in the final product) this may not send
+            group_id = current_user.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.email
+            
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + current_user.aluminfonamefirst + " " + current_user.aluminfonamelast
+            mail.send(msg)
+        except Exception as e:
+            pass
+    
     return make_response(html)
 
 
