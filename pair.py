@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -75,12 +75,12 @@ def alum_logout():
     return redirect(url_for("index"))
 
 
-@app.route("/admin/logout")
-def admin_logout():
-    casClient = CASClient()
-    # casClient.authenticate()
-    casClient.logout()
-    return redirect(url_for("index"))
+# @app.route("/admin/logout")
+# def admin_logout():
+#     casClient = CASClient()
+#     # casClient.authenticate()
+#     casClient.logout()
+#     return redirect(url_for("index"))
 # -----------------------------------------------------------------------
 
 
@@ -564,16 +564,16 @@ def signup():
 
 
 def verify_admin():
-    username = get_cas()
-    current = admins.query.filter_by(username=username).first()
-    if not current:
-        current = admins(username)
-        db.session.add(current)
-        db.session.commit()
-    return username, current.id
+    username = current_user.username
+    id = current_user.id
+    #if not current:
+        #current = admins(username)
+        #db.session.add(current)
+        #db.session.commit()
+    return username, id
 
-
-@app.route('/admin/dashboard', methods=['GET'])
+@login_required
+@app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     username, id = verify_admin()
     matches = get_matches(id)
@@ -583,37 +583,39 @@ def admin_dashboard():
 
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
-@app.route('/admin/dashboard/create', methods=['GET'])
+@login_required
+@app.route('/admin/dashboard/create', methods=['GET', 'POST'])
 def admin_dashboard_create():
     username, id = verify_admin()
     create_new_matches(id)
     return redirect(url_for('admin_dashboard'))
 # -----------------------------------------------------------------------
 
-
-@app.route('/admin/modify-matches', methods=['GET'])
+@login_required
+@app.route('/admin/modify-matches', methods=['GET', 'POST'])
 def admin_dashboard_modify_matches():
     username, id = verify_admin()
     html = render_template('pages/admin/modify-matches.html', matches=matches,
                            side='admin', username=username, id=id)
     return make_response(html)
 
-
-@app.route('/admin/dashboard/clearall', methods=['GET'])
+@login_required
+@app.route('/admin/dashboard/clearall', methods=['GET', 'POST'])
 def admin_dashboard_clearall():
     username, id = verify_admin()
     clear_matches(id)
     return redirect(url_for('admin_dashboard'))
 
 # -----------------------------------------------------------------------
-@app.route('/admin/dashboard/clearone', methods=['GET'])
+@login_required
+@app.route('/admin/dashboard/clearone', methods=['GET', 'POST'])
 def admin_dashboard_clearone():
     username, id = verify_admin()
     clear_match(request.args.get('student'), request.args.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
-
-@app.route('/admin/manual-match', methods=['GET'])
+@login_required
+@app.route('/admin/manual-match', methods=['GET', 'POST'])
 def admin_dashboard_manual_match():
     username, id = verify_admin()
     alumni = get_unmatched_alumni(id)
@@ -622,14 +624,14 @@ def admin_dashboard_manual_match():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-
+@login_required
 @app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
 def admin_dashboard_createone():
     username, id = verify_admin()
     create_one(id, request.form.get('student'), request.form.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
-
+@login_required
 @app.route('/admin/profiles-alum')
 def admin_profiles_alum():
     username, id = verify_admin()
@@ -639,6 +641,7 @@ def admin_profiles_alum():
     return make_response(html)
 
 # SINGLE alum profile page
+@login_required
 @app.route('/admin/profile-alum')
 def admin_profile_alum():
     username, id = verify_admin()
@@ -648,7 +651,7 @@ def admin_profile_alum():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-
+@login_required
 @app.route('/admin/profiles-student')
 def admin_profiles_student():
     username, id = verify_admin()
@@ -659,6 +662,7 @@ def admin_profiles_student():
     return make_response(html)
 
 # SINGLE student profile page
+@login_required
 @app.route('/admin/profile-student')
 def admin_profile_student():
     username, id = verify_admin()
@@ -668,7 +672,7 @@ def admin_profile_student():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-
+@login_required
 @app.route('/admin/get-registrations-alum', methods=['GET'])
 def admin_get_registrations_alum():
     username, id = verify_admin()
@@ -677,7 +681,7 @@ def admin_get_registrations_alum():
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
-
+@login_required
 @app.route('/admin/get-registrations-student', methods=['GET'])
 def admin_get_registrations_student():
     username, id = verify_admin()
@@ -686,7 +690,7 @@ def admin_get_registrations_student():
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
-
+@login_required
 @app.route('/admin/import-students')
 def admin_import_students():
     username, id = verify_admin()
@@ -694,7 +698,7 @@ def admin_import_students():
                            side="Admin", username=username, id=id)
     return make_response(html)
 
-
+@login_required
 @app.route('/admin/import-alumni')
 def admin_import_alumni():
     username, id = verify_admin()
@@ -702,13 +706,13 @@ def admin_import_alumni():
                            side="Admin", username=username, id=id)
     return make_response(html)
 
-
+@login_required
 @app.route('/admin/import-students/process', methods=["POST"])
 def admin_import_students_process():
     username, id = verify_admin()
     return process_import(is_alumni=False)
 
-
+@login_required
 @app.route('/admin/import-alumni/process', methods=["POST"])
 def admin_import_alumni_process():
     username, id = verify_admin()
@@ -791,67 +795,82 @@ def upsert_alum(alum):
 
 # THIS IS WHERE THE ADMIN INTERFACE BEGINS!
 
-# @app.route('/login/admin', methods=['POST', 'GET'])
-# def adminlogin():
-#     # print("login")
+# make an upsert function later -TARA
 
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         # print("submitted form")
-#         user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
-#         if user is not None:
-#             # print("user is not none")
+@app.route('/login/admin', methods=['POST', 'GET'])
+def adminlogin():
 
-#             # print("email is confirmed")
-#             if check_password_hash(user.password, form.password.data):
-#                 # print("password is correct")
-#                 db.session.commit() # could we remove this
-#                 login_user(user, remember=form.remember.data)
-#                 return redirect(url_for('alumni_info'))
-#                 # url_for('alum_info')
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        # print("submitted form")
+        user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
+        if user is not None:
+            # print("user is not none")
+
+            # print("email is confirmed")
+            if check_password_hash(user.password, form.password.data):
+                # print("password is correct")
+                db.session.commit() # could we remove this
+                login_user(user, remember=form.remember.data)
+                return redirect(url_for('admin_dashboard'))
+                # url_for('alum_info')
 
 
-#         else:
-#             flash("Invalid username or password")
+        else:
+            flash("Invalid username or password")
 
-#     html = render_template('pages/login/login.html', form=form)
-#     return make_response(html)
+    html = render_template('pages/login/admin.html', form=form)
+    return make_response(html)
 
-# @app.route('/login/asignup', methods=['GET', 'POST'])
-# def signup():
-#     form = RegisterForm()
+@app.route('/login/asignup', methods=['GET', 'POST'])
+def asignup():
+    form = AdminRegisterForm()
 
-#     if form.validate_on_submit():
-#         email = form.email.data
-#         # username = form.username.data
-#         hashed_password = generate_password_hash(
-#             form.password.data, method='sha256')
-#         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
-#         if existing_user is None:
-#             if user.email_confirmed:
+    if form.validate_on_submit():
+        email = form.email.data
+        username = form.username.data
+        hashed_password = generate_password_hash(
+            form.password.data, method='sha256')
+        existing_user = admins.query.filter_by(username=username).first()
+        if existing_user is None:
 
-#             # email verification code
+            token = s.dumps(email, salt='admin-confirm')
 
-#                 token = s.dumps(email, salt='email-confirm')
+            msg = Message(
+                'Admin Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('admin_confirm', token=token, _external=True)
+            msg.body = 'Confirmation link is {}'.format(link)
+            mail.send(msg)
 
-#                 msg = Message(
-#                     'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
-#                 link = url_for('confirm_email', token=token, _external=True)
-#                 msg.body = 'Confirmation link is {}'.format(link)
-#                 mail.send(msg)
+            # update the database with new user info
 
-#                 # update the database with new user info
+            user = admins(username, email, hashed_password, confirm_email=False)
+            db.session.add(user)
+            db.session.commit() # this isnt doing anything
 
-#                 user = alumni(email, password=hashed_password)
-#                 upsert_alum(user)
+            return redirect(url_for('gotoemail'))
 
-#                 return redirect(url_for('gotoemail'))
+    flash('A user already exists with that email address.')
 
-#         flash('A user already exists with that email address.')
+    html = render_template('pages/login/asignup.html', form=form)
+    return make_response(html)
 
-#     html = render_template('pages/login/signup.html', form=form)
-#     return make_response(html)
+@app.route('/admin_confirm/<token>', methods=('GET','POST'))
+def admin_confirm(token):
 
+    html = ''
+    errormsg = ''
+
+    email = s.loads(token, salt='admin-confirm')
+    # give email column indexability
+    user = admins.query.filter_by(email=email).first_or_404()
+    user.confirm_email = True
+    db.session.add(user)
+    db.session.commit()
+
+    html = render_template(
+        'pages/login/aconfirm_email.html', errormsg=errormsg)
+    return make_response(html)
 
 # -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,
