@@ -73,11 +73,13 @@ class matches(db.Model):
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
     aluminfoemail = db.Column('aluminfoemail', db.Unicode)
     group_id = db.Column('group_id', db.Unicode)
+    contacted = db.Column('contacted', db.Boolean)
 
     def __init__(self, studentid, aluminfoemail, id):
         self.studentid = studentid
         self.aluminfoemail = aluminfoemail
         self.group_id = id
+        self.contacted = False
 
 
 class admins(db.Model):
