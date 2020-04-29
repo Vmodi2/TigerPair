@@ -89,12 +89,13 @@
   outline: #ffffff;
 }
 
-.btn-primary, .btn-primary:focus, #member .btn-primary:active, .btn-primary.active {
+.btn-primary, .btn-primary:focus, #member .btn-primary:active, #signup .btn-primary:active, 
+#signin .btn-primary:active, .btn-primary.active {
   background: #3a3939;
   color: #ffffff;
 }
 
-#member .btn-primary:hover, .open > .dropdown-toggle.btn-primary {
+.btn-primary:hover, .open > .dropdown-toggle.btn-primary {
   background: #ec812e;
   color:white;
 }
