@@ -140,13 +140,14 @@ def clear_match(student, alum):
 
 
 def delete_student(id, studentid):
-    db.session.query(students_table).filter_by(studentid=studentid).delete()
+    db.session.query(students_table).filter_by(
+        studentid=studentid).first().group_id = -1
     db.session.commit()
 
 
 def delete_alum(id, aluminfoemail):
     db.session.query(alumni_table).filter_by(
-        aluminfoemail=aluminfoemail).delete()
+        aluminfoemail=aluminfoemail).first().group_id = -1
     db.session.commit()
 
 
