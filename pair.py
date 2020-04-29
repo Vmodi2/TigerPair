@@ -191,15 +191,31 @@ def student_information():
     return redirect(url_for('student_dashboard'))
 
 
-@app.route('/student/matches')
+@app.route('/student/matches', methods=['GET', 'POST'])
 def student_matches(match=None):
     route_new_student()
     username = get_cas()
+
     if not match:
         match = get_match_student(username)
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/matches.html',
                            match=match, username=username, student=current, side="student")
+
+    if request.form.get("message") is not None:
+        try: # Due to database issues (that won't be in the final product) this may not send
+            group_id = current.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.email
+            
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
+            mail.send(msg)
+        except Exception as e:
+            pass
+        
     return make_response(html)
 
 
