@@ -754,6 +754,8 @@ def admin_action_alum():
     if request.form.get('action') == 'delete':
         alumni = request.form.get('checked-members').split(',')
         for alum in alumni:
+            print('fCORONAAAA ')
+            print(alum)
             delete_alum(id, alum)
     return redirect(url_for('admin_profiles_alum'))
 

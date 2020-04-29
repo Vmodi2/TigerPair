@@ -146,6 +146,8 @@ def delete_student(id, studentid):
 
 
 def delete_alum(id, aluminfoemail):
+    print(aluminfoemail)
+    print('CORONAAAA')
     db.session.query(alumni_table).filter_by(
         aluminfoemail=aluminfoemail).first().group_id = -1
     db.session.commit()
