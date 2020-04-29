@@ -737,19 +737,40 @@ def process_import(is_alumni):
     except Exception as e:
         return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
 
+
+@app.route('/admin/action-student', methods=["POST"])
+def admin_action_student():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        students = request.form.get('checked-members').split(',')
+        for student in students:
+            delete_student(id, student)
+    return redirect(url_for('admin_profiles_student'))
+
+
+@app.route('/admin/action-alum', methods=["POST"])
+def admin_action_alum():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        alumni = request.form.get('checked-members').split(',')
+        for alum in alumni:
+            delete_alum(id, alum)
+    return redirect(url_for('admin_profiles_alum'))
+
+
 # REDIRECT HERE FROM THE BUTTON
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
 # def login():
 
     # form = LoginForm()
     # if form.validate_on_submit():
-        # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
-        # if group_id is not None:
-        # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
-        # login_user(user, remember=form.remember.data)
-        # return redirect(url_for('/admin/dashboard'))
-        # else:
-        # flash("Group ID does not exist")
+    # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+    # if group_id is not None:
+    # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
+    # login_user(user, remember=form.remember.data)
+    # return redirect(url_for('/admin/dashboard'))
+    # else:
+    # flash("Group ID does not exist")
 
     # html = render_template('pages/admin/group-login.html', form=form)
     # return make_response(html)

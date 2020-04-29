@@ -7,39 +7,50 @@
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 {% if alumni %}
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Major</th>
-                        <th>Career</th>
-                        <th>Matched?</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Major</th>
-                        <th>Career</th>
-                        <th>Matched?</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    {% for alum in alumni: %}
-                    <tr {% if alum.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
-                        <td>{{alum.aluminfonamefirst}}</td>
-                        <td>{{alum.aluminfonamelast}}</td>
-                        <td>{{alum.aluminfoemail}}</td>
-                        <td>{{alum.alumacademicsmajor}}</td>
-                        <td>{{alum.alumcareerfield}}</td>
-                        <td>{% if alum.matched==1 %}Yes{% else %}No{% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+                <form action="/admin/action-student" method="post" class="mb-3">
+                    <select name="action" id="action">
+                        <option value="no-action">Select an action</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <input type="submit" value="Submit">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Major</th>
+                            <th>Career</th>
+                            <th>Matched?</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Major</th>
+                            <th>Career</th>
+                            <th>Matched?</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for alum in alumni: %}
+                        <tr {% if alum.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
+                            <td class="prof-cell"><input type="checkbox" value="{{alum.aluminfoemail}}"></td>
+                            <td>{{alum.aluminfonamefirst}}</td>
+                            <td>{{alum.aluminfonamelast}}</td>
+                            <td>{{alum.aluminfoemail}}</td>
+                            <td>{{alum.alumacademicsmajor}}</td>
+                            <td>{{alum.alumcareerfield}}</td>
+                            <td>{% if alum.matched==1 %}Yes{% else %}No{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <input type="hidden" id="checked-members" name="checked-members" value="">
+                </form>
                 {% else %}
                 <h2>No alumni</h2>
                 {% endif %}

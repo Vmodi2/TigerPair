@@ -139,5 +139,16 @@ def clear_match(student, alum):
     db.session.commit()
 
 
+def delete_student(id, studentid):
+    db.session.query(students_table).filter_by(studentid=studentid).delete()
+    db.session.commit()
+
+
+def delete_alum(id, aluminfoemail):
+    db.session.query(alumni_table).filter_by(
+        aluminfoemail=aluminfoemail).delete()
+    db.session.commit()
+
+
 if __name__ == '__main__':
     create_new_matches()
