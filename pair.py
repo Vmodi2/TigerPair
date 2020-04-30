@@ -513,7 +513,6 @@ def verify_email_regex(request):
     return search(regex, email1)
 
 
-
 # NEW ALUM END
 # -----------------------------------------------------------------------
 
@@ -1079,7 +1078,6 @@ def upsert_alum(alum):
 
 @app.route('/login/admin', methods=['POST', 'GET'])
 def adminlogin():
-
     form = AdminLoginForm()
     if form.validate_on_submit():
         # print("submitted form")
