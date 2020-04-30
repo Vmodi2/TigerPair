@@ -156,7 +156,7 @@ def student_dashboard():
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
         html = render_template('pages/student/new.html',
-                               student=current, username=username, side="student")
+                               student=current)
         return make_response(html)
     else:
         # print("in student dashboard")
@@ -171,14 +171,22 @@ def student_dashboard():
 def student_information():
     route_new_student()
     username = get_cas()
+    group_id = -1
+    current = students.query.filter_by(studentid=username).first()
     info = request.form
+    if not current:
+        try:
+            group_id = int(info.get('group_id'))
+        except:
+            group_id = 0
+        if not admins.query.filter_by(id=group_id).first():
+            html = render_template(
+                'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+            return make_response(html)
+    else:
+        group_id = current.group_id
     new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'))
-    try:
-        new_student.group_id = int(info.get('group_id'))
-    except:
-        pass
-    print(new_student.group_id)
+                           f'{username}@princeton.edu', info.get('major'), info.get('career'), group_id=group_id)
     upsert_student(new_student)
     return redirect(url_for('student_dashboard'))
 
@@ -210,11 +218,13 @@ def student_email():
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
+    elif students.query.filter_by(studentinfoemail=email1).first():
+        errorMsg = "That email already belongs to another account"
     else:
         current.studentinfoemail = email1
         db.session.commit()
     html = render_template('pages/student/dashboard.html',
-                           active_email=True, errorMsg=errorMsg, student=current)
+                           active_email=True, errorMsg=errorMsg, student=current, side="student")
     return make_response(html)
 
 
@@ -233,6 +243,24 @@ def student_id():
             current.group_id = new_id
             db.session.commit()
     return redirect(url_for('student_dashboard'))
+
+
+@app.route('/student/account', methods=['GET'])
+def student_account():
+    route_new_student()
+    username = strip_user(CASClient().authenticate())
+    current = students.query.filter_by(studentid=username).first()
+    html = render_template('pages/student/account.html',
+                           active_email=True, username=username, student=current, side="student")
+    return make_response(html)
+
+
+@app.route('/student/delete', methods=['GET'])
+def student_delete():
+    username = strip_user(CASClient().authenticate())
+    students.query.filter_by(studentid=username).delete()
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 def get_match_student(username):
@@ -304,16 +332,19 @@ def alumni_email():
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
-    if not email1 == email2:
+    if email1 != email2:
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
+    elif alumni.query.filter_by(aluminfoemail=email1).first():
+        errorMsg = "That email already belongs to another account"
     else:
-        urrent.aluminfoemail = email1
+        current.aluminfoemail = email1
         current_user.aluminfoemail = email1
         db.session.commit()
+        return redirect(url_for('alum_logout'))
     html = render_template('pages/alum/dashboard.html',
-                           active_email=True, errorMsg=errorMsg, alum=current)
+                           active_email=True, errorMsg=errorMsg, alum=current, side="alum")
     return make_response(html)
 
 
@@ -343,6 +374,25 @@ def alum_matches(match=None):
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                            match=match, side="alum")
     return make_response(html)
+
+
+@app.route('/alum/account', methods=['GET'])
+@login_required
+def alum_account():
+    username = current_user.aluminfoemail
+    current = alumni.query.filter_by(aluminfoemail=username).first()
+    html = render_template('pages/alum/account.html',
+                           active_email=True, username=username, alum=current, side="alum")
+    return make_response(html)
+
+
+@app.route('/alum/delete', methods=['GET'])
+@login_required
+def alum_delete():
+    username = current_user.aluminfoemail
+    alumni.query.filter_by(aluminfoemail=username).delete()
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 def get_match_alum(email):
@@ -724,19 +774,42 @@ def process_import(is_alumni):
     except Exception as e:
         return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
 
+
+@app.route('/admin/action-student', methods=["POST"])
+def admin_action_student():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        students = request.form.get('checked-members').split(',')
+        for student in students:
+            delete_student(id, student)
+    return redirect(url_for('admin_profiles_student'))
+
+
+@app.route('/admin/action-alum', methods=["POST"])
+def admin_action_alum():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        alumni = request.form.get('checked-members').split(',')
+        for alum in alumni:
+            print('fCORONAAAA ')
+            print(alum)
+            delete_alum(id, alum)
+    return redirect(url_for('admin_profiles_alum'))
+
+
 # REDIRECT HERE FROM THE BUTTON
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
 # def login():
 
     # form = LoginForm()
     # if form.validate_on_submit():
-        # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
-        # if group_id is not None:
-        # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
-        # login_user(user, remember=form.remember.data)
-        # return redirect(url_for('/admin/dashboard'))
-        # else:
-        # flash("Group ID does not exist")
+    # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+    # if group_id is not None:
+    # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
+    # login_user(user, remember=form.remember.data)
+    # return redirect(url_for('/admin/dashboard'))
+    # else:
+    # flash("Group ID does not exist")
 
     # html = render_template('pages/admin/group-login.html', form=form)
     # return make_response(html)
