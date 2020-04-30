@@ -191,15 +191,45 @@ def student_information():
     return redirect(url_for('student_dashboard'))
 
 
-@app.route('/student/matches')
+@app.route('/student/matches', methods=['GET', 'POST'])
 def student_matches(match=None):
     route_new_student()
     username = get_cas()
+
     if not match:
         match = get_match_student(username)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(studentid=username).first()
+            match_item.contacted = True
+            db.session.commit()
+
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(
+            studentid=username).first().contacted
+
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/matches.html',
-                           match=match, username=username, student=current, side="student")
+                           match=match, username=username, student=current, side="student",
+                           contacted=contacted)
+
+    if request.form.get("message") is not None:
+        # Due to database issues (that won't be in the final product) this may not send
+        try:
+            group_id = current.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.username + "@princeton.edu"
+
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
+            mail.send(msg)
+        except Exception as e:
+            pass
+
     return make_response(html)
 
 
@@ -208,7 +238,7 @@ def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(
         studentid=username).first()
     errorMsg = ''
@@ -233,22 +263,34 @@ def student_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(
         studentid=username).first()
-    new_id = request.form.get('id').strip()
-    if new_id:
-        group = admins.query.filter_by(id=new_id).first()
-        if group:
-            current.group_id = new_id
-            db.session.commit()
-    return redirect(url_for('student_dashboard'))
+    response = {}
+    if request.method == "POST":
+        if matches.query.filter_by(studentid=username).first():
+            response['msg'] = 'You may not change groups while you are matched'
+        else:
+            new_id = request.form.get('id').strip()
+            if new_id:
+                group = admins.query.filter_by(id=new_id).first()
+                if group:
+                    current.group_id = new_id
+                    db.session.commit()
+                    response['changed'] = True
+                    response['id'] = new_id
+                    response['msg'] = 'Success changing your group!'
+                else:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
+    else:
+        response['msg'] = 'An unexpected error occurred'
+    return jsonify(response)
 
 
 @app.route('/student/account', methods=['GET'])
 def student_account():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/account.html',
                            active_email=True, username=username, student=current, side="student")
@@ -257,7 +299,13 @@ def student_account():
 
 @app.route('/student/delete', methods=['GET'])
 def student_delete():
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
+    # find if matched already and delete current match could use clear match
+    # but then I would have to find student object
+    alum = get_match_student(username=username)
+    if alum is not None:
+        alum.matched -= 1
+        matches.query.filter_by(studentid=username).delete()
     students.query.filter_by(studentid=username).delete()
     db.session.commit()
     return redirect(url_for('index'))
@@ -284,13 +332,12 @@ def get_match_student(username):
     # alum=current_user, username=current_user.aluminfoemail, side="alum")
     # return make_response(html)
 
-
 # NEW ALUM START
 @app.route('/alum/dashboard', methods=['GET', 'POST'])
 @login_required
 def alumni_dashboard():
     if not current_user.email_confirmed:
-        return redirect(url_for('login'))
+        return redirect(url_for('gotoemail'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     if not current.aluminfonamefirst:
@@ -306,7 +353,7 @@ def alumni_dashboard():
 @login_required
 def alumni_info():
     if not current_user.email_confirmed:
-        return redirect(url_for('login'))
+        return redirect(url_for('gotoemail'))
     if (flask.request.method == 'POST'):
         alum = alumni.query.filter_by(
             aluminfoemail=current_user.aluminfoemail).first()
@@ -327,6 +374,8 @@ def alumni_info():
 def alumni_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     errorMsg = ''
@@ -353,32 +402,81 @@ def alumni_email():
 def alumni_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
-    new_id = request.form.get('id').strip()
-    if new_id:
-        admin = admins.query.filter_by(id=new_id).first()
-        if new_id and admin:
-            current.group_id = new_id
-            current_user.group_id = new_id
-            db.session.commit()
-    return redirect(url_for('alumni_dashboard'))
+    response = {}
+    if request.method == "POST":
+        if matches.query.filter_by(aluminfoemail=current_user.aluminfoemail).first():
+            response['msg'] = 'You may not change groups while you are matched'
+        else:
+            new_id = request.form.get('id').strip()
+            if new_id:
+                group = admins.query.filter_by(id=new_id).first()
+                if group:
+                    current.group_id = new_id
+                    db.session.commit()
+                    response['changed'] = True
+                    response['id'] = new_id
+                    response['msg'] = 'Success changing your group!'
+                else:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
+    else:
+        response['msg'] = 'An unexpected error occurred'
+    return jsonify(response)
 
 
-@app.route('/alum/matches')
+@app.route('/alum/matches', methods=['GET', 'POST'])
 @login_required
 def alum_matches(match=None):
     # username = get_cas()
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
+                        
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(
+                studentid=match.studentid).first()
+            match_item.contacted = True
+            db.session.commit()
+
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(
+            studentid=match.studentid).first().contacted
+
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
-                           match=match, side="alum")
+                           match=match, side="alum",
+                           contacted=contacted)
+
+    if request.form.get("message") is not None:
+        # Due to database issues (that won't be in the final product) this may not send
+        try:
+            group_id = current_user.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.username + "@princeton.edu"
+
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + \
+                current_user.aluminfonamefirst + " " + current_user.aluminfonamelast
+            mail.send(msg)
+        except Exception as e:
+            pass
+
     return make_response(html)
 
 
 @app.route('/alum/account', methods=['GET'])
 @login_required
 def alum_account():
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     username = current_user.aluminfoemail
     current = alumni.query.filter_by(aluminfoemail=username).first()
     html = render_template('pages/alum/account.html',
@@ -389,8 +487,15 @@ def alum_account():
 @app.route('/alum/delete', methods=['GET'])
 @login_required
 def alum_delete():
-    username = current_user.aluminfoemail
-    alumni.query.filter_by(aluminfoemail=username).delete()
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
+    email = current_user.aluminfoemail
+    # find if matched already and delete current match
+    student = get_match_alum(email=email)
+    if student is not None:
+        student.matched = 0
+        matches.query.filter_by(aluminfoemail=email).delete()
+    alumni.query.filter_by(aluminfoemail=email).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -406,6 +511,9 @@ def verify_email_regex(request):
     email1 = request.form.get('email')
     regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return search(regex, email1)
+
+
+
 
 # NEW ALUM END
 # -----------------------------------------------------------------------
@@ -871,6 +979,7 @@ def process_import(is_alumni):
             for row in csv_reader:
                 new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
                                   aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                print(new_alum.group_id)
                 upsert_alum(new_alum)
         else:
             for row in csv_reader:
@@ -907,8 +1016,6 @@ def admin_action_alum():
     if request.form.get('action') == 'delete':
         alumni = request.form.get('checked-members').split(',')
         for alum in alumni:
-            print('fCORONAAAA ')
-            print(alum)
             delete_alum(id, alum)
     return redirect(url_for('admin_profiles_alum'))
 
@@ -944,6 +1051,7 @@ def upsert_student(student):
         table_student.studentinfoemail = student.studentinfoemail
         table_student.studentacademicsmajor = student.studentacademicsmajor
         table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
+        table_student.group_id = student.group_id
     else:
         db.session.add(student)
     db.session.commit()
@@ -958,6 +1066,7 @@ def upsert_alum(alum):
         table_alum.aluminfoemail = alum.aluminfoemail
         table_alum.alumacademicsmajor = alum.alumacademicsmajor
         table_alum.alumcareerfield = alum.alumcareerfield
+        table_alum.group_id = alum.group_id
     else:
         db.session.add(alum)
     db.session.commit()
