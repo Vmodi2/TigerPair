@@ -22,6 +22,8 @@ app.secret_key = b'\xcdt\x8dn\xe1\xbdW\x9d[}yJ\xfc\xa3~/'
 
 app.config.from_pyfile('config.cfg')
 
+
+
 mail = Mail(app)
 
 s = URLSafeTimedSerializer('randomkey') # make this much more random
