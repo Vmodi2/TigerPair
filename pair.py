@@ -627,6 +627,34 @@ def admin_dashboard_create():
     return redirect(url_for('admin_dashboard'))
 # -----------------------------------------------------------------------
 
+# Notify when a match has been made
+@app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
+def notify():
+    print("notify")
+    username, id = verify_admin()
+    matches = get_matches(id)
+    student_emails=[]
+    alum_emails=[]
+    for match in matches:
+        student=students_table.query.filter_by(studentid=match[0]).first().studentinfoemail
+        student_emails.append(student)
+        alum_emails.append(match[1])
+    student_msg = Message('You\'ve been Matched!', sender='tigerpaircontact@gmail.com', recipients=student_emails)     
+    student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
+    mail.send(student_msg)
+
+    alum_msg = Message('You\'ve been Matched!', sender='tigerpaircontact@gmail.com', recipients=alum_emails)     
+    alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
+    mail.send(alum_msg)
+    return redirect(url_for('admin_dashboard'))
+    
+
+
+
+
+
+
+
 
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
