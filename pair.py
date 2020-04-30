@@ -258,6 +258,12 @@ def student_account():
 @app.route('/student/delete', methods=['GET'])
 def student_delete():
     username = strip_user(CASClient().authenticate())
+    # find if matched already and delete current match could use clear match
+    # but then I would have to find student object
+    alum = get_match_student(username=username)
+    if alum is not None:
+        alum.matched -= 1
+        matches.query.filter_by(studentid=username).delete()
     students.query.filter_by(studentid=username).delete()
     db.session.commit()
     return redirect(url_for('index'))
@@ -389,8 +395,13 @@ def alum_account():
 @app.route('/alum/delete', methods=['GET'])
 @login_required
 def alum_delete():
-    username = current_user.aluminfoemail
-    alumni.query.filter_by(aluminfoemail=username).delete()
+    email = current_user.aluminfoemail
+    # find if matched already and delete current match
+    student = get_match_alum(email=email)
+    if student is not None:
+        student.matched = 0
+        matches.query.filter_by(aluminfoemail=email).delete()
+    alumni.query.filter_by(aluminfoemail=email).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -791,8 +802,8 @@ def admin_action_alum():
     if request.form.get('action') == 'delete':
         alumni = request.form.get('checked-members').split(',')
         for alum in alumni:
-            print('fCORONAAAA ')
-            print(alum)
+            # print('fCORONAAAA ')
+            # print(alum)
             delete_alum(id, alum)
     return redirect(url_for('admin_profiles_alum'))
 
