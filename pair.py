@@ -603,6 +603,8 @@ def signup():
 def verify_admin():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('asignup'))
     #if not current:
         #current = admins(username)
         #db.session.add(current)
@@ -625,7 +627,12 @@ def admin_dashboard():
 # Dynamic page function for admin home page of site
 @app.route('/admin/dashboard/create', methods=['GET', 'POST'])
 def admin_dashboard_create():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     create_new_matches(id)
     return redirect(url_for('admin_dashboard'))
 # -----------------------------------------------------------------------
@@ -634,7 +641,12 @@ def admin_dashboard_create():
 @app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
 def notify():
     print("notify")
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     matches = get_matches(id)
     student_emails=[]
     alum_emails=[]
@@ -659,27 +671,47 @@ def notify():
 
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     html = render_template('pages/admin/modify-matches.html', matches=matches,
                            side='admin', username=username, id=id)
     return make_response(html)
 
 @app.route('/admin/dashboard/clearall', methods=['GET', 'POST'])
 def admin_dashboard_clearall():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     clear_matches(id)
     return redirect(url_for('admin_dashboard'))
 
 # -----------------------------------------------------------------------
 @app.route('/admin/dashboard/clearone', methods=['GET', 'POST'])
 def admin_dashboard_clearone():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     clear_match(request.args.get('student'), request.args.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/manual-match', methods=['GET', 'POST'])
 def admin_dashboard_manual_match():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     alumni = get_unmatched_alumni(id)
     students = get_unmatched_students(id)
     html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
@@ -688,13 +720,23 @@ def admin_dashboard_manual_match():
 
 @app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
 def admin_dashboard_createone():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     create_one(id, request.form.get('student'), request.form.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/profiles-alum')
 def admin_profiles_alum():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     alumni = get_alumni(id)
     html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
                            side='admin', username=username, id=id)
@@ -703,7 +745,12 @@ def admin_profiles_alum():
 # SINGLE alum profile page
 @app.route('/admin/profile-alum')
 def admin_profile_alum():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     alum, matches = get_alum(request.args['email'])
     html = render_template('pages/admin/profile-alum.html',
                            alum=alum, matches=matches,
@@ -712,7 +759,12 @@ def admin_profile_alum():
 
 @app.route('/admin/profiles-student')
 def admin_profiles_student():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     students = get_students(id)
     html = render_template(
         'pages/admin/profiles-student.html', students=students,
@@ -722,7 +774,12 @@ def admin_profiles_student():
 # SINGLE student profile page
 @app.route('/admin/profile-student')
 def admin_profile_student():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     student, matches = get_student(request.args['netid'])
     html = render_template('pages/admin/profile-student.html',
                            student=student, matches=matches,
@@ -731,7 +788,12 @@ def admin_profile_student():
 
 @app.route('/admin/get-registrations-alum', methods=['GET'])
 def admin_get_registrations_alum():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     registrations = db.engine.execute(
         "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
     response = {str(row[0]): row[1] for row in registrations}
@@ -739,7 +801,12 @@ def admin_get_registrations_alum():
 
 @app.route('/admin/get-registrations-student', methods=['GET'])
 def admin_get_registrations_student():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     registrations = db.engine.execute(
         "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM students GROUP BY unique_date ORDER BY unique_date ASC;")
     response = {str(row[0]): row[1] for row in registrations}
@@ -747,31 +814,56 @@ def admin_get_registrations_student():
 
 @app.route('/admin/import-students')
 def admin_import_students():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     html = render_template('pages/admin/import-students.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
 
 @app.route('/admin/import-alumni')
 def admin_import_alumni():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     html = render_template('pages/admin/import-alumni.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
 
 @app.route('/admin/import-students/process', methods=["POST"])
 def admin_import_students_process():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     return process_import(is_alumni=False)
 
 @app.route('/admin/import-alumni/process', methods=["POST"])
 def admin_import_alumni_process():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     return process_import(is_alumni=True)
 
 
 def process_import(is_alumni):
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     try:
         request_file = request.files['data_file']
         if not request_file:
@@ -795,7 +887,12 @@ def process_import(is_alumni):
 
 @app.route('/admin/action-student', methods=["POST"])
 def admin_action_student():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     if request.form.get('action') == 'delete':
         students = request.form.get('checked-members').split(',')
         for student in students:
@@ -805,7 +902,12 @@ def admin_action_student():
 
 @app.route('/admin/action-alum', methods=["POST"])
 def admin_action_alum():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
+    ####
     if request.form.get('action') == 'delete':
         alumni = request.form.get('checked-members').split(',')
         for alum in alumni:
