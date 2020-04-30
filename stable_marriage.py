@@ -118,7 +118,7 @@ def create_one(id, studentid, aluminfoemail):
 
 
 def clear_matches(id):
-    db.session.query(matches_table).delete()
+    db.session.query(matches_table).filter_by(group_id=id).delete()
     students = students_table.query.filter_by(group_id=id)
     for student in students:
         student.matched = 0
