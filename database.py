@@ -87,6 +87,7 @@ class admins(db.Model):
     id = db.Column('id', db.Unicode, db.Sequence(
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
+    password = db.Column('password', db.Unicode)
 
     def __init__(self, username):
         self.username = username
@@ -95,7 +96,7 @@ class admins(db.Model):
 class groups(db.Model):
     __tablename__ = 'groups'
     id = db.Column('group_id', db.Unicode, primary_key=True)
-    adminid = db.Column('adminid', db.Unicode)
+    adminid = db.Column('admin_id', db.Unicode)
     password = db.Column('password', db.Unicode)
 
     def __init__(self, group_id, adminid, password):
