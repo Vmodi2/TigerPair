@@ -68,6 +68,6 @@ class AdminRegisterForm(FlaskForm):
 
 # -----------------------------------------------------------------------
 
-class AdminChangeForm(FlaskForm):
-    netid = StringField('netid', validators=[InputRequired(), Length(min=4, max=15)])
-    confirm_netid = StringField('username', validators=[InputRequired(), Length(min=4, max=15), EqualTo('netid')])
+# class AdminChangeForm(FlaskForm):
+#     netid = StringField('netid', validators=[InputRequired(), Length(min=4, max=15)])
+#     netid_confirm = StringField('netid_confirm', validators=[InputRequired(), Length(min=4, max=15), EqualTo('netid')])

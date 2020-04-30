@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, AdminChangeForm
+from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -1008,15 +1008,20 @@ def asignup():
 
 @app.route('/admin/change', methods=['GET', 'POST'])
 def admin_change():
-    form = AdminChangeForm()
-    if form.validate_on_submit():
-        new_user = form.netid.data
-        username = strip_user(CASClient().authenticate())
-        user = admins.query.filter_by(username=username)
-        user.username = new_user
-        db.session.commit()
-        return redirect(url_for('index'))
-    html = render_template('pages/admin/adminchange.html', form=form)
+    username = get_cas()
+    print("here")
+    if request.method == 'POST':
+        netid = request.form.get('netid')
+        confirm_netid = request.form.get('confirm_netid')
+        if netid == confirm_netid:
+            user = admins.query.filter_by(username=username).first()
+            if not admins.query.filter_by(username=netid).first():
+                user.username = netid
+                db.session.commit()
+                return redirect(url_for('index'))
+        else:
+            return redirect('admin_dashboard')
+    html = render_template('pages/admin/adminchange.html')
     return make_response(html)
 
 
