@@ -268,17 +268,20 @@ def student_id():
         studentid=username).first()
     response = {}
     if request.method == "POST":
-        new_id = request.form.get('id').strip()
-        if new_id:
-            group = admins.query.filter_by(id=new_id).first()
-            if group:
-                current.group_id = new_id
-                db.session.commit()
-                response['changed'] = True
-                response['id'] = new_id
-                response['msg'] = 'Success changing your group!'
-            else:
-                response['msg'] = 'The chosen group id does not belong to an existing group'
+        if matches.query.filter_by(studentid=username).first():
+            response['msg'] = 'You may not change groups while you are matched'
+        else:
+            new_id = request.form.get('id').strip()
+            if new_id:
+                group = admins.query.filter_by(id=new_id).first()
+                if group:
+                    current.group_id = new_id
+                    db.session.commit()
+                    response['changed'] = True
+                    response['id'] = new_id
+                    response['msg'] = 'Success changing your group!'
+                else:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
@@ -402,17 +405,20 @@ def alumni_id():
         aluminfoemail=current_user.aluminfoemail).first()
     response = {}
     if request.method == "POST":
-        new_id = request.form.get('id').strip()
-        if new_id:
-            group = admins.query.filter_by(id=new_id).first()
-            if group:
-                current.group_id = new_id
-                db.session.commit()
-                response['changed'] = True
-                response['id'] = new_id
-                response['msg'] = 'Success changing your group!'
-            else:
-                response['msg'] = 'The chosen group id does not belong to an existing group'
+        if matches.query.filter_by(aluminfoemail=current_user.aluminfoemail).first():
+            response['msg'] = 'You may not change groups while you are matched'
+        else:
+            new_id = request.form.get('id').strip()
+            if new_id:
+                group = admins.query.filter_by(id=new_id).first()
+                if group:
+                    current.group_id = new_id
+                    db.session.commit()
+                    response['changed'] = True
+                    response['id'] = new_id
+                    response['msg'] = 'Success changing your group!'
+                else:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
