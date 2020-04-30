@@ -1,5 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, jsonify
 from config import db
 
 
@@ -43,7 +41,8 @@ class alumni(db.Model):
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)
 
-    def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
+    def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None,
+                 alumcareerfield=None, matched=0, password=None,
                  email_confirmed=False, group_id=0):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast

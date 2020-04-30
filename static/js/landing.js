@@ -9,6 +9,7 @@ $(document).ready(() => {
             image.removeClass('move-up');
         });
     }
+
     initialize($('#student-btn'), $('#littletiger-img'));
     initialize($('#alum-btn'), $('#bigtiger-img'));
 
@@ -17,12 +18,10 @@ $(document).ready(() => {
         "use strict";
         if ($(document).scrollTop() >= 200) {
             myNav.removeClass("transparent", 5000);
-        }
-        else {
+        } else {
             myNav.addClass("transparent", 5000);
         }
     });
-
 
 
 });

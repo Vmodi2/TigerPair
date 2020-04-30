@@ -1,108 +1,110 @@
 {% extends 'pages/user_base.html' %}
 
 {% block content %}
-<!-- Info side -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-	<li class="nav-item">
-		<a class="nav-link {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
-			role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link {{active_more}}" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab"
-			aria-controls="page-1" aria-selected="false">More Info</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link {% if active_email %}active{% endif %}" id="change-email-tab" data-toggle="tab"
-			href="#change-email" role="tab" aria-controls="change-email" aria-selected="false">Change Email</a>
-	</li>
-</ul>
+    <!-- Info side -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
+               role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ active_more }}" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab"
+               aria-controls="page-1" aria-selected="false">More Info</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active_email %}active{% endif %}" id="change-email-tab" data-toggle="tab"
+               href="#change-email" role="tab" aria-controls="change-email" aria-selected="false">Change Email</a>
+        </li>
+    </ul>
 
-<div class="tab-content" id="myTabContent">
-	<div class="tab-pane fade {% if not active_email %}active show{% endif %}" id="home" role="tabpanel"
-		aria-labelledby="home-tab">
-		<form method="post" action="/student/information">
-			<label for="firstname">First Name</label>
-			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
-				value="{{student.studentinfonamefirst}}" required readonly>
-			<br />
-			<label for="lastname">Last Name</label>
-			<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
-				value="{{student.studentinfonamelast}}" required readonly>
-			<br />
-			<label for="major">Major</label>
-			<select class="form-control mr-sm-2" id="major" name="major" required disabled>
-				<option value="{{student.studentacademicsmajor}}" selected>{{student.studentacademicsmajor}}
-				</option>
-			</select>
-			<br />
-			<label for="career">Desired Career Field</label>
-			<select class="form-control mr-sm-2" id="career" name="career" required disabled>
-				<option value="{{student.studentcareerdesiredfield}}" selected>
-					{{student.studentcareerdesiredfield}}
-				</option>
-			</select>
-			<br />
-			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
-		</form>
-	</div>
-	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-		<form method="post" action="/student/more-information">
-			<label for="info-1">Custom Information 1</label>
-			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1"
-				value="{{student.studentinfocustom1}}" readonly>
-			<br />
-			<label for="info-2">Custom Information 2</label>
-			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2"
-				value="{{student.studentinfocustom1}}" readonly>
-			<br />
-			<label for="info-3">Custom Information 3</label>
-			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3"
-				value="{{student.studentinfocustom1}}" readonly>
-			<br />
-			<label for="info-4">Custom Information 4</label>
-			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
-				<option value="{{student.studentinfocustom4}}" selected>
-					{{student.studentinfocustom4}}
-				</option>
-			</select>
-			<br />
-			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
-		</form>
-	</div>
-	<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
-		aria-labelledby="change-email-tab">
-		<form action="/student/email" method="post">
-			<p class="text-danger font-weight-bold">{{errorMsg}}</p>
-			<div class="form-group row">
-				<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
-				<div class="col-sm-10">
-					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
-						value="{{student.studentinfoemail if student.studentinfoemail}}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="email" class="col-sm-2 col-form-label">New Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com"
-						required>
-				</div>
-				<br><br>
-				<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email-repeated" name="email-repeated"
-						placeholder="email@domain.com" required>
-				</div>
-			</div>
-			<button type="submit" class="btn btn-warning my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
-		</form>
-	</div>
-</div>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade {% if not active_email %}active show{% endif %}" id="home" role="tabpanel"
+             aria-labelledby="home-tab">
+            <form method="post" action="/student/information">
+                <label for="firstname">First Name</label>
+                <input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
+                       value="{{ student.studentinfonamefirst }}" required readonly>
+                <br/>
+                <label for="lastname">Last Name</label>
+                <input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
+                       value="{{ student.studentinfonamelast }}" required readonly>
+                <br/>
+                <label for="major">Major</label>
+                <select class="form-control mr-sm-2" id="major" name="major" required disabled>
+                    <option value="{{ student.studentacademicsmajor }}" selected>{{ student.studentacademicsmajor }}
+                    </option>
+                </select>
+                <br/>
+                <label for="career">Desired Career Field</label>
+                <select class="form-control mr-sm-2" id="career" name="career" required disabled>
+                    <option value="{{ student.studentcareerdesiredfield }}" selected>
+                        {{ student.studentcareerdesiredfield }}
+                    </option>
+                </select>
+                <br/>
+                <button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+                <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;
+                </button>
+            </form>
+        </div>
+        <div class="tab-pane fade {{ active_more }}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
+            <form method="post" action="/student/more-information">
+                <label for="info-1">Custom Information 1</label>
+                <input class="form-control mr-sm-2" type="text" id="info-1" name="info-1"
+                       value="{{ student.studentinfocustom1 }}" readonly>
+                <br/>
+                <label for="info-2">Custom Information 2</label>
+                <input class="form-control mr-sm-2" type="text" id="info-2" name="info-2"
+                       value="{{ student.studentinfocustom1 }}" readonly>
+                <br/>
+                <label for="info-3">Custom Information 3</label>
+                <input class="form-control mr-sm-2" type="text" id="info-3" name="info-3"
+                       value="{{ student.studentinfocustom1 }}" readonly>
+                <br/>
+                <label for="info-4">Custom Information 4</label>
+                <select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
+                    <option value="{{ student.studentinfocustom4 }}" selected>
+                        {{ student.studentinfocustom4 }}
+                    </option>
+                </select>
+                <br/>
+                <button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+                <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;
+                </button>
+            </form>
+        </div>
+        <div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
+             aria-labelledby="change-email-tab">
+            <form action="/student/email" method="post">
+                <p class="text-danger font-weight-bold">{{ errorMsg }}</p>
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail"
+                               value="{{ student.studentinfoemail if student.studentinfoemail }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="col-sm-2 col-form-label">New Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com"
+                               required>
+                    </div>
+                    <br><br>
+                    <label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="email-repeated" name="email-repeated"
+                               placeholder="email@domain.com" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 {% block edit_profile %}{% endblock %}
 {% block extra_scripts %}
-<script src="/static/js/update.js"></script>
-<script src="/static/js/options.js"></script>
-<script src="/static/js/scripts.js"></script>
+    <script src="/static/js/update.js"></script>
+    <script src="/static/js/options.js"></script>
+    <script src="/static/js/scripts.js"></script>
 {% endblock %}

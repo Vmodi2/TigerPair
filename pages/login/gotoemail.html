@@ -2,38 +2,38 @@
 
 {% block body %}
 
-<body class="d-flex flex-column h-100" onload="update_majors()">
+    <body class="d-flex flex-column h-100" onload="update_majors()">
 
-	<header>
-		<!-- Fixed navbar -->
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand" href="#">Email Confirmation</a>
-		</nav>
-	</header>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">Email Confirmation</a>
+        </nav>
+    </header>
 
-	<!-- Begin page content -->
-	<main role="main" class="flex-shrink-0 d-flex justify-content-center">
-		<div class="jumbotron m-0 bg-light">
-			<br>
-			<br>
-			<br>
-			<br>
-			<h1 class="display-4">Please check your email to verify your account</h1>
-			</p>
-			<p class="lead text-center">Check your spam folder if you don't receive an email in your inbox.</p>
-		</div>
-	</main>
-	{% endblock %}
-	{% block extra_scripts %}
-	<script src="/static/js/majors.js"></script>
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
-	<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
-	<script src="/static/js/bootstrap.bundle.min.js"
-		integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-		crossorigin="anonymous"></script>
-</body>
+    <!-- Begin page content -->
+    <main role="main" class="flex-shrink-0 d-flex justify-content-center">
+        <div class="jumbotron m-0 bg-light">
+            <br>
+            <br>
+            <br>
+            <br>
+            <h1 class="display-4">Please check your email to verify your account</h1>
+            </p>
+            <p class="lead text-center">Check your spam folder if you don't receive an email in your inbox.</p>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="/static/js/majors.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+    <script src="/static/js/bootstrap.bundle.min.js"
+            integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
+            crossorigin="anonymous"></script>
+    </body>
 
-</html>
+    </html>
 {% endblock %}

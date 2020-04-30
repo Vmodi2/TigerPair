@@ -3,75 +3,76 @@
 
 <body id="top">
 
-  {% block title %}
-  Admin Login
-  {% endblock %}
+{% block title %}
+    Admin Login
+{% endblock %}
 
-  {% block styles %}
-  {{super()}}
+{% block styles %}
+    {{ super() }}
 
-  <head>
+    <head>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    </link>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    </link>
-    <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
-  </head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        </link>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        </link>
+        <link rel="stylesheet" href="{{ url_for('.static', filename='/css/login.css') }}">
+    </head>
 
-  {% endblock %}
+{% endblock %}
 
-  {% block content %}
-  <div class="container">
-    <div class="row" style="padding-top: 13%">
-      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-        <div class="card card-signin my-5">
-          <div class="card-body">
-            <h5 class="card-title text-center"><strong>Sign In</strong></h5>
-            <form class="form-signin" method="post" action="/login">
-              {{ form.hidden_tag() }}
+{% block content %}
+    <div class="container">
+        <div class="row" style="padding-top: 13%">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><strong>Sign In</strong></h5>
+                        <form class="form-signin" method="post" action="/login">
+                            {{ form.hidden_tag() }}
 
-              <!-- {% include '/pages/login/flasherror.html' %} -->
+                            <!-- {% include '/pages/login/flasherror.html' %} -->
 
-              <div class="form-label-group">
-                <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
-                {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
+                            <div class="form-label-group">
+                                <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
+                                {{ wtf.form_field(form.username, id='username', class='form-control', placeholder='Username') }}
 
-                <!-- <label for="username">Username</label> -->
-              </div>
-              <div class="form-label-group">
-                <!-- <input type="password" id="inputPassword" class="form-control" placeholder="Password" required> -->
-                {{ wtf.form_field(form.password, id="inputPassword", class="form-control", placeholder="Password") }}
-                <!-- <label for="inputPassword">Password</label> -->
-              </div>
-              <center>
-                <p>Don't have an account? <a id="signup" href="login/asignup">Sign up!</a></p>
-                <!-- <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>  ADD THIS TARA -->
-              </center>
-              <div class="custom-control custom-checkbox mb-3">
-                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                {{ wtf.form_field(form.remember, class="custom-control-label", for="customCheck1") }}
-                <!-- <label class="custom-control-label" for="customCheck1">Remember password</label> -->
-              </div>
-              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
-              <hr class="my-4">
+                                <!-- <label for="username">Username</label> -->
+                            </div>
+                            <div class="form-label-group">
+                                <!-- <input type="password" id="inputPassword" class="form-control" placeholder="Password" required> -->
+                                {{ wtf.form_field(form.password, id="inputPassword", class="form-control", placeholder="Password") }}
+                                <!-- <label for="inputPassword">Password</label> -->
+                            </div>
+                            <center>
+                                <p>Don't have an account? <a id="signup" href="login/asignup">Sign up!</a></p>
+                                <!-- <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>  ADD THIS TARA -->
+                            </center>
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                {{ wtf.form_field(form.remember, class="custom-control-label", for="customCheck1") }}
+                                <!-- <label class="custom-control-label" for="customCheck1">Remember password</label> -->
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in
+                            </button>
+                            <hr class="my-4">
 
-            </form>
-          </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <!-- /container -->
     </div>
-    <!-- /container -->
-  </div>
-  <script>
+    <script>
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-      $(".card-body").slideDown();
+            $(".card-body").slideDown();
 
-    });
+        });
 
-  </script>
-  {% endblock %}
+    </script>
+{% endblock %}

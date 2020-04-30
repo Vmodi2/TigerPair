@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TigerPair</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/static/css/index.css">
     <link rel="stylesheet" type="text/css" href="/static/css/micons/micons.css">
     <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@700&display=swap" rel="stylesheet">
@@ -14,56 +14,129 @@
 </head>
 
 <body>
-    {% include "/pages/homenav.html" %}
-    <div class="col-full">
-        <h2 class="admin-title display-5 text-center font-weight-bold px-4 mt-5 pt-5">Become an admin today
-        </h2>
-        <h3 class="display-4 text-center px-4 pt-2 pb-5">We'll match your group with the leaders they deserve
-        </h3>
-        <hr style="width:60%;text-align:center;border-top:1px solid;">
+{% include "/pages/homenav.html" %}
+<div class="col-full">
+    <h2 class="admin-title display-5 text-center font-weight-bold px-4 mt-5 pt-5">Become an admin today
+    </h2>
+    <h3 class="display-4 text-center px-4 pt-2 pb-5">We'll match your group with the leaders they deserve
+    </h3>
+    <hr style="width:60%;text-align:center;border-top:1px solid;">
+</div>
+<div class="container pt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-2 mt-2 mt-2">
+                    <i class="icons icon-group lead"></i>
+                </div>
+                <div class="col-10">
+                    <h3 class="mb-3">Easy sign-up</h3>
+                    <p class="lead">The sign-up process for Princeton students and alumni is a breeze. Students are
+                        authorized
+                        through Princeton's CAS login system and alumni are approved with a valid e-mail address on
+                        the
+                        alumni.princeton.edu domain.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-2 mt-2">
+                    <i class="icons icon-earth lead"></i>
+                </div>
+                <div class="col-10">
+                    <h3 class="mb-3">Management features</h3>
+                    <p class="lead">Easily remove and re-pair participants in real-time within the dashboard. As
+                        participants
+                        sign
+                        up, new matches can easily be created without disrupting old ones!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-2 mt-2">
+                    <i class="icons icon-paint-brush lead"></i>
+                </div>
+                <div class="col-10">
+                    <h3 class="mb-3">Machine learning</h3>
+                    <p class="lead">As an administrator, you can easily choose the features you want to include,
+                        including
+                        keyword
+                        fields. And with an algorithm on the frontier of word embedding research in natural
+                        language
+                        processing, you can rest assured that computed matches between students and alumni will
+                        be optimal.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-2 mt-2">
+                    <i class="icons icon-megaphone lead"></i>
+                </div>
+                <div class="col-10">
+                    <h3 class="mb-3">Importing features</h3>
+                    <p class="lead">If you'd rather avoid managing a sign-up process, TigerPair also offers
+                        easy-to-use tools
+                        that
+                        allow you to import student and alumni information from an Excel or Google Sheets
+                        spreadsheet or
+                        a Google Form. Match results can then easily be sent out to participants.
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="container pt-5">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-2 mt-2 mt-2">
-                        <i class="icons icon-group lead"></i>
-                    </div>
-                    <div class="col-10">
-                        <h3 class="mb-3">Easy sign-up</h3>
-                        <p class="lead">The sign-up process for Princeton students and alumni is a breeze. Students are
-                            authorized
-                            through Princeton's CAS login system and alumni are approved with a valid e-mail address on
-                            the
-                            alumni.princeton.edu domain.
-                        </p>
-                    </div>
+</div>
+<!-- <div class="container"> -->
+<!-- services
+================================================== -->
+<!-- <section id='services'>
+        <div class="row section-header has-bottom-sep">
+            <div class="col-full">
+                <h1 class="display-2 text-center">We’ve got everything you need to launch and grow your business
+                </h1>
+            </div> -->
+<!-- </div> end section-header -->
+
+<!-- <div class="row services-list block-1-2 block-tab-full">
+            <div class="col-block col-sm service-item">
+                <div class="service-icon">
+                    <i class="icon-group"></i>
+                </div>
+                <div class="service-text">
+                    <h3 class="h2">Easy sign-up</h3>
+                    <p>The sign-up process for Princeton students and alumni is a breeze. Students are authorized
+                        through Princeton's CAS login system and alumni are approved with a valid e-mail address on
+                        the
+                        alumni.princeton.edu domain.
+                    </p>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-2 mt-2">
-                        <i class="icons icon-earth lead"></i>
-                    </div>
-                    <div class="col-10">
-                        <h3 class="mb-3">Management features</h3>
-                        <p class="lead">Easily remove and re-pair participants in real-time within the dashboard. As
-                            participants
-                            sign
-                            up, new matches can easily be created without disrupting old ones!
-                        </p>
-                    </div>
+
+            <div class="col-block col-sm service-item">
+                <div class="service-icon">
+                    <i class="icon-earth"></i>
+                </div>
+                <div class="service-text">
+                    <h3 class="h2">Management features</h3>
+                    <p>Easily remove and re-pair participants in real-time within the dashboard. As participants
+                        sign
+                        up, new matches can easily be created without disrupting old ones!
+                    </p>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-2 mt-2">
-                        <i class="icons icon-paint-brush lead"></i>
+            <div class="row">
+                <div class="col-block col-sm service-item">
+                    <div class="service-icon">
+                        <i class="icon-paint-brush"></i>
                     </div>
-                    <div class="col-10">
-                        <h3 class="mb-3">Machine learning</h3>
-                        <p class="lead">As an administrator, you can easily choose the features you want to include,
-                            including
+                    <div class="service-text">
+                        <h3 class="h2">Machine learning</h3>
+                        <p>As an administrator, you can easily choose the features you want to include, including
                             keyword
                             fields. And with an algorithm on the frontier of word embedding research in natural
                             language
@@ -72,104 +145,31 @@
                         </p>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-2 mt-2">
-                        <i class="icons icon-megaphone lead"></i>
+
+                <div class="col-block col-sm service-item">
+                    <div class="service-icon">
+                        <i class="icon-megaphone"></i>
                     </div>
-                    <div class="col-10">
-                        <h3 class="mb-3">Importing features</h3>
-                        <p class="lead">If you'd rather avoid managing a sign-up process, TigerPair also offers
-                            easy-to-use tools
+                    <div class="service-text">
+                        <h3 class="h2">Importing features</h3>
+                        <p>If you'd rather avoid managing a sign-up process, TigerPair also offers easy-to-use tools
                             that
                             allow you to import student and alumni information from an Excel or Google Sheets
                             spreadsheet or
                             a Google Form. Match results can then easily be sent out to participants.
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- <div class="container"> -->
-    <!-- services
-    ================================================== -->
-    <!-- <section id='services'>
-            <div class="row section-header has-bottom-sep">
-                <div class="col-full">
-                    <h1 class="display-2 text-center">We’ve got everything you need to launch and grow your business
-                    </h1>
                 </div> -->
-    <!-- </div> end section-header -->
+<!-- </div> end services-list -->
 
-    <!-- <div class="row services-list block-1-2 block-tab-full">
-                <div class="col-block col-sm service-item">
-                    <div class="service-icon">
-                        <i class="icon-group"></i>
-                    </div>
-                    <div class="service-text">
-                        <h3 class="h2">Easy sign-up</h3>
-                        <p>The sign-up process for Princeton students and alumni is a breeze. Students are authorized
-                            through Princeton's CAS login system and alumni are approved with a valid e-mail address on
-                            the
-                            alumni.princeton.edu domain.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-block col-sm service-item">
-                    <div class="service-icon">
-                        <i class="icon-earth"></i>
-                    </div>
-                    <div class="service-text">
-                        <h3 class="h2">Management features</h3>
-                        <p>Easily remove and re-pair participants in real-time within the dashboard. As participants
-                            sign
-                            up, new matches can easily be created without disrupting old ones!
-                        </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-block col-sm service-item">
-                        <div class="service-icon">
-                            <i class="icon-paint-brush"></i>
-                        </div>
-                        <div class="service-text">
-                            <h3 class="h2">Machine learning</h3>
-                            <p>As an administrator, you can easily choose the features you want to include, including
-                                keyword
-                                fields. And with an algorithm on the frontier of word embedding research in natural
-                                language
-                                processing, you can rest assured that computed matches between students and alumni will
-                                be optimal.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col-block col-sm service-item">
-                        <div class="service-icon">
-                            <i class="icon-megaphone"></i>
-                        </div>
-                        <div class="service-text">
-                            <h3 class="h2">Importing features</h3>
-                            <p>If you'd rather avoid managing a sign-up process, TigerPair also offers easy-to-use tools
-                                that
-                                allow you to import student and alumni information from an Excel or Google Sheets
-                                spreadsheet or
-                                a Google Form. Match results can then easily be sent out to participants.
-                            </p>
-                        </div>
-                    </div> -->
-    <!-- </div> end services-list -->
-
-    <!-- </section> end s-services -->
-    </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+<!-- </section> end s-services -->
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 </body>

@@ -4,34 +4,37 @@
 # pair.py
 # -----------------------------------------------------------------------
 
-from sys import argv
-import flask
-from flask import request, make_response, redirect, url_for, jsonify
-from flask import render_template, flash
-from flask_mail import Message
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from itsdangerous import SignatureExpired
-from CASClient import CASClient
-from werkzeug.security import generate_password_hash, check_password_hash
-from database import students, alumni, admins, groups, matches
-from stable_marriage import *
-from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm
-from csv import DictReader, reader
-from flask_wtf import Form
-from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Email, Length, ValidationError
 import hashlib
+import json
 import random
 from base64 import b64encode
+from csv import DictReader
 from datetime import datetime
-import requests
-import json
 from re import search
+from sys import argv
+
+import flask
+import requests
+from flask import render_template, flash
+from flask import request, make_response, redirect, url_for, jsonify
+from flask_login import login_user, login_required, logout_user, current_user
+from flask_mail import Message
+from flask_wtf import Form
+from itsdangerous import SignatureExpired
+from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired, Email, Length
+
+from CASClient import CASClient
+from config import app, mail, s, login_manager
+from database import students, alumni, admins, matches
+from forms import LoginForm, RegisterForm
+from stable_marriage import *
 
 # -----------------------------------------------------------------------
 
 login_manager.login_view = 'login'
+
 
 # class LoginForm(Form):
 # username = StringField('Email', validators=[DataRequired()])
@@ -45,13 +48,14 @@ class ForgotForm(Form):
 
 class PasswordResetForum(Form):
     password = PasswordField('Password', validators=[
-                             DataRequired(), Length(min=8, max=80)])
+        DataRequired(), Length(min=8, max=80)])
+
 
 # class InfoForm(Form):
-    # firstname = StringField('First Name', validators=[DataRequired()])
-    # lastname = StringField('Lasr Name', validators=[DataRequired()])
-    # major = StringField('Major', validators=[DataRequired()])
-    # career = StringField('Career Field', validators=[DataRequired()])
+# firstname = StringField('First Name', validators=[DataRequired()])
+# lastname = StringField('Lasr Name', validators=[DataRequired()])
+# major = StringField('Major', validators=[DataRequired()])
+# career = StringField('Career Field', validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -81,6 +85,8 @@ def admin_logout():
     # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
+
+
 # -----------------------------------------------------------------------
 
 
@@ -107,12 +113,12 @@ def student_new():
 
 def get_student_info():
     username = CASClient().authenticate()
-    username = username[0:len(username)-1]
+    username = username[0:len(username) - 1]
     # adding tigerbook code (grabbed from tigerbook API)
 
-# /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
-# * https://jqueryvalidation.org/
-# * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
+    # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
+    # * https://jqueryvalidation.org/
+    # * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
     key = "2c6f9faa30e5f4b2d7d6e6bb54d72861"
     url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/{username}+TigerPair'
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
@@ -120,7 +126,7 @@ def get_student_info():
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
                      for i in range(32)]).encode('utf-8')
 
-    password = key.encode('utf-8')    # use your own from /getkey
+    password = key.encode('utf-8')  # use your own from /getkey
     generated_digest = b64encode(hashlib.sha256(
         nonce + created + password).digest())
 
@@ -132,7 +138,8 @@ def get_student_info():
     created = str(created).replace("\'", '')
     headers = {
         'Authorization': 'WSSE profile="UsernameToken"',
-        'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
+        'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (
+            username, generated_digest, nonce, created)
     }
     r = requests.get(url, headers=headers)
     if r:
@@ -181,7 +188,8 @@ def student_information():
             group_id = 0
         if not admins.query.filter_by(id=group_id).first():
             html = render_template(
-                'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+                'pages/student/new.html', student=current,
+                errorMsg="The group id you specified does not belong to an existing group")
             return make_response(html)
     else:
         group_id = current.group_id
@@ -268,6 +276,8 @@ def get_match_student(username):
     if not match:
         return None
     return alumni.query.filter_by(aluminfoemail=match.aluminfoemail).first()
+
+
 # -----------------------------------------------------------------------
 
 # Dynamic page function for alum info page call
@@ -278,11 +288,11 @@ def get_match_student(username):
 # @app.route('/alum/dashboard', methods=['POST', 'GET'])
 # @login_required
 # def alum_dashboard():
-    # if not current_user.email_confirmed:
-    # return redirect(url_for('login'))
-    # html = render_template('pages/alum/dashboard.html',
-    # alum=current_user, username=current_user.aluminfoemail, side="alum")
-    # return make_response(html)
+# if not current_user.email_confirmed:
+# return redirect(url_for('login'))
+# html = render_template('pages/alum/dashboard.html',
+# alum=current_user, username=current_user.aluminfoemail, side="alum")
+# return make_response(html)
 
 
 # NEW ALUM START
@@ -407,13 +417,13 @@ def verify_email_regex(request):
     regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return search(regex, email1)
 
+
 # NEW ALUM END
 # -----------------------------------------------------------------------
 
 
 @app.route('/confirm_email/<token>')
 def confirm_email(token):
-
     html = ''
     errormsg = ''
     try:
@@ -437,6 +447,7 @@ def confirm_email(token):
     # login_user(user)  # Log in as newly created user
     # return redirect(url_for('/site/pages/alumni/index.html')) ## idk where to redirect to
 
+
 # -----------------------------------------------------------------------
 # Dynamic page function for home page of site
 @app.route('/index', methods=['GET'])
@@ -454,6 +465,7 @@ def team():
 @app.route('/admin-info', methods=['GET'])
 def admininfo():
     return render_template('pages/admininfo.html')
+
 
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
@@ -492,6 +504,7 @@ def login():
     html = render_template('pages/login/login.html', form=form)
     return make_response(html)
 
+
 # -----------------------------------------------------------------------
 
 # THIS IS NEW !!!!!!!
@@ -519,12 +532,12 @@ def update():
         'pages/login/email_update.html', form=form)  # MAKE THIS
     return make_response(html)
 
+
 # -----------------------------------------------------------------------
 
 
 @app.route('/login/password-update/<token>', methods=['GET', 'POST'])
 def update_password(token):
-
     html = ''
     errormsg = ''
     try:
@@ -547,6 +560,7 @@ def update_password(token):
         'pages/login/password-update.html', errormsg=errormsg, form=form)  # MAKE THIS ALSO
     return make_response(html)
 
+
 # -----------------------------------------------------------------------
 
 
@@ -554,6 +568,7 @@ def update_password(token):
 def password_changed():
     html = render_template('pages/login/password_changed.html')
     return make_response(html)
+
 
 # -----------------------------------------------------------------------
 
@@ -574,7 +589,6 @@ def signup():
             form.password.data, method='sha256')
         existing_user = alumni.query.filter_by(aluminfoemail=email).first()
         if existing_user is None:
-
             # email verification code
 
             token = s.dumps(email, salt='email-confirm')
@@ -597,6 +611,7 @@ def signup():
     html = render_template('pages/login/signup.html', form=form)
     return make_response(html)
 
+
 # -----------------------------------------------------------------------
 
 
@@ -618,6 +633,7 @@ def admin_dashboard():
                            side='admin', username=username, id=id)
     return make_response(html)
 
+
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
 @app.route('/admin/dashboard/create', methods=['GET'])
@@ -625,6 +641,8 @@ def admin_dashboard_create():
     username, id = verify_admin()
     create_new_matches(id)
     return redirect(url_for('admin_dashboard'))
+
+
 # -----------------------------------------------------------------------
 
 
@@ -641,6 +659,7 @@ def admin_dashboard_clearall():
     username, id = verify_admin()
     clear_matches(id)
     return redirect(url_for('admin_dashboard'))
+
 
 # -----------------------------------------------------------------------
 @app.route('/admin/dashboard/clearone', methods=['GET'])
@@ -675,6 +694,7 @@ def admin_profiles_alum():
                            side='admin', username=username, id=id)
     return make_response(html)
 
+
 # SINGLE alum profile page
 @app.route('/admin/profile-alum')
 def admin_profile_alum():
@@ -694,6 +714,7 @@ def admin_profiles_student():
         'pages/admin/profiles-student.html', students=students,
         side='admin', username=username, id=id)
     return make_response(html)
+
 
 # SINGLE student profile page
 @app.route('/admin/profile-student')
@@ -762,7 +783,8 @@ def process_import(is_alumni):
         if is_alumni:
             for row in csv_reader:
                 new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
-                                  aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                                  aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(),
+                                  alumcareerfield=row['Career'], group_id=id)
                 upsert_alum(new_alum)
         else:
             for row in csv_reader:
@@ -772,7 +794,9 @@ def process_import(is_alumni):
         db.session.commit()
         return make_response("Success processing your upload!")
     except Exception as e:
-        return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
+        return make_response(
+            "Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(
+                e))
 
 
 @app.route('/admin/action-student', methods=["POST"])
@@ -801,18 +825,18 @@ def admin_action_alum():
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
 # def login():
 
-    # form = LoginForm()
-    # if form.validate_on_submit():
-    # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
-    # if group_id is not None:
-    # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
-    # login_user(user, remember=form.remember.data)
-    # return redirect(url_for('/admin/dashboard'))
-    # else:
-    # flash("Group ID does not exist")
+# form = LoginForm()
+# if form.validate_on_submit():
+# group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+# if group_id is not None:
+# if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
+# login_user(user, remember=form.remember.data)
+# return redirect(url_for('/admin/dashboard'))
+# else:
+# flash("Group ID does not exist")
 
-    # html = render_template('pages/admin/group-login.html', form=form)
-    # return make_response(html)
+# html = render_template('pages/admin/group-login.html', form=form)
+# return make_response(html)
 
 
 def strip_user(username):

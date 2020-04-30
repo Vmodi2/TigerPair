@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # CASClient.py
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-from urllib.request import urlopen
+from re import sub
 from urllib.parse import quote
-from re import sub, match
-from flask import request, session, redirect, abort
-from sys import stderr
+from urllib.request import urlopen
 
-#-----------------------------------------------------------------------
+from flask import request, session, redirect, abort
+
+
+# -----------------------------------------------------------------------
 
 class CASClient:
 
-    #-------------------------------------------------------------------
+    # -------------------------------------------------------------------
 
     # Initialize a new CASClient object so it uses the given CAS
     # server, or fed.princeton.edu if no server is given.
@@ -22,7 +23,7 @@ class CASClient:
     def __init__(self, url='https://fed.princeton.edu/cas/'):
         self.cas_url = url
 
-    #-------------------------------------------------------------------
+    # -------------------------------------------------------------------
 
     # Return the URL of the current request after stripping out the
     # "ticket" parameter added by the CAS server.
@@ -35,17 +36,16 @@ class CASClient:
         url = sub(r'\?&?$|&$', '', url)
         return url
 
-    #-------------------------------------------------------------------
-
+    # -------------------------------------------------------------------
 
     # Validate a login ticket by contacting the CAS server. If
     # valid, return the user's username; otherwise, return None.
 
     def validate(self, ticket):
         val_url = self.cas_url + "validate" + \
-            '?service=' + quote(self.stripTicket()) + \
-            '&ticket=' + quote(ticket)
-        r = urlopen(val_url).readlines()   # returns 2 lines
+                  '?service=' + quote(self.stripTicket()) + \
+                  '&ticket=' + quote(ticket)
+        r = urlopen(val_url).readlines()  # returns 2 lines
         if len(r) != 2:
             return None
         firstLine = r[0].decode('utf-8')
@@ -54,7 +54,7 @@ class CASClient:
             return None
         return secondLine
 
-    #-------------------------------------------------------------------
+    # -------------------------------------------------------------------
 
     # Authenticate the remote user, and return the user's username.
     # Do not return unless the user is successfully authenticated.
@@ -80,12 +80,11 @@ class CASClient:
         # The request does not contain a valid login ticket, so
         # redirect the browser to the login page to get one.
         login_url = self.cas_url + 'login' \
-            + '?service=' + quote(self.stripTicket())
+                    + '?service=' + quote(self.stripTicket())
 
         abort(redirect(login_url))
 
-    #-------------------------------------------------------------------
-
+    # -------------------------------------------------------------------
 
     # Logout the user.
 
@@ -98,10 +97,12 @@ class CASClient:
         logout_url = self.cas_url + 'logout'
         abort(redirect(logout_url))
 
-#-----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
 
 def main():
     print("CASClient does not run standalone")
+
 
 if __name__ == '__main__':
     main()

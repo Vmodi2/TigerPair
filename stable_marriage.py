@@ -4,9 +4,8 @@
 # stable_marriage.py
 # -----------------------------------------------------------------------
 
-from sqlalchemy import update
-from database import students as students_table, alumni as alumni_table, matches as matches_table
 from config import db
+from database import students as students_table, alumni as alumni_table, matches as matches_table
 
 weight_vector = (1, 3)
 student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
@@ -35,7 +34,7 @@ def get_rankings(id):
         for j in range(len(alumni)):
             # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
             score = sum(weight_vector[k] if students[i][k + 1] == alumni[j]
-                        [k + 1] else 0 for k in range(len(weight_vector)))
+            [k + 1] else 0 for k in range(len(weight_vector)))
             student_alumni.append((alumni[j][0], score))
         students_alumni[students[i][0]] = student_alumni
 

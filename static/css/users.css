@@ -2,11 +2,11 @@
     z-index: 10000 !important;
 }
 
-@media (min-width: 576px){
-.modal-dialog {
-    max-width: 500px;
-    margin: 11rem auto !important;
-}
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 500px;
+        margin: 11rem auto !important;
+    }
 }
 
 .modal-dialog {

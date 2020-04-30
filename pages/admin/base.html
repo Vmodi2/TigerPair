@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
     <title>Admin Dashboard</title>
-    <link href="/static/css/styles.css" rel="stylesheet" />
-    <link href="/static/css/custom.css" rel="stylesheet" />
+    <link href="/static/css/styles.css" rel="stylesheet"/>
+    <link href="/static/css/custom.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
-        crossorigin="anonymous" />
+          crossorigin="anonymous"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"
-        crossorigin="anonymous"></script>
+            crossorigin="anonymous"></script>
     <style>
         .prof-cell {
             text-align: center;
@@ -23,81 +23,81 @@
 </head>
 
 <body class="sb-nav-fixed">
-    {% include "pages/header.html" %}
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Matches</div>
-                        <a class="nav-link {% block dashboard %}{% endblock %}" href="/admin/dashboard">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        <a class="nav-link {% block modify_matches %}{% endblock %}" href="/admin/modify-matches">
-                            <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
-                            Modify matches
-                        </a>
-                        <a class="nav-link {% block manual_match %}{% endblock %}" href="/admin/manual-match">
-                            <div class="sb-nav-link-icon"><i class="fas fa-pencil-alt"></i></div>
-                            Manual match
-                        </a>
-                        <div class="sb-sidenav-menu-heading">Students</div>
-                        <a class="nav-link {% block profiles_student %}{% endblock %}" href="/admin/profiles-student">
-                            <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
-                            Student profiles
-                        </a>
-                        <a class="nav-link {% block import_students %}{% endblock %}" href="/admin/import-students">
-                            <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
-                            Import students
-                        </a>
-                        <div class="sb-sidenav-menu-heading">Alumni</div>
-                        <a class="nav-link {% block profiles_alum %}{% endblock %}" href="/admin/profiles-alum">
-                            <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
-                            Alum profiles
-                        </a>
-                        <a class="nav-link {% block import_alumni %}{% endblock %}" href="/admin/import-alumni">
-                            <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
-                            Import alumni
-                        </a>
-                    </div>
+{% include "pages/header.html" %}
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Matches</div>
+                    <a class="nav-link {% block dashboard %}{% endblock %}" href="/admin/dashboard">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Dashboard
+                    </a>
+                    <a class="nav-link {% block modify_matches %}{% endblock %}" href="/admin/modify-matches">
+                        <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
+                        Modify matches
+                    </a>
+                    <a class="nav-link {% block manual_match %}{% endblock %}" href="/admin/manual-match">
+                        <div class="sb-nav-link-icon"><i class="fas fa-pencil-alt"></i></div>
+                        Manual match
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Students</div>
+                    <a class="nav-link {% block profiles_student %}{% endblock %}" href="/admin/profiles-student">
+                        <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
+                        Student profiles
+                    </a>
+                    <a class="nav-link {% block import_students %}{% endblock %}" href="/admin/import-students">
+                        <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
+                        Import students
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Alumni</div>
+                    <a class="nav-link {% block profiles_alum %}{% endblock %}" href="/admin/profiles-alum">
+                        <div class="sb-nav-link-icon"><i class="fas fa-portrait"></i></div>
+                        Alum profiles
+                    </a>
+                    <a class="nav-link {% block import_alumni %}{% endblock %}" href="/admin/import-alumni">
+                        <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
+                        Import alumni
+                    </a>
                 </div>
-                <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    {{username}}
-                    <div class="small">Your group ID:</div>
-                    {{id}}
-                </div>
-            </nav>
-        </div>
-        <div id="layoutSidenav_content">
-            <main>
-                <div class="container-fluid">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">A project by Abhinaya, Chris, Daniel, Tara, and Vikash</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                {{ username }}
+                <div class="small">Your group ID:</div>
+                {{ id }}
+            </div>
+        </nav>
     </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">A project by Abhinaya, Chris, Daniel, Tara, and Vikash</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-    <script src="/static/js/scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-    {% block extra_scripts %}{% endblock %}
+<script src="/static/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+{% block extra_scripts %}{% endblock %}
 </body>
 
 </html>

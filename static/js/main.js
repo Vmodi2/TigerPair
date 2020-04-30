@@ -8,9 +8,9 @@
     "use strict";
 
     var cfg = {
-        scrollDuration: 800, // smoothscroll duration
-        mailChimpURL: 'https://facebook.us8.list-manage.com/subscribe/post?u=cdb7b577e41181934ed6a6a44&amp;id=e6957d85dc'   // mailchimp url
-    },
+            scrollDuration: 800, // smoothscroll duration
+            mailChimpURL: 'https://facebook.us8.list-manage.com/subscribe/post?u=cdb7b577e41181934ed6a6a44&amp;id=e6957d85dc'   // mailchimp url
+        },
 
         $WIN = $(window);
 
@@ -55,8 +55,7 @@
 
             if ($WIN.scrollTop() > 150) {
                 menuTrigger.addClass('opaque');
-            }
-            else {
+            } else {
                 menuTrigger.removeClass('opaque');
             }
 
@@ -168,7 +167,7 @@
                     stats.each(function () {
                         var $this = $(this);
 
-                        $({ Counter: 0 }).animate({ Counter: $this.text() }, {
+                        $({Counter: 0}).animate({Counter: $this.text()}, {
                             duration: 4000,
                             easing: 'swing',
                             step: function (curValue) {
