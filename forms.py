@@ -6,11 +6,12 @@
 
 
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from wtforms import StringField, PasswordField, BooleanField
 from database import alumni, admins
 from wtforms.validators import DataRequired, Email, Length, ValidationError, InputRequired, EqualTo
 from werkzeug.security import check_password_hash
+
 
 
 
@@ -67,7 +68,13 @@ class AdminRegisterForm(FlaskForm):
             raise ValidationError("Username taken")
 
 # -----------------------------------------------------------------------
+class ForgotForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
 
-# class AdminChangeForm(FlaskForm):
-#     netid = StringField('netid', validators=[InputRequired(), Length(min=4, max=15)])
-#     netid_confirm = StringField('netid_confirm', validators=[InputRequired(), Length(min=4, max=15), EqualTo('netid')])
+# -----------------------------------------------------------------------
+
+class PasswordResetForum(Form):
+    password = PasswordField('Password', validators=[
+                             DataRequired(), Length(min=8, max=80)])
+
+# -----------------------------------------------------------------------

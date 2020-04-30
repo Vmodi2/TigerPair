@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm
+from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, ForgotForm, PasswordResetForum
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -39,13 +39,7 @@ login_manager.login_view = 'login'
 # DataRequired(), Length(min=8, max=80)])
 
 
-class ForgotForm(Form):
-    email = StringField('Email', validators=[DataRequired(), Email()])
 
-
-class PasswordResetForum(Form):
-    password = PasswordField('Password', validators=[
-                             DataRequired(), Length(min=8, max=80)])
 
 # class InfoForm(Form):
     # firstname = StringField('First Name', validators=[DataRequired()])
@@ -516,6 +510,32 @@ def verify_email_regex(request):
 
 # NEW ALUM END
 # -----------------------------------------------------------------------
+
+@app.route('/resend_email', methods=['GET', 'POST'])
+def resend_email():
+    form = ForgotForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = alumni.query.filter_by(aluminfoemail=email).first()
+        if user is not None:
+
+            token = s.dumps(email, salt='email-confirm')
+
+            msg = Message(
+                'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body = 'Click here to verify email {}'.format(link)
+            mail.send(msg)
+            return redirect(url_for('gotoemail'))
+
+        else:
+            flash("Invalid credentials")
+
+    html = render_template(
+        'pages/login/resend_email.html', form=form)  # MAKE THIS
+    return make_response(html)
+
+
 
 
 @app.route('/confirm_email/<token>')
