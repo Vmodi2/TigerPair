@@ -16,8 +16,12 @@
             data-target="#profileModal">{{match.studentinfonamefirst}}'s Profile</button>
 
         <hr class="my-4">
-        <p>Confirm that you have contacted {{match.studentinfonamefirst}}.</p>
-        <button type="button" class="btn btn-primary btn-lg">Confirm</button>
+        {% if contacted == False: %}
+        <form method="post">
+            <p>Confirm that you have contacted {{match.studentinfonamefirst}}.</p>
+            <input type="submit" class="btn btn-primary btn-lg" name="action" value="Confirm">
+        </form>
+        {% endif %}
         {% else %}
         
 
@@ -34,7 +38,7 @@
                 <label for="message">Send a message to your group admin:</label>
                 <textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"></textarea>
                 <br>
-                <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
+                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
                 <br><br>
             </form>
         </div>

@@ -198,15 +198,27 @@ def student_matches(match=None):
 
     if not match:
         match = get_match_student(username)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(studentid=username).first()
+            match_item.contacted = True
+            db.session.commit()
+            
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(studentid=username).first().contacted
+        
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/matches.html',
-                           match=match, username=username, student=current, side="student")
+                           match=match, username=username, student=current, side="student",
+                           contacted=contacted)
 
     if request.form.get("message") is not None:
         try: # Due to database issues (that won't be in the final product) this may not send
             group_id = current.group_id
             admin = admins.query.filter_by(id=group_id).first()
-            email = admin.email
+            email = admin.username + "@princeton.edu"
             
             message = request.form.get("message")
             msg = Message(
@@ -215,6 +227,8 @@ def student_matches(match=None):
             mail.send(msg)
         except Exception as e:
             pass
+
+    
         
     return make_response(html)
 
@@ -369,13 +383,26 @@ def alum_matches(match=None):
     # username = get_cas()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(studentid=match.studentid).first()
+            match_item.contacted = True
+            db.session.commit()
+
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(studentid=match.studentid).first().contacted
+        
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
-                           match=match, side="alum")
+                           match=match, side="alum",
+                           contacted=contacted)
+    
     if request.form.get("message") is not None:
         try: # Due to database issues (that won't be in the final product) this may not send
             group_id = current_user.group_id
             admin = admins.query.filter_by(id=group_id).first()
-            email = admin.email
+            email = admin.username + "@princeton.edu"
             
             message = request.form.get("message")
             msg = Message(
