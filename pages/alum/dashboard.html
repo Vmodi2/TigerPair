@@ -4,21 +4,21 @@
 <!-- Info side -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
+		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
 			role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
 	</li>
 	<li class="nav-item">
-		<a class="nav-link" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab" aria-controls="page-1"
+		<a class="nav-link dashtab" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab" aria-controls="page-1"
 			aria-selected="false">More info</a>
 	</li>
-	<li class="nav-item">
+	<!-- <li class="nav-item">
 		<a class="nav-link" id="page-2-tab" data-toggle="tab" href="#page-2" role="tab" aria-controls="page-2"
 			aria-selected="false">And some more info</a>
-	</li>
-	<li class="nav-item">
+	</li> -->
+	<!-- <li class="nav-item">
 		<a class="nav-link" id="change-email-tab" data-toggle="tab" href="#change-email" role="tab"
 			aria-controls="change-email" aria-selected="false">Change Email</a>
-	</li>
+	</li> -->
 </ul>
 
 <div class="tab-content" id="myTabContent">
@@ -47,8 +47,8 @@
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-warning my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
+			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
 	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
@@ -72,36 +72,15 @@
 				</option>
 			</select>
 			<br />
-			<button type="button" class="btn btn-outline-warning my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-outline-warning my-2 my-sm-0" id="submit-2"
+			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2"
 				hidden>&nbsp;Submit&nbsp;</button>
 		</form>
+		
 	</div>
-	<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
-		aria-labelledby="change-email-tab">
-		<p class="text-danger font-weight-bold">{{errorMsg}}</p>
-		<form action="/alum/email" method="post">
-			<div class="form-group row">
-				<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
-				<div class="col-sm-10">
-					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
-						value="{{alum.aluminfoemail if alum.aluminfoemail}}">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="email" class="col-sm-2 col-form-label">New Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com">
-				</div>
-				<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email-repeated" name="email-repeated"
-						placeholder="email@domain.com">
-				</div>
-			</div>
-			<button type="submit" class="btn btn-warning my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
-		</form>
-	</div>
+	<img src="/static/images/bigtiger-orange.png" class="d-flex align-items-end flex-wrap float-right"alt="little tiger" id="littletiger-img"
+			class="landing-tiger">
+	
 </div>
 {% endblock %}
 {% block edit_profile %}active{% endblock %}

@@ -1,3 +1,61 @@
 .padded-content {
     padding: 30px;
 }
+
+
+/* buttons */
+.btn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    outline: #ffffff;
+    background: rgba(255, 255, 255, 0.212);
+  }
+
+
+.btn-change {
+    padding: 10px 10px;
+    border: 0 none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    outline: #ffffff;
+    background: rgba(255, 255, 255, 0.212);
+  }
+
+.btn-primary, .btn-primary:focus, .btn-primary:active, #signup .btn-primary:active, 
+#signin .btn-primary:active, .btn-primary.active {
+  background: #3a3939;
+  color: #ffffff;
+}
+
+.btn-primary:hover, .open > .dropdown-toggle.btn-primary {
+  background:  #ffa050;
+  color:white;
+}
+
+.btn-change, .btn-change:focus, .btn-change:active, .btn-change:active{
+    background: #ffa050;
+    color: #ffffff;
+}
+
+.btn-change:hover, .open > .dropdown-toggle.btn-change {
+    background:#f17209;
+    color:black;
+
+  }
+
+
+  /*tabs*/
+
+  .dashtab{
+      background:#ffa050;
+      color:white;
+  }
+
+  .dashtab:hover{
+    background:#f17209;
+    color:white;
+}
