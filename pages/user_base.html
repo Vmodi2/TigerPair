@@ -29,8 +29,10 @@
                 <span>{{username}}</span>
                 <div class="small">Your group ID:</div>
                 <!-- print id -->
-                {% if student %}<span class="id-display">{{student.group_id}}</span>{% endif %}
-                {% if alum %}<span class="id-display">{{alum.group_id if alum}}</span>{% endif %}
+                {% if student %}<span
+                    class="id-display">{{student.group_id if student.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
+                {% if alum %}<span
+                    class="id-display">{{alum.group_id if alum.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 <br>
                 <a type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Change
                     your group</a>
@@ -63,7 +65,7 @@
                         <label for="staticId" class="col-sm-8 col-form-label">Current Group ID</label>
                         <div class="col-sm-4">
                             <input type="text" readonly class="form-control-plaintext" id="staticId"
-                                value="{{student.group_id if student}}{{alum.group_id if alum}}">
+                                value="{{student.group_id if student and student.group_id != -1}}{{alum.group_id if alum and alum.group_id != -1}}">
                         </div>
                     </div>
                     <div class="form-group row ml-auto">
