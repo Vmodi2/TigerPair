@@ -145,25 +145,20 @@ def delete_student(id, studentid):
     match = matches_table.query.filter_by(studentid=studentid)
     row = match.first()
     if row is not None:
-        alum = alumni_table.query.filter_by(aluminfoemail=row.aluminfoemail).first()
-        alum.matched -= 1
-        match.delete()
+        clear_match(studentid, row.aluminfoemail)
     db.session.commit()
 
 
 def delete_alum(id, aluminfoemail):
     db.session.query(alumni_table).filter_by(
         aluminfoemail=aluminfoemail).first().group_id = -1
-    #Check and reset matches table
+    # Check and reset matches table
     match = matches_table.query.filter_by(aluminfoemail=aluminfoemail)
     row = match.first()
     if row is not None:
-        student = students_table.query.filter_by(studentid=row.studentid).first()
-        student.matched = 0
-        match.delete()
+        clear_match(row.studentid, aluminfoemail)
     db.session.commit()
 
 
 if __name__ == '__main__':
     create_new_matches()
-
