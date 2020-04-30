@@ -96,7 +96,7 @@ def get_students(id):
 def get_student(netid):
     student = students_table.query.filter_by(studentid=netid).first()
     matches = matches_table.query.filter_by(studentid=netid).all()
-    print(matches)
+    # print(matches)
     return student, matches
 
 
@@ -118,7 +118,7 @@ def create_one(id, studentid, aluminfoemail):
 
 
 def clear_matches(id):
-    db.session.query(matches_table).delete()
+    db.session.query(matches_table).filter_by(group_id=id).delete()
     students = students_table.query.filter_by(group_id=id)
     for student in students:
         student.matched = 0
@@ -142,12 +142,21 @@ def clear_match(student, alum):
 def delete_student(id, studentid):
     db.session.query(students_table).filter_by(
         studentid=studentid).first().group_id = -1
+    match = matches_table.query.filter_by(studentid=studentid)
+    row = match.first()
+    if row is not None:
+        clear_match(studentid, row.aluminfoemail)
     db.session.commit()
 
 
 def delete_alum(id, aluminfoemail):
     db.session.query(alumni_table).filter_by(
         aluminfoemail=aluminfoemail).first().group_id = -1
+    # Check and reset matches table
+    match = matches_table.query.filter_by(aluminfoemail=aluminfoemail)
+    row = match.first()
+    if row is not None:
+        clear_match(row.studentid, aluminfoemail)
     db.session.commit()
 
 

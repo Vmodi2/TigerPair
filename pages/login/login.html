@@ -31,9 +31,7 @@
             <h3 class="card-title text-center"><strong>Sign In</strong></h3>
             <form class="form-group" method="post" action="/login">
               {{ form.hidden_tag() }}
-
-              {% include '/pages/login/flasherror.html' %}
-
+              
               <div class="form-label-group">
                 {{wtf.form_field(form.email, id='email', class='form-control', placeholder='Email')}}
               </div>
@@ -53,7 +51,7 @@
                 <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>
               </center>
             </div>
-              
+
               <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
               <hr class="my-4">
 

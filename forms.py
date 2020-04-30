@@ -6,16 +6,12 @@
 
 
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from wtforms import StringField, PasswordField, BooleanField
-from database import alumni
+from database import alumni, admins
 from wtforms.validators import DataRequired, Email, Length, ValidationError, InputRequired, EqualTo
 from werkzeug.security import check_password_hash
 
-
-#class AlumLoginForm(FlaskForm):
-    #username = StringField('username', validators=[InputRequired()])
-    #password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
 
 
@@ -29,20 +25,11 @@ class LoginForm(FlaskForm):
 
     def validate_email(self, email):
         user = alumni.query.filter_by(aluminfoemail=email.data).first()
-        if user is  None:
+        if user is None:
             raise ValidationError("Invalid Email")
 
-    #def validate_password(self, email):
-
-        #user = alumni.query.filter_by(aluminfoemail=email.data).first()
-        #if not check_password_hash(user.password, password.data):
-            #raise ValidationError("Invalid Password")
-
-
-
-# -----------------------------------------------------------------------
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
+    email = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
 
@@ -57,3 +44,37 @@ class RegisterForm(FlaskForm):
         if user:
             raise ValidationError("That email is taken. Please use another")
 
+class AdminLoginForm(FlaskForm):
+
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('remember me')
+
+    def validate_username(self, username):
+        user = admins.query.filter_by(username=username.data).first()
+        if user is None:
+            raise ValidationError("Invalid username")
+
+# -----------------------------------------------------------------------
+
+class AdminRegisterForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
+
+    def validate_username(self, username):
+        user = admins.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError("Username taken")
+
+# -----------------------------------------------------------------------
+class ForgotForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
+# -----------------------------------------------------------------------
+
+class PasswordResetForum(Form):
+    password = PasswordField('Password', validators=[
+                             DataRequired(), Length(min=8, max=80)])
+
+# -----------------------------------------------------------------------

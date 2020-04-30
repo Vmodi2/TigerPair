@@ -30,13 +30,10 @@
         <div class="card card-signin my-5">
           <div class="card-body">
             <h5 class="card-title text-center"><strong>Sign In</strong></h5>
-            <form class="form-signin" method="post" action="/login">
+            <form class="form-signin" method="post" action="/admin/dashboard">
               {{ form.hidden_tag() }}
 
-              <!-- {% include '/pages/login/flasherror.html' %} -->
-
               <div class="form-label-group">
-                <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
                 {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
 
                 <!-- <label for="username">Username</label> -->
@@ -47,7 +44,7 @@
                 <!-- <label for="inputPassword">Password</label> -->
               </div>
               <center>
-                <p>Don't have an account? <a id="signup" href="login/asignup">Sign up!</a></p>
+                <p>Don't have an account? <a id="signup" href="asignup">Sign up!</a></p>
                 <!-- <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>  ADD THIS TARA -->
               </center>
               <div class="custom-control custom-checkbox mb-3">

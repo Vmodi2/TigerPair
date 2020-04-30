@@ -24,7 +24,7 @@ app.config.from_pyfile('config.cfg')
 
 mail = Mail(app)
 
-s = URLSafeTimedSerializer('randomkey')
+s = URLSafeTimedSerializer('randomkey') # make this much more random
 
 # SQLAlchemy database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://wrmojcmmbmrgbs:1c5df5fe85929a57652b14c8793fb2162f0c1605549df090aa613d2b95da298f@ec2-3-91-112-166.compute-1.amazonaws.com:5432/dan2dlk2ptnidd"
@@ -34,5 +34,3 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 bootstrap = Bootstrap(app)
-
-

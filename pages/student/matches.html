@@ -4,9 +4,9 @@
 {% block content %}
 <!-- Match side -->
 <br />
-{% if match %}
 <div class="match-info text-center">
     <div>
+        {% if match %}
         <h1 class="display-4">You've been matched</h1>
         <p class="lead">...with <strong><mark>{{match.aluminfonamefirst}}
                     {{match.aluminfonamelast}}</mark></strong>!</p>
@@ -14,20 +14,42 @@
         <p>View their profile below</p>
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
             data-target="#profileModal">{{match.aluminfonamefirst}}'s Profile</button>
+        <hr class="my-4">
+        {% if contacted == False: %}
+        <form method="post">
+            <p>Confirm that you have contacted {{match.aluminfonamefirst}}.</p>
+            <input type="submit" class="btn btn-primary btn-lg" name="action" value="Confirm">
+        </form>
+        {% endif %}
         {% else %}
+<div class="match-info">
+    <div>
         <h1 class="display-4">You have not been matched yet.</h1>
         <p class="lead">Please check back later!</p>
         {% endif %}
+
+        <br><br><br><br>
+        <div class="offset-3 w-50">
+            <form method="post">
+                <label for="message">Send a message to your group admin:</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"></textarea>
+                <br>
+                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
+                <br><br>
+            </form>
+        </div>
     </div>
+
+
 </div>
 
-<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" -->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="profileModalLongTitle">{{match.aluminfonamefirst}}
-                    {{match.aluminfonamelast}}</h5>
+                    {{match.aluminfonamelast}}
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -35,7 +57,7 @@
             <div class="modal-body">
                 <h5>Major: {{match.alumacademicsmajor}}</h5>
                 <h5>Career: {{match.alumcareerfield}}</h5>
-                <h5>Email: {{match.aluminfoemail}}</h5>
+                <h5>Email: <a href="mailto:{{match.aluminfoemail}}">{{match.aluminfoemail}}</a></h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -43,6 +65,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 {% block view_matches %}active{% endblock %}
 {% block extra_scripts %}

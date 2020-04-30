@@ -73,11 +73,13 @@ class matches(db.Model):
     studentid = db.Column('studentid', db.Unicode, primary_key=True)
     aluminfoemail = db.Column('aluminfoemail', db.Unicode)
     group_id = db.Column('group_id', db.Unicode)
+    contacted = db.Column('contacted', db.Boolean)
 
     def __init__(self, studentid, aluminfoemail, id):
         self.studentid = studentid
         self.aluminfoemail = aluminfoemail
         self.group_id = id
+        self.contacted = False
 
 
 class admins(db.Model):
@@ -85,15 +87,28 @@ class admins(db.Model):
     id = db.Column('id', db.Unicode, db.Sequence(
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
+    password = db.Column('password', db.Unicode)
 
-    def __init__(self, username):
+    def __init__(self, username, password):
         self.username = username
+        self.password = password
 
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_active(self):
+        return self.confirm_email
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.username
 
 class groups(db.Model):
     __tablename__ = 'groups'
     id = db.Column('group_id', db.Unicode, primary_key=True)
-    adminid = db.Column('adminid', db.Unicode)
+    adminid = db.Column('admin_id', db.Unicode)
     password = db.Column('password', db.Unicode)
 
     def __init__(self, group_id, adminid, password):
