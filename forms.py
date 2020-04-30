@@ -65,3 +65,9 @@ class AdminRegisterForm(FlaskForm):
         user = admins.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError("Username taken")
+
+# -----------------------------------------------------------------------
+
+class AdminChangeForm(FlaskForm):
+    netid = StringField('netid', validators=[InputRequired(), Length(min=4, max=15)])
+    confirm_netid = StringField('username', validators=[InputRequired(), Length(min=4, max=15), EqualTo('netid')])
