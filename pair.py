@@ -332,13 +332,12 @@ def get_match_student(username):
     # alum=current_user, username=current_user.aluminfoemail, side="alum")
     # return make_response(html)
 
-
 # NEW ALUM START
 @app.route('/alum/dashboard', methods=['GET', 'POST'])
 @login_required
 def alumni_dashboard():
     if not current_user.email_confirmed:
-        return redirect(url_for('login'))
+        return redirect(url_for('gotoemail'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     if not current.aluminfonamefirst:
@@ -354,7 +353,7 @@ def alumni_dashboard():
 @login_required
 def alumni_info():
     if not current_user.email_confirmed:
-        return redirect(url_for('login'))
+        return redirect(url_for('gotoemail'))
     if (flask.request.method == 'POST'):
         alum = alumni.query.filter_by(
             aluminfoemail=current_user.aluminfoemail).first()
@@ -375,6 +374,8 @@ def alumni_info():
 def alumni_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     errorMsg = ''
@@ -401,6 +402,8 @@ def alumni_email():
 def alumni_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
     response = {}
@@ -428,6 +431,9 @@ def alumni_id():
 @login_required
 def alum_matches(match=None):
     # username = get_cas()
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
+                        
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
 
@@ -469,6 +475,8 @@ def alum_matches(match=None):
 @app.route('/alum/account', methods=['GET'])
 @login_required
 def alum_account():
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     username = current_user.aluminfoemail
     current = alumni.query.filter_by(aluminfoemail=username).first()
     html = render_template('pages/alum/account.html',
@@ -479,6 +487,8 @@ def alum_account():
 @app.route('/alum/delete', methods=['GET'])
 @login_required
 def alum_delete():
+    if current_user.aluminfonamefirst is None:
+        return redirect(url_for('alumni_dashboard'))
     email = current_user.aluminfoemail
     # find if matched already and delete current match
     student = get_match_alum(email=email)
@@ -501,6 +511,9 @@ def verify_email_regex(request):
     email1 = request.form.get('email')
     regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return search(regex, email1)
+
+
+
 
 # NEW ALUM END
 # -----------------------------------------------------------------------
