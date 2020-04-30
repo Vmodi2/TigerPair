@@ -774,6 +774,7 @@ def process_import(is_alumni):
             for row in csv_reader:
                 new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
                                   aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                print(new_alum.group_id)
                 upsert_alum(new_alum)
         else:
             for row in csv_reader:
@@ -802,8 +803,6 @@ def admin_action_alum():
     if request.form.get('action') == 'delete':
         alumni = request.form.get('checked-members').split(',')
         for alum in alumni:
-            # print('fCORONAAAA ')
-            # print(alum)
             delete_alum(id, alum)
     return redirect(url_for('admin_profiles_alum'))
 
@@ -839,6 +838,7 @@ def upsert_student(student):
         table_student.studentinfoemail = student.studentinfoemail
         table_student.studentacademicsmajor = student.studentacademicsmajor
         table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
+        table_student.group_id = student.group_id
     else:
         db.session.add(student)
     db.session.commit()
@@ -853,6 +853,7 @@ def upsert_alum(alum):
         table_alum.aluminfoemail = alum.aluminfoemail
         table_alum.alumacademicsmajor = alum.alumacademicsmajor
         table_alum.alumcareerfield = alum.alumcareerfield
+        table_alum.group_id = alum.group_id
     else:
         db.session.add(alum)
     db.session.commit()
