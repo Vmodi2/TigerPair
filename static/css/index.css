@@ -89,14 +89,21 @@
   outline: #ffffff;
 }
 
-.btn-primary, .btn-primary:focus, #member .btn-primary:active, .btn-primary.active {
+.btn-primary, .btn-primary:focus, #member .btn-primary:active, #signup .btn-primary:active, 
+#signin .btn-primary:active, .btn-primary.active {
   background: #3a3939;
   color: #ffffff;
 }
 
-#member .btn-primary:hover, .open > .dropdown-toggle.btn-primary {
+.btn-primary:hover, .open > .dropdown-toggle.btn-primary {
   background: #ec812e;
   color:white;
+}
+
+.help-block{
+  color:red;
+  text-align: center;
+  font-weight:bold;
 }
 
 
@@ -128,10 +135,24 @@
     float: left;
     width: 33.3%;
     margin-bottom: 16px;
-    padding: 5px 8px;
+    padding: 5px 8px
   }
   .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+  }
+
+  @media only screen and (max-width: 1500px) {
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      min-width: 0px;
+    }
+  }
+
+  
+
+  .name {
+    min-height: 70px;
   }
 
 
@@ -418,6 +439,17 @@
 .icons{
   font-size: 4rem;
   color: #cf722a;
+}
+
+@media only screen and (max-width: 1000px) {
+  .icons {
+    font-size:3rem;
+  }
+}
+@media only screen and (max-width: 770px) {
+  .icons {
+    font-size:4rem;
+  }
 }
 
 /*admin info icon*/
