@@ -14,17 +14,30 @@
         <p>View their profile below</p>
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
             data-target="#profileModal">{{match.studentinfonamefirst}}'s Profile</button>
+
+        <hr class="my-4">
+        <p>Confirm that you have contacted {{match.studentinfonamefirst}}.</p>
+        <button type="button" class="btn btn-primary btn-lg">Confirm</button>
         {% else %}
+        
+
+<div class="match-info">
+    <div>
         <h1 class="display-4">You have not been matched yet.</h1>
         <p class="lead">Please check back later!</p>
         {% endif %}
     </div>
-    <form method="post">
-        <label for="message">Send a message to your group admin:</label>
-        <input class="form-control mr-sm-2" type="text" id="message" name="message"
-            required>
-        <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
-    </form>
+
+    <br><br><br><br>
+        <div class="offset-3 w-50">
+            <form method="post">
+                <label for="message">Send a message to your group admin:</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"></textarea>
+                <br>
+                <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
+                <br><br>
+            </form>
+        </div>
 </div>
 
 <!-- Modal -->
@@ -41,7 +54,7 @@
             </div>
             <div class="modal-body">
                 <h5>Major: {{match.studentacademicsmajor}}</h5>
-                <h5>Career: {{match.studentdesiredcareerfield}}</h5>
+                <h5>Career: {{match.studentcareerdesiredfield}}</h5>
                 <h5>Email: {{match.studentinfoemail}}</h5>
             </div>
             <div class="modal-footer">
