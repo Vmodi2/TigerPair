@@ -19,7 +19,7 @@
   /* background-image: url("/static/images/20140610_NAB_013.jpg"); */
   background-size: cover;
     background-repeat: no-repeat; 
-    color: #cf722a;
+    color: #ffa050;
     max-width:100vw;
     font-style: bold;
 }
@@ -27,7 +27,7 @@
 .about{
     background-size: cover;
     background-repeat: no-repeat; 
-    color: #cf722a;
+    color:  #ffa050;
     font-size: 30px;
     /* padding: 20px 100px; */
 }
@@ -96,7 +96,7 @@
 }
 
 .btn-primary:hover, .open > .dropdown-toggle.btn-primary {
-  background: #ec812e;
+  background:  #ffa050;
   color:white;
 }
 
@@ -108,7 +108,7 @@
 
 
 .description {
-  color: #ec812e !important;
+  color:  #ffa050 !important;
   font-weight:600;
 }
 /* #alum-btn {
@@ -187,7 +187,7 @@
 }
 
 .line-scale-pulse-out > div {
-  background-color: #cf722a;
+  background-color:  #ffa050;
   width: 4px;
   height: 35px;
   border-radius: 2px;
@@ -430,7 +430,7 @@
 
 .services-list .service-icon {
   float: left;
-  color: #cf722a;
+  color:  #ffa050;
   font-size: 4.8rem;
   margin-top: -.6rem;
 }
@@ -438,7 +438,7 @@
 /*admin info icon*/
 .icons{
   font-size: 4rem;
-  color: #cf722a;
+  color:  #ffa050;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -456,7 +456,7 @@
 .admin-title{
   font-size: 1.3rem;
   text-transform:uppercase;
-  color: #cf722a;
+  color:  #ffa050;
 }
 
 
@@ -466,7 +466,7 @@
 * ------------------------------------------------------------------- */
 .services-list .service-icon {
   float: left;
-  color: #ec812e;
+  color:  #ffa050;
   font-size: 4.8rem;
   margin-top: -.6rem;
 }

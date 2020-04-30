@@ -231,6 +231,7 @@ def student_matches(match=None):
 def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+
     route_new_student()
     username = get_cas()
     current = students.query.filter_by(

@@ -8,17 +8,17 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Profile</div>
-                    <a class="nav-link {% block edit_profile %}{% endblock %}" href="/{{side}}/dashboard">
+                    <a class="nav-link tab {% block edit_profile %}{% endblock %}" href="/{{side}}/dashboard">
                         <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
                         Edit profile
                     </a>
                     <div class="sb-sidenav-menu-heading">Matches</div>
-                    <a class="nav-link {% block view_matches %}{% endblock %}" href="/{{side}}/matches">
+                    <a class="nav-link tab {% block view_matches %}{% endblock %}" href="/{{side}}/matches">
                         <div class="sb-nav-link-icon"><i class="fas fa-user-friends"></i></div>
                         View matches
                     </a>
                     <div class="sb-sidenav-menu-heading">Your account</div>
-                    <a class="nav-link {% block account %}{% endblock %}" href="/{{side}}/account">
+                    <a class="nav-link tab {% block account %}{% endblock %}" href="/{{side}}/account">
                         <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
                         Settings
                     </a>
@@ -34,7 +34,7 @@
                 {% if alum %}<span
                     class="id-display">{{alum.group_id if alum.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 <br>
-                <a type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Change
+                <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal" data-target="#exampleModal">Change
                     your group</a>
             </div>
         </nav>
@@ -55,7 +55,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Change your group</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
