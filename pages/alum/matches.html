@@ -14,11 +14,34 @@
         <p>View their profile below</p>
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
             data-target="#profileModal">{{match.studentinfonamefirst}}'s Profile</button>
+
+        <hr class="my-4">
+        {% if contacted == False: %}
+        <form method="post">
+            <p>Confirm that you have contacted {{match.studentinfonamefirst}}.</p>
+            <input type="submit" class="btn btn-primary btn-lg" name="action" value="Confirm">
+        </form>
+        {% endif %}
         {% else %}
+        
+
+<div class="match-info">
+    <div>
         <h1 class="display-4">You have not been matched yet.</h1>
         <p class="lead">Please check back later!</p>
         {% endif %}
     </div>
+
+    <br><br><br><br>
+        <div class="offset-3 w-50">
+            <form method="post">
+                <label for="message">Send a message to your group admin:</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"></textarea>
+                <br>
+                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
+                <br><br>
+            </form>
+        </div>
 </div>
 
 <!-- Modal -->

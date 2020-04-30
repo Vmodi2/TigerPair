@@ -191,15 +191,45 @@ def student_information():
     return redirect(url_for('student_dashboard'))
 
 
-@app.route('/student/matches')
+@app.route('/student/matches', methods=['GET', 'POST'])
 def student_matches(match=None):
     route_new_student()
     username = get_cas()
+
     if not match:
         match = get_match_student(username)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(studentid=username).first()
+            match_item.contacted = True
+            db.session.commit()
+            
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(studentid=username).first().contacted
+        
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/matches.html',
-                           match=match, username=username, student=current, side="student")
+                           match=match, username=username, student=current, side="student",
+                           contacted=contacted)
+
+    if request.form.get("message") is not None:
+        try: # Due to database issues (that won't be in the final product) this may not send
+            group_id = current.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.username + "@princeton.edu"
+            
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
+            mail.send(msg)
+        except Exception as e:
+            pass
+
+    
+        
     return make_response(html)
 
 
@@ -371,14 +401,41 @@ def alumni_id():
     return redirect(url_for('alumni_dashboard'))
 
 
-@app.route('/alum/matches')
+@app.route('/alum/matches', methods=['GET','POST'])
 @login_required
 def alum_matches(match=None):
     # username = get_cas()
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
+
+    if request.form.get("action") == "Confirm":
+        if match is not None:
+            match_item = matches.query.filter_by(studentid=match.studentid).first()
+            match_item.contacted = True
+            db.session.commit()
+
+    contacted = False
+    if match is not None:
+        contacted = matches.query.filter_by(studentid=match.studentid).first().contacted
+        
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
-                           match=match, side="alum")
+                           match=match, side="alum",
+                           contacted=contacted)
+    
+    if request.form.get("message") is not None:
+        try: # Due to database issues (that won't be in the final product) this may not send
+            group_id = current_user.group_id
+            admin = admins.query.filter_by(id=group_id).first()
+            email = admin.username + "@princeton.edu"
+            
+            message = request.form.get("message")
+            msg = Message(
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+            msg.body = message + "\n --- \nThis message was sent to you from the student: " + current_user.aluminfonamefirst + " " + current_user.aluminfonamelast
+            mail.send(msg)
+        except Exception as e:
+            pass
+    
     return make_response(html)
 
 
