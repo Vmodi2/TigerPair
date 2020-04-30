@@ -85,15 +85,11 @@ class admins(db.Model):
     id = db.Column('id', db.Unicode, db.Sequence(
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
-    email = db.Column('email', db.Unicode)
-    confirm_email = ('confirm_email', db.Boolean)
     password = db.Column('password', db.Unicode)
 
-    def __init__(self, username, email, password, confirm_email=False):
+    def __init__(self, username, password):
         self.username = username
-        self.email = email
         self.password = password
-        self.confirm_email = confirm_email
 
     def is_authenticated(self):
         return self.authenticated

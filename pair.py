@@ -75,12 +75,12 @@ def alum_logout():
     return redirect(url_for("index"))
 
 
-# @app.route("/admin/logout")
-# def admin_logout():
-#     casClient = CASClient()
-#     # casClient.authenticate()
-#     casClient.logout()
-#     return redirect(url_for("index"))
+@app.route("/admin/logout")
+def admin_logout():
+    casClient = CASClient()
+    # casClient.authenticate()
+    casClient.logout()
+    return redirect(url_for("index"))
 # -----------------------------------------------------------------------
 
 
@@ -601,18 +601,21 @@ def signup():
 
 
 def verify_admin():
-    username = current_user.username
-    id = current_user.id
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
     #if not current:
         #current = admins(username)
         #db.session.add(current)
         #db.session.commit()
-    return username, id
+    return username, user.id
 
-@login_required
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
-    username, id = verify_admin()
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    if user is None:
+        return redirect(url_for('adminlogin'))
+    id = user.id
     matches = get_matches(id)
     html = render_template('pages/admin/dashboard.html', matches=matches,
                            side='admin', username=username, id=id)
@@ -620,7 +623,6 @@ def admin_dashboard():
 
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
-@login_required
 @app.route('/admin/dashboard/create', methods=['GET', 'POST'])
 def admin_dashboard_create():
     username, id = verify_admin()
@@ -655,8 +657,6 @@ def notify():
 
 
 
-
-
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
     username, id = verify_admin()
@@ -664,7 +664,6 @@ def admin_dashboard_modify_matches():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/dashboard/clearall', methods=['GET', 'POST'])
 def admin_dashboard_clearall():
     username, id = verify_admin()
@@ -672,14 +671,12 @@ def admin_dashboard_clearall():
     return redirect(url_for('admin_dashboard'))
 
 # -----------------------------------------------------------------------
-@login_required
 @app.route('/admin/dashboard/clearone', methods=['GET', 'POST'])
 def admin_dashboard_clearone():
     username, id = verify_admin()
     clear_match(request.args.get('student'), request.args.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
-@login_required
 @app.route('/admin/manual-match', methods=['GET', 'POST'])
 def admin_dashboard_manual_match():
     username, id = verify_admin()
@@ -689,14 +686,12 @@ def admin_dashboard_manual_match():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
 def admin_dashboard_createone():
     username, id = verify_admin()
     create_one(id, request.form.get('student'), request.form.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
-@login_required
 @app.route('/admin/profiles-alum')
 def admin_profiles_alum():
     username, id = verify_admin()
@@ -706,7 +701,6 @@ def admin_profiles_alum():
     return make_response(html)
 
 # SINGLE alum profile page
-@login_required
 @app.route('/admin/profile-alum')
 def admin_profile_alum():
     username, id = verify_admin()
@@ -716,7 +710,6 @@ def admin_profile_alum():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/profiles-student')
 def admin_profiles_student():
     username, id = verify_admin()
@@ -727,7 +720,6 @@ def admin_profiles_student():
     return make_response(html)
 
 # SINGLE student profile page
-@login_required
 @app.route('/admin/profile-student')
 def admin_profile_student():
     username, id = verify_admin()
@@ -737,7 +729,6 @@ def admin_profile_student():
                            side='admin', username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/get-registrations-alum', methods=['GET'])
 def admin_get_registrations_alum():
     username, id = verify_admin()
@@ -746,7 +737,6 @@ def admin_get_registrations_alum():
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
-@login_required
 @app.route('/admin/get-registrations-student', methods=['GET'])
 def admin_get_registrations_student():
     username, id = verify_admin()
@@ -755,7 +745,6 @@ def admin_get_registrations_student():
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
-@login_required
 @app.route('/admin/import-students')
 def admin_import_students():
     username, id = verify_admin()
@@ -763,7 +752,6 @@ def admin_import_students():
                            side="Admin", username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/import-alumni')
 def admin_import_alumni():
     username, id = verify_admin()
@@ -771,13 +759,11 @@ def admin_import_alumni():
                            side="Admin", username=username, id=id)
     return make_response(html)
 
-@login_required
 @app.route('/admin/import-students/process', methods=["POST"])
 def admin_import_students_process():
     username, id = verify_admin()
     return process_import(is_alumni=False)
 
-@login_required
 @app.route('/admin/import-alumni/process', methods=["POST"])
 def admin_import_alumni_process():
     username, id = verify_admin()
@@ -891,7 +877,7 @@ def adminlogin():
     form = AdminLoginForm()
     if form.validate_on_submit():
         # print("submitted form")
-        user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
+        user = admins.query.filter_by(username=form.username.data).first() ## CHECK DATABASE.PY
         if user is not None:
             # print("user is not none")
 
@@ -899,7 +885,7 @@ def adminlogin():
             if check_password_hash(user.password, form.password.data):
                 # print("password is correct")
                 db.session.commit() # could we remove this
-                login_user(user, remember=form.remember.data)
+                #login_user(user, remember=form.remember.data)
                 return redirect(url_for('admin_dashboard'))
                 # url_for('alum_info')
 
@@ -915,50 +901,25 @@ def asignup():
     form = AdminRegisterForm()
 
     if form.validate_on_submit():
-        email = form.email.data
         username = form.username.data
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
         existing_user = admins.query.filter_by(username=username).first()
         if existing_user is None:
 
-            token = s.dumps(email, salt='admin-confirm')
-
-            msg = Message(
-                'Admin Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
-            link = url_for('admin_confirm', token=token, _external=True)
-            msg.body = 'Confirmation link is {}'.format(link)
-            mail.send(msg)
-
             # update the database with new user info
 
-            user = admins(username, email, hashed_password, confirm_email=False)
+            user = admins(username, hashed_password)
             db.session.add(user)
             db.session.commit() # this isnt doing anything
 
-            return redirect(url_for('gotoemail'))
+            return redirect(url_for('admin_dashboard'))
 
     flash('A user already exists with that email address.')
 
     html = render_template('pages/login/asignup.html', form=form)
     return make_response(html)
 
-@app.route('/admin_confirm/<token>', methods=('GET','POST'))
-def admin_confirm(token):
-
-    html = ''
-    errormsg = ''
-
-    email = s.loads(token, salt='admin-confirm')
-    # give email column indexability
-    user = admins.query.filter_by(email=email).first_or_404()
-    user.confirm_email = True
-    db.session.add(user)
-    db.session.commit()
-
-    html = render_template(
-        'pages/login/aconfirm_email.html', errormsg=errormsg)
-    return make_response(html)
 
 # -----------------------------------------------------------------------
 # Runserver client, input port/host server. Returns current request,

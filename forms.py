@@ -49,26 +49,19 @@ class AdminLoginForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
-    def validate_email(self, email):
-        user = alumni.query.filter_by(aluminfoemail=email.data).first()
+    def validate_username(self, username):
+        user = admins.query.filter_by(username=username.data).first()
         if user is None:
-            raise ValidationError("Invalid Email")
+            raise ValidationError("Invalid username")
 
 # -----------------------------------------------------------------------
 
 class AdminRegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
 
-    def validate_email(self, email):
-        DOMAIN_ALLOWED= ['princeton.edu']
-        email_domain = email.data.split('@')[-1]
-
-        if email_domain not in DOMAIN_ALLOWED:
-            raise ValidationError("Must be a princeton address")
-
-        user = alumni.query.filter_by(aluminfoemail = email.data).first()
-        if user:
-            raise ValidationError("That email is taken. Please use another")
+    def validate_username(self, username):
+        user = admins.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError("Username taken")
