@@ -3,13 +3,13 @@
 }
 
 @media (min-width: 576px){
-.modal-dialog {
+.groupmodal-dialog {
     max-width: 500px;
     margin: 11rem auto !important;
 }
 }
 
-.modal-dialog {
+.groupmodal-dialog{
     position: relative;
     width: auto;
     margin: 5rem;
