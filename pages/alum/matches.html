@@ -4,9 +4,9 @@
 {% block content %}
 <!-- Match side -->
 <br />
-{% if match %}
 <div class="match-info text-center">
     <div>
+        {% if match %}
         <h1 class="display-4">You've been matched</h1>
         <p class="lead">...with <strong><mark>{{match.studentinfonamefirst}}
                     {{match.studentinfonamelast}}</mark></strong>!</p>
@@ -36,7 +36,7 @@
             <div class="modal-body">
                 <h5>Major: {{match.studentacademicsmajor}}</h5>
                 <h5>Career: {{match.studentcareerdesiredfield}}</h5>
-                <h5>Email: {{match.studentinfoemail}}</h5>
+                <h5>Email: <a href="mailto:{{match.studentinfoemail}}"></a>{{match.studentinfoemail}}</h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

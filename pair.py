@@ -208,7 +208,7 @@ def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(
         studentid=username).first()
     errorMsg = ''
@@ -233,22 +233,27 @@ def student_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(
         studentid=username).first()
-    new_id = request.form.get('id').strip()
-    if new_id:
-        group = admins.query.filter_by(id=new_id).first()
-        if group:
-            current.group_id = new_id
-            db.session.commit()
-    return redirect(url_for('student_dashboard'))
+    if request.method == "POST":
+        new_id = request.form.get('id').strip()
+        if new_id:
+            group = admins.query.filter_by(id=new_id).first()
+            if group:
+                current.group_id = new_id
+                db.session.commit()
+                msg = 'Success changing your group!'
+            else:
+                msg = 'The chosen group id does not belong to an existing group'
+        return msg
+    return 'Invalid request'
 
 
 @app.route('/student/account', methods=['GET'])
 def student_account():
     route_new_student()
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/account.html',
                            active_email=True, username=username, student=current, side="student")
@@ -257,7 +262,7 @@ def student_account():
 
 @app.route('/student/delete', methods=['GET'])
 def student_delete():
-    username = strip_user(CASClient().authenticate())
+    username = get_cas()
     # find if matched already and delete current match could use clear match
     # but then I would have to find student object
     alum = get_match_student(username=username)
@@ -361,14 +366,22 @@ def alumni_id():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     current = alumni.query.filter_by(
         aluminfoemail=current_user.aluminfoemail).first()
-    new_id = request.form.get('id').strip()
-    if new_id:
-        admin = admins.query.filter_by(id=new_id).first()
-        if new_id and admin:
-            current.group_id = new_id
-            current_user.group_id = new_id
-            db.session.commit()
-    return redirect(url_for('alumni_dashboard'))
+    response = {}
+    if request.method == "POST":
+        new_id = request.form.get('id').strip()
+        if new_id:
+            group = admins.query.filter_by(id=new_id).first()
+            if group:
+                current.group_id = new_id
+                db.session.commit()
+                response['changed'] = True
+                response['id'] = new_id
+                response['msg'] = 'Success changing your group!'
+            else:
+                response['msg'] = 'The chosen group id does not belong to an existing group'
+    else:
+        response['msg'] = 'An unexpected error occurred'
+    return jsonify(response)
 
 
 @app.route('/alum/matches')
