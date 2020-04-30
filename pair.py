@@ -433,7 +433,7 @@ def alum_matches(match=None):
     # username = get_cas()
     if current_user.aluminfonamefirst is None:
         return redirect(url_for('alumni_dashboard'))
-                        
+
     if not match:
         match = get_match_alum(current_user.aluminfoemail)
 
@@ -511,7 +511,6 @@ def verify_email_regex(request):
     email1 = request.form.get('email')
     regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return search(regex, email1)
-
 
 
 
