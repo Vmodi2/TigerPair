@@ -4,12 +4,14 @@
 <div class="card bg-danger text-white mb-4 mt-4">
     <div class="card-body">Transfer account</div>
     <div class="card-footer d-flex align-items-center justify-content-between">
-        <a data-toggle="modal" type="button" data-target="#profileModal" class="small text-white stretched-link" href="/student/delete">Note: This action is permanent!</a>
+        <a data-toggle="modal" type="button" data-target="#profileModal" class="small text-white stretched-link"
+            href="/student/delete">Note: This action is permanent!</a>
         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
     </div>
 </div>
 
-<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" -->
+<p class="lead text-danger font-weight-bold">{{errorMsg}}</p>
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle">
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -20,28 +22,28 @@
                     </button>
             </div>
             <form id="changeaccount" action="/admin/change" method="post">
-            <div class="modal-body">
-                <div class="form-group">
-                  <label for="netid">Net ID:</label>
-                  <input type="text" name="netid" value="" id="netid" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="confirm_netid">Confirm Net ID:</label>
-                  <input type="text" name="confirm_netid" value="" id="confirm_netid" class="form-control">
-                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="netid">Net ID:</label>
+                        <input type="text" name="netid" value="" id="netid" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_netid">Confirm Net ID:</label>
+                        <input type="text" name="confirm_netid" value="" id="confirm_netid" class="form-control">
+                    </div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                <button class="btn btn-danger" type="submit">Confirm</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" type="submit">Confirm</button>
+                </div>
             </form>
 
         </div>
     </div>
 </div>
 {% endblock %}
-  {% block extra_scripts %}
+{% block extra_scripts %}
 
 <script src="/static/js/changeaccount.js">
 

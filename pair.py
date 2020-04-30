@@ -608,6 +608,7 @@ def verify_admin(username):
     id = user.id
     return user.id
 
+
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     username = get_cas()
@@ -643,25 +644,23 @@ def notify():
         return redirect(url_for('adminlogin'))
     id = user.id
     matches = get_matches(id)
-    student_emails=[]
-    alum_emails=[]
+    student_emails = []
+    alum_emails = []
     for match in matches:
-        student=students_table.query.filter_by(studentid=match[0]).first().studentinfoemail
+        student = students_table.query.filter_by(
+            studentid=match[0]).first().studentinfoemail
         student_emails.append(student)
         alum_emails.append(match[1])
-    student_msg = Message('You\'ve been Matched!', sender='tigerpaircontact@gmail.com', recipients=student_emails)
+    student_msg = Message('You\'ve been Matched!',
+                          sender='tigerpaircontact@gmail.com', recipients=student_emails)
     student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
     mail.send(student_msg)
 
-    alum_msg = Message('You\'ve been Matched!', sender='tigerpaircontact@gmail.com', recipients=alum_emails)
+    alum_msg = Message('You\'ve been Matched!',
+                       sender='tigerpaircontact@gmail.com', recipients=alum_emails)
     alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
     mail.send(alum_msg)
     return redirect(url_for('admin_dashboard'))
-
-
-
-
-
 
 
 @app.route('/admin/modify-matches', methods=['GET'])
@@ -674,6 +673,7 @@ def admin_dashboard_modify_matches():
     html = render_template('pages/admin/modify-matches.html', matches=matches,
                            side='admin', username=username, id=id)
     return make_response(html)
+
 
 @app.route('/admin/dashboard/clearall', methods=['GET', 'POST'])
 def admin_dashboard_clearall():
@@ -696,6 +696,7 @@ def admin_dashboard_clearone():
     clear_match(request.args.get('student'), request.args.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
+
 @app.route('/admin/manual-match', methods=['GET', 'POST'])
 def admin_dashboard_manual_match():
     username = get_cas()
@@ -709,6 +710,7 @@ def admin_dashboard_manual_match():
                            side='admin', username=username, id=id)
     return make_response(html)
 
+
 @app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
 def admin_dashboard_createone():
     username = get_cas()
@@ -718,6 +720,7 @@ def admin_dashboard_createone():
     id = user.id
     create_one(id, request.form.get('student'), request.form.get('alum'))
     return redirect(url_for('admin_dashboard'))
+
 
 @app.route('/admin/profiles-alum')
 def admin_profiles_alum():
@@ -745,6 +748,7 @@ def admin_profile_alum():
                            alum=alum, matches=matches,
                            side='admin', username=username, id=id)
     return make_response(html)
+
 
 @login_required
 @app.route('/admin/profiles-student')
@@ -775,6 +779,7 @@ def admin_profile_student():
                            side='admin', username=username, id=id)
     return make_response(html)
 
+
 @login_required
 @app.route('/admin/get-registrations-alum', methods=['GET'])
 def admin_get_registrations_alum():
@@ -787,6 +792,7 @@ def admin_get_registrations_alum():
         "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
+
 
 @login_required
 @app.route('/admin/get-registrations-student', methods=['GET'])
@@ -801,6 +807,7 @@ def admin_get_registrations_student():
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
+
 @login_required
 @app.route('/admin/import-students')
 def admin_import_students():
@@ -812,6 +819,7 @@ def admin_import_students():
     html = render_template('pages/admin/import-students.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
+
 
 @login_required
 @app.route('/admin/import-alumni')
@@ -825,6 +833,7 @@ def admin_import_alumni():
                            side="Admin", username=username, id=id)
     return make_response(html)
 
+
 @login_required
 @app.route('/admin/import-students/process', methods=["POST"])
 def admin_import_students_process():
@@ -834,6 +843,7 @@ def admin_import_students_process():
         return redirect(url_for('adminlogin'))
     id = user.id
     return process_import(is_alumni=False)
+
 
 @login_required
 @app.route('/admin/import-alumni/process', methods=["POST"])
@@ -965,24 +975,25 @@ def adminlogin():
     form = AdminLoginForm()
     if form.validate_on_submit():
         # print("submitted form")
-        user = admins.query.filter_by(adminusername=form.username.data).first() ## CHECK DATABASE.PY
+        user = admins.query.filter_by(
+            adminusername=form.username.data).first()  # CHECK DATABASE.PY
         if user is not None:
             # print("user is not none")
 
             # print("email is confirmed")
             if check_password_hash(user.password, form.password.data):
                 # print("password is correct")
-                db.session.commit() # could we remove this
+                db.session.commit()  # could we remove this
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('admin_dashboard'))
                 # url_for('alum_info')
-
 
         else:
             flash("Invalid username or password")
 
     html = render_template('pages/login/admin.html', form=form)
     return make_response(html)
+
 
 @app.route('/login/asignup', methods=['GET', 'POST'])
 def asignup():
@@ -997,7 +1008,7 @@ def asignup():
 
             user = admins(username, hashed_password)
             db.session.add(user)
-            db.session.commit() # this isnt doing anything
+            db.session.commit()  # this isnt doing anything
 
             return redirect(url_for('admin_dashboard'))
 
@@ -1006,10 +1017,11 @@ def asignup():
     html = render_template('pages/login/asignup.html', form=form)
     return make_response(html)
 
+
 @app.route('/admin/change', methods=['GET', 'POST'])
 def admin_change():
     username = get_cas()
-    print("here")
+    errorMsg = ''
     if request.method == 'POST':
         netid = request.form.get('netid')
         confirm_netid = request.form.get('confirm_netid')
@@ -1019,9 +1031,12 @@ def admin_change():
                 user.username = netid
                 db.session.commit()
                 return redirect(url_for('index'))
+            # if admin already exists, add current alumni/students to that group
+            else:
+                errorMsg = 'The selected user already has an account'
         else:
-            return redirect('admin_dashboard')
-    html = render_template('pages/admin/adminchange.html')
+            errorMsg = "The entered net id's don't match"
+    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg)
     return make_response(html)
 
 
