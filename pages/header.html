@@ -1,11 +1,8 @@
-<!-- CURRENTLY ONLY BEING USED FOR ADMIN PAGE (goal is to use for all pages after integration) -->
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+<!-- <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <a class="navbar-brand" href="/{{side}}/dashboard">{{side|capitalize}} Dashboard</a><button
         class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
-    <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
     </form>
-    <!-- Navbar-->
     <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
@@ -17,4 +14,41 @@
             </div>
         </li>
     </ul>
+</nav> -->
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/users.css">
+{% endblock %}
+<nav class="navbar fixed-top transparent navbar-expand navbar-dark bg-dark topNavbar" id="landing-nav">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="#" role="button" id="sidebarToggle" aria-haspopup="true" aria-expanded="false" onclick="toggle(); return false;">
+                    <i class="fas fa-angle-double-left"></i></a>
+            </li>
+            <li class="nav-item">
+                <a href="/"><img src="/static/images/TigerPairLogo.png" style="width:80px;" alt="TigerPair Logo"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/{{side}}/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
 </nav>
+
+<!-- NOTE: Sometimes these can go the wrong direction (on smaller screens specifically) -->
+<script>
+function toggle() {
+    var html = document.getElementById("sidebarToggle").innerHTML;
+    if (html.search('left') == -1) {
+        html = '<i class="fas fa-angle-double-left"></i>';
+    } else {
+        html = '<i class="fas fa-angle-double-right"></i>';
+    }
+
+    document.getElementById("sidebarToggle").innerHTML = html;
+}
+</script>

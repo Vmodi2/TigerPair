@@ -35,7 +35,7 @@
             </div>
             <div class="modal-body">
                 <h5>Major: {{match.studentacademicsmajor}}</h5>
-                <h5>Career: {{match.studentdesiredcareerfield}}</h5>
+                <h5>Career: {{match.studentcareerdesiredfield}}</h5>
                 <h5>Email: {{match.studentinfoemail}}</h5>
             </div>
             <div class="modal-footer">
@@ -48,3 +48,5 @@
 
 {% endblock %}
 {% block view_matches %}active{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/scripts.js"></script>{% endblock %}

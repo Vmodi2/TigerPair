@@ -1,22 +1,22 @@
 <!DOCTYPE HTML>
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <p style="color:red">{{ message }}</p>
-    {% endfor %}
-    </ul>
-  {% endif %}
+{% if messages %}
+<ul class=flashes>
+  {% for message in messages %}
+  <p style="color:red">{{ message }}</p>
+  {% endfor %}
+</ul>
+{% endif %}
 {% endwith %}
 {% block body %}{% endblock %}
 
 
-Maybe
+<!-- Maybe -->
 
-{% if form.email.errors %}
-  <u1 class="errors">
-    {% for error in form.email.errors %}
-      <li>{{error}}</li>
-    {% endfor %}
-  </u1>
-{% endif %}
+<!-- {% if form.email.errors %}
+<u1 class="errors">
+  {% for error in form.email.errors %}
+  <li>{{error}}</li>
+  {% endfor %}
+</u1>
+{% endif %} -->

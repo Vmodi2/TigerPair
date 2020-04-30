@@ -40,6 +40,6 @@ TODO:
 
 
 
-Beta is almost completed - Spread out among multiple branches at the moment, will be merged by Friday
+Beta is almost completed - Most Recent Version can be found in Master -  Everything working except a few multiple admin features
 Alpha is completed -  Can be found in Master Branch
 Prototype is Completed -  Can Be Found in Basic_DB_Prototype Branch

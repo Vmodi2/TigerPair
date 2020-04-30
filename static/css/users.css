@@ -1,0 +1,17 @@
+#landing-nav {
+    z-index: 10000 !important;
+}
+
+@media (min-width: 576px){
+.groupmodal-dialog {
+    max-width: 500px;
+    margin: 11rem auto !important;
+}
+}
+
+.groupmodal-dialog{
+    position: relative;
+    width: auto;
+    margin: 5rem;
+    pointer-events: none;
+}

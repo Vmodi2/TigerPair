@@ -4,7 +4,7 @@
 {% include "pages/header.html" %}
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <nav class="sb-sidenav accordion sb-sidenav-dark users-side-nav" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Profile</div>
@@ -17,6 +17,11 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-user-friends"></i></div>
                         View matches
                     </a>
+                    <div class="sb-sidenav-menu-heading">Your account</div>
+                    <a class="nav-link {% block account %}{% endblock %}" href="/{{side}}/account">
+                        <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                        Settings
+                    </a>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -26,6 +31,9 @@
                 <!-- print id -->
                 {{student.group_id if student}}
                 {{alum.group_id if alum}}
+                <br>
+                <a type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Change
+                    your group</a>
             </div>
         </nav>
     </div>
@@ -35,21 +43,42 @@
                 {% block content %}{% endblock %}
             </div>
         </main>
-        <footer class="py-4 bg-light mt-auto">
-            <div class="container-fluid">
-                <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">A project by Abhinaya, Chris, Daniel, Tara, and Vikash</div>
-                    <div>
-                        <a href="#">Privacy Policy</a>
-                        &middot;
-                        <a href="#">Terms &amp; Conditions</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 </div>
-{% endblock %}
-{% block extra_scripts %}
-<script src="/static/js/scripts.js"></script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="groupmodal-dialog modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change your group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/{{side}}/id" method="post">
+                <div class="modal-body d-flex flex-column justify-content-start">
+                    <div class="form-group row ml-auto">
+                        <label for="staticId" class="col-sm-8 col-form-label">Current Group ID</label>
+                        <div class="col-sm-4">
+                            <input type="text" readonly class="form-control-plaintext" id="staticId"
+                                value="{{student.group_id if student}}{{alum.group_id if alum}}">
+                        </div>
+                    </div>
+                    <div class="form-group row ml-auto">
+                        <label for="id" class="col-sm-8 col-form-label">New Group ID</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="id" name="id" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">Change</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
