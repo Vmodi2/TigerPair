@@ -149,6 +149,8 @@
     }
   }
 
+  
+
   .name {
     min-height: 70px;
   }
@@ -437,6 +439,17 @@
 .icons{
   font-size: 4rem;
   color: #cf722a;
+}
+
+@media only screen and (max-width: 1000px) {
+  .icons {
+    font-size:3rem;
+  }
+}
+@media only screen and (max-width: 770px) {
+  .icons {
+    font-size:4rem;
+  }
 }
 
 /*admin info icon*/
