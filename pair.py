@@ -245,6 +245,24 @@ def student_id():
     return redirect(url_for('student_dashboard'))
 
 
+@app.route('/student/account', methods=['GET'])
+def student_account():
+    route_new_student()
+    username = strip_user(CASClient().authenticate())
+    current = students.query.filter_by(studentid=username).first()
+    html = render_template('pages/student/account.html',
+                           active_email=True, username=username, student=current, side="student")
+    return make_response(html)
+
+
+@app.route('/student/delete', methods=['GET'])
+def student_delete():
+    username = strip_user(CASClient().authenticate())
+    students.query.filter_by(studentid=username).delete()
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
 def get_match_student(username):
     match = matches.query.filter_by(studentid=username).first()
     if not match:
@@ -356,6 +374,25 @@ def alum_matches(match=None):
     html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                            match=match, side="alum")
     return make_response(html)
+
+
+@app.route('/alum/account', methods=['GET'])
+@login_required
+def alum_account():
+    username = current_user.aluminfoemail
+    current = alumni.query.filter_by(aluminfoemail=username).first()
+    html = render_template('pages/alum/account.html',
+                           active_email=True, username=username, alum=current, side="alum")
+    return make_response(html)
+
+
+@app.route('/alum/delete', methods=['GET'])
+@login_required
+def alum_delete():
+    username = current_user.aluminfoemail
+    alumni.query.filter_by(aluminfoemail=username).delete()
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 def get_match_alum(email):
@@ -737,19 +774,42 @@ def process_import(is_alumni):
     except Exception as e:
         return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
 
+
+@app.route('/admin/action-student', methods=["POST"])
+def admin_action_student():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        students = request.form.get('checked-members').split(',')
+        for student in students:
+            delete_student(id, student)
+    return redirect(url_for('admin_profiles_student'))
+
+
+@app.route('/admin/action-alum', methods=["POST"])
+def admin_action_alum():
+    username, id = verify_admin()
+    if request.form.get('action') == 'delete':
+        alumni = request.form.get('checked-members').split(',')
+        for alum in alumni:
+            print('fCORONAAAA ')
+            print(alum)
+            delete_alum(id, alum)
+    return redirect(url_for('admin_profiles_alum'))
+
+
 # REDIRECT HERE FROM THE BUTTON
 # @app.route('/admin/group-login', methods=['GET', 'POST'])
 # def login():
 
     # form = LoginForm()
     # if form.validate_on_submit():
-        # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
-        # if group_id is not None:
-        # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
-        # login_user(user, remember=form.remember.data)
-        # return redirect(url_for('/admin/dashboard'))
-        # else:
-        # flash("Group ID does not exist")
+    # group_id = groups.query.filter_by(group_id=form.group_id.data).first()
+    # if group_id is not None:
+    # if check_password_hash(user.password, form.password.data): We should hash group_ids for safety
+    # login_user(user, remember=form.remember.data)
+    # return redirect(url_for('/admin/dashboard'))
+    # else:
+    # flash("Group ID does not exist")
 
     # html = render_template('pages/admin/group-login.html', form=form)
     # return make_response(html)

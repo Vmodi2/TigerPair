@@ -4,47 +4,60 @@
 <div class="card mb-4">
     <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                {% if students %}
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Major</th>
-                        <th>Career</th>
-                        <th>Matched?</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Major</th>
-                        <th>Career</th>
-                        <th>Matched?</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    {% for student in students: %}
-                    <tr {% if student.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
-                        <td>{{student.studentinfonamefirst}}</td>
-                        <td>{{student.studentinfonamelast}}</td>
-                        <td>{{student.studentinfoemail}}</td>
-                        <td>{{student.studentacademicsmajor}}</td>
-                        <td>{{student.studentcareerdesiredfield}}</td>
-                        <td>{% if student.matched==1 %}Yes{% else %}No{% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                {% else %}
-                <h2>No students</h2>
-                {% endif %}
-            </table>
-        </div>
+        <form action="/admin/action-student" method="post" class="mb-3">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    {% if students %}
+                    <select name="action" id="action">
+                        <option value="no-action">Select an action</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <input type="hidden" id="checked-members" name="checked-members" value="">
+                    <input type="submit" value="Submit">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Major</th>
+                            <th>Career</th>
+                            <th>Matched?</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Major</th>
+                            <th>Career</th>
+                            <th>Matched?</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for student in students: %}
+                        <tr {% if student.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
+                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
+                                    value="{{student.studentid}}" class="members">
+                            </td>
+                            <td>{{student.studentinfonamefirst}}</td>
+                            <td>{{student.studentinfonamelast}}</td>
+                            <td>{{student.studentinfoemail}}</td>
+                            <td>{{student.studentacademicsmajor}}</td>
+                            <td>{{student.studentcareerdesiredfield}}</td>
+                            <td>{% if student.matched==1 %}Yes{% else %}No{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <h2>No students</h2>
+                    {% endif %}
+                </table>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
@@ -52,4 +65,5 @@
 {% block profiles_student %}active{% endblock %}
 {% block extra_scripts %}
 <script src="/static/js/datatables-demo.js"></script>
+<script src="/static/js/delete.js"></script>
 {% endblock %}
