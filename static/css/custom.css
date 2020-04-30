@@ -11,6 +11,7 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     outline: #ffffff;
+    background:#3a3939
     background: rgba(255, 255, 255, 0.212);
   }
 
@@ -46,7 +47,17 @@
     color:black;
 
   }
+  .btn-warning, .btn-warning:focus, .btn-warning:active, .btn-warning:active{
+    background: #ffa050;
+    color: #ffffff;
+}
 
+.btn-warning:hover, .open > .dropdown-toggle.btn-warning {
+    background:#f17209;
+    color:#ffffff;
+
+
+  }
 
   /*tabs*/
 

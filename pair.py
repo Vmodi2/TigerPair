@@ -207,6 +207,7 @@ def student_matches(match=None):
 def student_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
+
     route_new_student()
     username = strip_user(CASClient().authenticate())
     current = students.query.filter_by(
