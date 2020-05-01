@@ -171,12 +171,12 @@ def student_information():
     if not current:
         try:
             group_id = int(info.get('group_id'))
-        except:
-            group_id = 0
-        if not admins.query.filter_by(id=group_id).first():
-            html = render_template(
+            if not admins.query.filter_by(id=group_id).first():
+                html = render_template(
                 'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
             return make_response(html)
+        except:
+            group_id = 0
     else:
         group_id = current.group_id
     new_student = students(username, info.get('firstname'), info.get('lastname'),
