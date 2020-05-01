@@ -196,6 +196,9 @@ def student_matches(match=None):
     route_new_student()
     username = get_cas()
 
+    if students.query.filter_by(studentid=username).first() is None:
+        return redirect(url_for('student_dashboard'))
+
     if not match:
         match = get_match_student(username)
 
@@ -239,6 +242,10 @@ def student_email():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
     username = get_cas()
+
+    if students.query.filter_by(studentid=username).first() is None:
+        return redirect(url_for('student_dashboard'))
+    
     current = students.query.filter_by(
         studentid=username).first()
     errorMsg = ''
@@ -264,6 +271,10 @@ def student_id():
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
     route_new_student()
     username = get_cas()
+
+    if students.query.filter_by(studentid=username).first() is None:
+        return redirect(url_for('student_dashboard'))
+    
     current = students.query.filter_by(
         studentid=username).first()
     response = {}
@@ -291,6 +302,10 @@ def student_id():
 def student_account():
     route_new_student()
     username = get_cas()
+
+    if students.query.filter_by(studentid=username).first() is None:
+        return redirect(url_for('student_dashboard'))
+    
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/account.html',
                            active_email=True, username=username, student=current, side="student")
@@ -300,6 +315,10 @@ def student_account():
 @app.route('/student/delete', methods=['GET'])
 def student_delete():
     username = get_cas()
+
+    if students.query.filter_by(studentid=username).first() is None:
+        return redirect(url_for('student_dashboard'))
+    
     # find if matched already and delete current match could use clear match
     # but then I would have to find student object
     alum = get_match_student(username=username)
