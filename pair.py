@@ -168,6 +168,7 @@ def student_information():
     group_id = -1
     current = students.query.filter_by(studentid=username).first()
     info = request.form
+    ##### WTF IS THIS Group is auto going to 0 rn 
     if not current:
         try:
             group_id = int(info.get('group_id'))
@@ -214,6 +215,7 @@ def student_matches(match=None):
 
     if request.form.get("message") is not None:
         # Due to database issues (that won't be in the final product) this may not send
+        # what is this?
         try:
             group_id = current.group_id
             admin = admins.query.filter_by(id=group_id).first()
