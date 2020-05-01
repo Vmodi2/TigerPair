@@ -69,12 +69,12 @@ def alum_logout():
     return redirect(url_for("index"))
 
 
-# @app.route("/admin/logout")
-# def admin_logout():
-#     casClient = CASClient()
-#     # casClient.authenticate()
-#     casClient.logout()
-#     return redirect(url_for("index"))
+@app.route("/admin/logout")
+def admin_logout():
+    casClient = CASClient()
+    # casClient.authenticate()
+    casClient.logout()
+    return redirect(url_for("index"))
 # -----------------------------------------------------------------------
 
 
