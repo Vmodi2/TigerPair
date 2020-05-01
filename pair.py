@@ -380,16 +380,25 @@ def alumni_info():
         alum.aluminfonamelast = request.form.get('lastname')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
-        #print("HERE")
+        db.session.commit()
         if alum.group_id is None:
-            #print("group id is none YAY")
+            print("alum is None")
             try:
-                alum.group_id = int(request.form.get('group_id'))
-                #print("group id is: " + str(alum.group_id) + " YAY")
+                print("we tryin")
+                id = int(request.form.get('group_id'))
+                print("group id" + str(id))
+                admin = admins.query.filter_by(id = id).first()
+                if admin is None:
+                    print("admin is none")
+                    html = render_template(
+                    'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
+                    return make_response(html)
+                else:
+                    print("admin is not none")
+                    alum.group_id = id
             except:
+                print("we exeptin")
                 alum.group_id = 0
-                #print("group id is 0 NOOOOOOOO")
-        #print("Group id is not none and is" + str(alum.group_id))
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
