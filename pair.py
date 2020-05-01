@@ -638,14 +638,20 @@ def login():
                 # print("email is confirmed")
                 if check_password_hash(user.password, form.password.data):
                     # print("password is correct")
+                    print("this is a problem")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alumni_info'))
+                else:
+                    error="Invalid email or password"
+                    print("should be here")
                     # url_for('alum_info')
             else:
                 error="email not verified"
         else:
+            print("invalid email")
             error="Invalid email or password"
+            print(error)
 
     html = render_template('pages/login/login.html', form=form, errors=[error])
     return make_response(html)
