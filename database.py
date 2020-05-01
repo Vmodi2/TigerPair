@@ -65,7 +65,7 @@ class alumni(db.Model):
     group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
-                 email_confirmed=False, group_id=None):
+                 email_confirmed=False, group_id=None, certificate1=None, certificate2=None, certificate3=None, extracurricular1=None, extracurricular2=None, extracurricular3=None, class_year=None):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail
