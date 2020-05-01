@@ -1,15 +1,14 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-<body id="top">
 
-  {% block title %}
-  Admin Login
-  {% endblock %}
+{% block title %}
+Admin Login
+{% endblock %}
 
-  {% block styles %}
+{% block styles %}
 
-  <head>
+<head>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     </link>
@@ -18,24 +17,23 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     </link>
     <link rel="stylesheet" href="{{url_for('.static', filename='/css/index.css')}}">
-  </head>
+</head>
 
-  {% endblock %}
-
-  {% block content %}
+<body class="landing" id="top">
+  {% include "/pages/homenav.html" %}
   <div class="container landing">
     <div class="row" style="padding-top: 13%">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
             <h3 class="card-title text-center"><strong>Sign In</strong></h3>
-            <form class="form-signin" method="post" action="/admin/dashboard">
+            <form class="form-signin" method="post" action="#">
               {{ form.hidden_tag() }}
               {% for error in errors %}
-              <span style="color: #a94442;">{{error}}</span>
+              <p class="help-block">{{error}}</p>
               {% endfor %}
               <div class="form-label-group">
-                {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
+                {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Net ID')}}
 
                 <!-- <label for="username">Username</label> -->
               </div>
@@ -72,4 +70,16 @@
     });
 
   </script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="/static/js/landing.js"></script>
+  <script src="static/js/plugins.js"></script>
+  <script src="static/js/main.js"></script>
   {% endblock %}
+</body>

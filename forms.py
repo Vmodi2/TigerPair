@@ -20,11 +20,11 @@ class LoginForm(FlaskForm):
     #username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
-
-    def validate_email(self, email):
-        user = alumni.query.filter_by(aluminfoemail=email.data).first()
-        if user is None and (len(str(email))<50):
-            raise ValidationError("Invalid Email")
+    #
+    # def validate_email(self, email):
+    #     user = alumni.query.filter_by(aluminfoemail=email.data).first()
+    #     if user is None and (len(str(email))<50):
+    #         raise ValidationError("Invalid Email")
 
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
@@ -44,26 +44,26 @@ class RegisterForm(FlaskForm):
 
 class AdminLoginForm(FlaskForm):
 
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('Net ID', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
-    def validate_username(self, username):
-        user = admins.query.filter_by(username=username.data).first()
-        if user is None:
-            raise ValidationError("Invalid username")
+    # def validate_username(self, username):
+    #     user = admins.query.filter_by(username=username.data).first()
+    #     if user is None:
+    #         raise ValidationError("Invalid username")
 
 # -----------------------------------------------------------------------
 
 class AdminRegisterForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('Net ID', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
 
     def validate_username(self, username):
         user = admins.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError("Username taken")
+            raise ValidationError("Net ID in use")
 
 # -----------------------------------------------------------------------
 class ForgotForm(Form):

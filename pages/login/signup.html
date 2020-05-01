@@ -28,7 +28,7 @@ Sign Up
               <h3 class="card-title text-center"><strong>Sign Up</strong></h3>
               {{ form.hidden_tag() }}
               {% for error in errors %}
-              <span style="color: #a94442;">{{error}}</span>
+              <p class="help-block">{{error}}</p>
               {% endfor %}
               {% include '/pages/login/flasherror.html' %}
 

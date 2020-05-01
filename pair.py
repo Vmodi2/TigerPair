@@ -168,16 +168,19 @@ def student_information():
     group_id = -1
     current = students.query.filter_by(studentid=username).first()
     info = request.form
-    ##### WTF IS THIS Group is auto going to 0 rn 
+    ##### WTF IS THIS Group is auto going to 0 rn
+
     if not current:
         try:
             group_id = int(info.get('group_id'))
-            if not admins.query.filter_by(id=group_id).first():
+            admin = admins.query.filter_by(id=group_id).first()
+            if admin is None:
                 html = render_template(
                 'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
-            return make_response(html)
+                return make_response(html)
         except:
             group_id = 0
+
     else:
         group_id = current.group_id
     new_student = students(username, info.get('firstname'), info.get('lastname'),
@@ -242,7 +245,7 @@ def student_email():
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
-    
+
     current = students.query.filter_by(
         studentid=username).first()
     errorMsg = ''
@@ -271,7 +274,7 @@ def student_id():
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
-    
+
     current = students.query.filter_by(
         studentid=username).first()
     response = {}
@@ -302,7 +305,7 @@ def student_account():
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
-    
+
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/student/account.html',
                            active_email=True, username=username, student=current, side="student")
@@ -315,7 +318,7 @@ def student_delete():
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
-    
+
     # find if matched already and delete current match could use clear match
     # but then I would have to find student object
     alum = get_match_student(username=username)
@@ -377,10 +380,16 @@ def alumni_info():
         alum.aluminfonamelast = request.form.get('lastname')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
-        try:
-            alum.group_id = int(request.form.get('group_id'))
-        except:
-            alum.group_id = 0
+        print("HERE")
+        if alum.group_id is None:
+            print("group id is none YAY")
+            try:
+                alum.group_id = int(request.form.get('group_id'))
+                print("group id is: " + str(alum.group_id) + " YAY")
+            except:
+                alum.group_id = 0
+                print("group id is 0 NOOOOOOOO")
+        print("Group id is not none and is" + str(alum.group_id))
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
@@ -637,7 +646,7 @@ def login():
                 error="email not verified"
         else:
             error="Invalid email or password"
-    
+
     html = render_template('pages/login/login.html', form=form, errors=[error])
     return make_response(html)
 
@@ -743,7 +752,7 @@ def signup():
 
             return redirect(url_for('gotoemail'))
 
-        error='A user already exists with that email address.'
+        error='Invalid'
 
     html = render_template('pages/login/signup.html', form=form, errors=[error])
     return make_response(html)
@@ -1126,15 +1135,15 @@ def adminlogin():
     error=""
     form = AdminLoginForm()
     if form.validate_on_submit():
-        # print("submitted form")
+        #print("submitted form")
         user = admins.query.filter_by(
-            adminusername=form.username.data).first()  # CHECK DATABASE.PY
+            username=form.username.data).first()  # CHECK DATABASE.PY
         if user is not None:
-            # print("user is not none")
+            #print("user is not none")
 
             # print("email is confirmed")
             if check_password_hash(user.password, form.password.data):
-                # print("password is correct")
+                #print("password is correct")
                 db.session.commit()  # could we remove this
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('admin_dashboard'))
@@ -1142,6 +1151,7 @@ def adminlogin():
 
         else:
             error="Invalid username or password"
+
 
     html = render_template('pages/login/admin.html', form=form, errors=[error])
     return make_response(html)
@@ -1164,8 +1174,6 @@ def asignup():
 
             return redirect(url_for('admin_dashboard'))
 
-    error='A user already exists with that email address'
-
     html = render_template('pages/login/asignup.html', form=form, errors=[error])
     return make_response(html)
 
@@ -1173,12 +1181,13 @@ def asignup():
 @app.route('/admin/change', methods=['GET', 'POST'])
 def admin_change():
     username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    id = user.id
     errorMsg = ''
     if request.method == 'POST':
         netid = request.form.get('netid')
         confirm_netid = request.form.get('confirm_netid')
         if netid == confirm_netid:
-            user = admins.query.filter_by(username=username).first()
             if not admins.query.filter_by(username=netid).first():
                 user.username = netid
                 db.session.commit()
@@ -1188,7 +1197,7 @@ def admin_change():
                 errorMsg = 'The selected user already has an account'
         else:
             errorMsg = "The entered net id's don't match"
-    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg)
+    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg, username=username, id=id)
     return make_response(html)
 
 
