@@ -387,7 +387,7 @@ def alumni_email():
         current_user.aluminfoemail = email1
         db.session.commit()
         return redirect(url_for('alum_logout'))
-    html = render_template('pages/alum/dashboard.html',
+    html = render_template('pages/alum/account.html',
                            active_email=True, errorMsg=errorMsg, alum=current, side="alum")
     return make_response(html)
 

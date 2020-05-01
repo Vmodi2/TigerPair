@@ -10,24 +10,23 @@
 
 
   {% block styles %}
-  {{super()}}
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   </link>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
   </link>
-  <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
+  <link rel="stylesheet" href="{{url_for('.static', filename='/css/index.css')}}">
   {% endblock %}
 
   {% block content %}
-  <div class="container">
+  <div class="container landing">
     <div class="row" style="padding-top: 13%">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
             <form class="form-signin" method="POST" action="#">
-              <h5 class="card-title text-center"><strong>Sign Up</strong></h5>
+              <h3 class="card-title text-center"><strong>Sign Up</strong></h3>
               {{ form.hidden_tag() }}
 
               <div class="form-label-group">
@@ -45,9 +44,9 @@
                 {{ wtf.form_field(form.confirm_password, id="confirm_password", class="form-control", placeholder="Confirm Password") }}
                 <!-- <label for="inputPassword">Password</label> -->
               </div>
-              <button class="btn btn-lg btn-sign btn-block text-uppercase" type="submit">Sign Up</button>
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign Up</button>
               <hr class="my-4">
-              <p>Already have an account? <a id="signup" href="/admin">Sign In!</a></p>
+              <p>Already have an account? <a id="signup" href="/login/admin">Sign In!</a></p>
             </form>
           </div>
         </div>
