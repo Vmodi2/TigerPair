@@ -16,10 +16,10 @@ from werkzeug.security import check_password_hash
 # -----------------------------------------------------------------------
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)])
+    email = StringField('Email', validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)])
     #username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('Remember Me')
     #
     # def validate_email(self, email):
     #     user = alumni.query.filter_by(aluminfoemail=email.data).first()
@@ -27,9 +27,9 @@ class LoginForm(FlaskForm):
     #         raise ValidationError("Invalid Email")
 
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
+    email = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo('password')])
 
     def validate_email(self, email):
         DOMAIN_ALLOWED= ['princeton.edu']
@@ -45,8 +45,8 @@ class RegisterForm(FlaskForm):
 class AdminLoginForm(FlaskForm):
 
     username = StringField('Net ID', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('Remember Me')
 
     # def validate_username(self, username):
     #     user = admins.query.filter_by(username=username.data).first()
@@ -57,8 +57,8 @@ class AdminLoginForm(FlaskForm):
 
 class AdminRegisterForm(FlaskForm):
     username = StringField('Net ID', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    confirm_password = PasswordField('confirm password', validators=[InputRequired(), EqualTo('password')])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo('password')])
 
     def validate_username(self, username):
         user = admins.query.filter_by(username=username.data).first()
@@ -77,8 +77,8 @@ class PasswordResetForum(Form):
 
 # -----------------------------------------------------------------------
 class ChangeEmailForm(Form):
-    email1 = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
-    email2 = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
+    email1 = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
+    email2 = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
 
     def validate_email(self, email):
         user = alumni.query.filter_by(aluminfoemail = email.data).first()
