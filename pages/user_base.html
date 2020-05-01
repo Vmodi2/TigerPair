@@ -34,7 +34,8 @@
                 {% if alum %}<span
                     class="id-display">{{alum.group_id if alum.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 <br>
-                <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal" data-target="#exampleModal">Change
+                <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal"
+                    data-target="#exampleModal">Change
                     your group</a>
             </div>
         </nav>
@@ -72,6 +73,12 @@
                         <label for="id" class="col-sm-8 col-form-label">New Group ID</label>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="id" name="id" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row ml-auto">
+                        <label for="password" class="col-sm-8 col-form-label">Group password</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="password" name="password" placeholder="">
                         </div>
                     </div>
                 </div>

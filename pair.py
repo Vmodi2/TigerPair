@@ -39,13 +39,11 @@ login_manager.login_view = 'login'
 # DataRequired(), Length(min=8, max=80)])
 
 
-
-
 # class InfoForm(Form):
-    # firstname = StringField('First Name', validators=[DataRequired()])
-    # lastname = StringField('Lasr Name', validators=[DataRequired()])
-    # major = StringField('Major', validators=[DataRequired()])
-    # career = StringField('Career Field', validators=[DataRequired()])
+# firstname = StringField('First Name', validators=[DataRequired()])
+# lastname = StringField('Lasr Name', validators=[DataRequired()])
+# major = StringField('Major', validators=[DataRequired()])
+# career = StringField('Career Field', validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -168,7 +166,7 @@ def student_information():
     group_id = -1
     current = students.query.filter_by(studentid=username).first()
     info = request.form
-    ##### WTF IS THIS Group is auto going to 0 rn
+    # WTF IS THIS Group is auto going to 0 rn
 
     if not current:
         try:
@@ -176,7 +174,11 @@ def student_information():
             admin = admins.query.filter_by(id=group_id).first()
             if admin is None:
                 html = render_template(
-                'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+                    'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+                return make_response(html)
+            if admin.group_password != info.get('group_password'):
+                html = render_template(
+                    'pages/student/new.html', student=current, errorMsg="The group password you entered is incorrect")
                 return make_response(html)
         except:
             group_id = 0
@@ -285,14 +287,16 @@ def student_id():
             new_id = request.form.get('id').strip()
             if new_id:
                 group = admins.query.filter_by(id=new_id).first()
-                if group:
+                if not group:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
+                elif group.group_password != request.form.get('password'):
+                    response['msg'] = 'The group password you entered is incorrect'
+                else:
                     current.group_id = new_id
                     db.session.commit()
                     response['changed'] = True
                     response['id'] = new_id
                     response['msg'] = 'Success changing your group!'
-                else:
-                    response['msg'] = 'The chosen group id does not belong to an existing group'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
@@ -382,22 +386,20 @@ def alumni_info():
         alum.alumcareerfield = request.form.get('career')
         db.session.commit()
         if alum.group_id is None:
-            print("alum is None")
             try:
-                print("we tryin")
                 id = int(request.form.get('group_id'))
-                print("group id" + str(id))
-                admin = admins.query.filter_by(id = id).first()
+                admin = admins.query.filter_by(id=id).first()
                 if admin is None:
-                    print("admin is none")
                     html = render_template(
-                    'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
+                        'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
+                    return make_response(html)
+                elif admin.group_password != request.form.get('group_password'):
+                    html = render_template(
+                        'pages/alum/new.html', user=alum, errorMsg="The group password you entered is incorrect")
                     return make_response(html)
                 else:
-                    print("admin is not none")
                     alum.group_id = id
             except:
-                print("we exeptin")
                 alum.group_id = 0
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
@@ -448,14 +450,16 @@ def alumni_id():
             new_id = request.form.get('id').strip()
             if new_id:
                 group = admins.query.filter_by(id=new_id).first()
-                if group:
+                if not group:
+                    response['msg'] = 'The chosen group id does not belong to an existing group'
+                elif group.group_password != request.form.get('password'):
+                    response['msg'] = 'The group password you entered is incorrect'
+                else:
                     current.group_id = new_id
                     db.session.commit()
                     response['changed'] = True
                     response['id'] = new_id
                     response['msg'] = 'Success changing your group!'
-                else:
-                    response['msg'] = 'The chosen group id does not belong to an existing group'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
@@ -552,7 +556,7 @@ def verify_email_regex(request):
 
 @app.route('/resend_email', methods=['GET', 'POST'])
 def resend_email():
-    error=""
+    error = ""
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -569,13 +573,11 @@ def resend_email():
             return redirect(url_for('gotoemail'))
 
         else:
-            error="Invalid credentials"
+            error = "Invalid credentials"
 
     html = render_template(
         'pages/login/resend_email.html', form=form, errors=[error])  # MAKE THIS
     return make_response(html)
-
-
 
 
 @app.route('/confirm_email/<token>')
@@ -632,7 +634,7 @@ def matching():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    error=""
+    error = ""
     # print("login")
     if current_user.is_authenticated:
         return redirect(url_for('alumni_info'))
@@ -652,14 +654,14 @@ def login():
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('alumni_info'))
                 else:
-                    error="Invalid email or password"
+                    error = "Invalid email or password"
                     print("should be here")
                     # url_for('alum_info')
             else:
-                error="email not verified"
+                error = "email not verified"
         else:
             print("invalid email")
-            error="Invalid email or password"
+            error = "Invalid email or password"
             print(error)
 
     html = render_template('pages/login/login.html', form=form, errors=[error])
@@ -670,7 +672,7 @@ def login():
 # THIS IS NEW !!!!!!!
 @app.route('/pages/login/update', methods=['GET', 'POST'])
 def update():
-    error=""
+    error = ""
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -687,7 +689,7 @@ def update():
             return redirect(url_for('gotoemail'))
 
         else:
-            error="Invalid credentials"
+            error = "Invalid credentials"
 
     html = render_template(
         'pages/login/email_update.html', form=form, errors=[error])  # MAKE THIS
@@ -739,7 +741,7 @@ def gotoemail():
 
 @app.route('/login/signup', methods=['GET', 'POST'])
 def signup():
-    error=""
+    error = ""
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -767,9 +769,10 @@ def signup():
 
             return redirect(url_for('gotoemail'))
 
-        error='Invalid'
+        error = 'Invalid'
 
-    html = render_template('pages/login/signup.html', form=form, errors=[error])
+    html = render_template('pages/login/signup.html',
+                           form=form, errors=[error])
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -1147,7 +1150,7 @@ def upsert_alum(alum):
 
 @app.route('/login/admin', methods=['POST', 'GET'])
 def adminlogin():
-    error=""
+    error = ""
     form = AdminLoginForm()
     if form.validate_on_submit():
         #print("submitted form")
@@ -1165,8 +1168,7 @@ def adminlogin():
                 # url_for('alum_info')
 
         else:
-            error="Invalid username or password"
-
+            error = "Invalid username or password"
 
     html = render_template('pages/login/admin.html', form=form, errors=[error])
     return make_response(html)
@@ -1174,7 +1176,7 @@ def adminlogin():
 
 @app.route('/login/asignup', methods=['GET', 'POST'])
 def asignup():
-    error=""
+    error = ""
     form = AdminRegisterForm()
     if form.validate_on_submit():
         username = form.username.data
@@ -1189,12 +1191,23 @@ def asignup():
 
             return redirect(url_for('admin_dashboard'))
 
-    html = render_template('pages/login/asignup.html', form=form, errors=[error])
+    html = render_template('pages/login/asignup.html',
+                           form=form, errors=[error])
     return make_response(html)
 
 
-@app.route('/admin/change', methods=['GET', 'POST'])
-def admin_change():
+@app.route('/admin/settings', methods=['GET'])
+def admin_settings():
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    id = user.id
+    html = render_template('pages/admin/settings.html',
+                           username=username, id=id, side='admin', user=user)
+    return make_response(html)
+
+
+@app.route('/admin/change-id', methods=['GET', 'POST'])
+def admin_change_id():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     id = user.id
@@ -1212,9 +1225,44 @@ def admin_change():
                 errorMsg = 'The selected user already has an account'
         else:
             errorMsg = "The entered net id's don't match"
-    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg, username=username, id=id,
-    side='admin')
+    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
+                           side='admin', user=user)
     return make_response(html)
+
+
+@app.route('/admin/change-password', methods=['GET', 'POST'])
+def admin_change_password():
+    username = get_cas()
+    user = admins.query.filter_by(username=username).first()
+    id = user.id
+    errorMsg = ''
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        if password == confirm_password:
+            user.group_password = password
+            db.session.commit()
+        else:
+            errorMsg = 'The entered passwords must match'
+    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
+                           side='admin', user=user)
+    return make_response(html)
+
+
+# @app.route('/alum/join-group', methods=['GET', 'POST'])
+# def alum_join_group():
+#     if request.method == 'POST':
+#         pass
+#     html = render_template('pages/admin/enter_group.html', side='alum')
+#     return make_response(html)
+
+
+# @app.route('/student/join-group', methods=['GET', 'POST'])
+# def student_join_group():
+#     if request.method == 'POST':
+#         pass
+#     html = render_template('pages/admin/enter_group.html', side='student')
+#     return make_response(html)
 
 
 # -----------------------------------------------------------------------

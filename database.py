@@ -44,7 +44,7 @@ class alumni(db.Model):
     group_id = db.Column('group_id', db.Unicode)
 
     def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
-                 email_confirmed=False, group_id = None):
+                 email_confirmed=False, group_id=None):
         self.aluminfonamefirst = aluminfonamefirst
         self.aluminfonamelast = aluminfonamelast
         self.aluminfoemail = aluminfoemail
@@ -88,6 +88,7 @@ class admins(db.Model):
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
     password = db.Column('password', db.Unicode)
+    group_password = db.Column('group_password', db.Unicode)
 
     def __init__(self, username, password):
         self.username = username
@@ -104,6 +105,7 @@ class admins(db.Model):
 
     def get_id(self):
         return self.username
+
 
 class groups(db.Model):
     __tablename__ = 'groups'
