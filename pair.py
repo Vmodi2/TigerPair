@@ -218,7 +218,7 @@ def student_matches(match=None):
 
             message = request.form.get("message")
             msg = Message(
-                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', bcc=[email])
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
             msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
             mail.send(msg)
         except Exception as e:
@@ -780,12 +780,12 @@ def notify():
         student_emails.append(student)
         alum_emails.append(match[1])
     student_msg = Message('You\'ve been Matched!',
-                          sender='tigerpaircontact@gmail.com', recipients=student_emails)
+                          sender='tigerpaircontact@gmail.com', bcc=student_emails)
     student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
     mail.send(student_msg)
 
     alum_msg = Message('You\'ve been Matched!',
-                       sender='tigerpaircontact@gmail.com', recipients=alum_emails)
+                       sender='tigerpaircontact@gmail.com', bcc=alum_emails)
     alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
     mail.send(alum_msg)
     return redirect(url_for('admin_dashboard'))
