@@ -5,7 +5,8 @@ fields = 'Accounting Advertising Architecture/Planning Building/Construction Con
 new_fields = fields.split(' ')
 for i, field in enumerate(new_fields):
     if '.' in field:
-        new_fields[i] = field.replace('_', ' ')
+        new_fields[i] = f'''"{field.replace('_', ' ')}"'''
+
 new_fields.sort()
 
 f = open('fields.txt', 'w')
