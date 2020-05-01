@@ -14,8 +14,8 @@ ommodities", "Finance-Tax", "Finance-Venture Capital", "Foreign Service", "Fundr
 ing", "Gov-Cabinet Member", "Gov-Executive", "Gov-Legislator", "Gov-Other", "Gov-Po\
 licy Analysis", "Gov-Politics", "Gov-White House Staff", "Health Care-Mental", "Hea\
 lth", "Health", "Human", "Insurance", "Law-Corporate", "Law-Criminal", "Law-Intelle\
-ctual Property", "Law-Litigation", "Law-Other", "Law-Patent/Copyright", "Law-Tax", \
-	       "Law-Trusts and Estates", "Marketing", "Military", "Other", "Performing Arts", "Pri\
+ctual Property", "Law-Litigation", "Law-Other", "Law-Patent/Copyright", "Law-Tax", "\
+Law-Trusts and Estates", "Marketing", "Military", "Other", "Performing Arts", "Pri\
 nting/Publishing", "Public Relations", "Radio/TV/Film/Theater", "Real Estate", "Rel\
 igious Services", "Research & Development", "Resources", "Sales", "Social Work", "S\
 ports/Recreation", "Teaching-Arts", "Teaching-Humanities", "Teaching-Other", "Teach\
