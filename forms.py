@@ -1,3 +1,4 @@
+
 #-----------------------------------------------------------------------
 # forms.py
 # Used for sign in/up forms that must be validated  both on client and
@@ -6,25 +7,23 @@
 
 
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from wtforms import StringField, PasswordField, BooleanField
 from database import alumni, admins
 from wtforms.validators import DataRequired, Email, Length, ValidationError, InputRequired, EqualTo
 from werkzeug.security import check_password_hash
 
-
-
 # -----------------------------------------------------------------------
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
+    email = StringField('email', validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)])
     #username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
     def validate_email(self, email):
         user = alumni.query.filter_by(aluminfoemail=email.data).first()
-        if user is None:
+        if user is None and (len(str(email))<50):
             raise ValidationError("Invalid Email")
 
 class RegisterForm(FlaskForm):
@@ -67,7 +66,21 @@ class AdminRegisterForm(FlaskForm):
             raise ValidationError("Username taken")
 
 # -----------------------------------------------------------------------
+class ForgotForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
 
-# class AdminChangeForm(FlaskForm):
-#     netid = StringField('netid', validators=[InputRequired(), Length(min=4, max=15)])
-#     netid_confirm = StringField('netid_confirm', validators=[InputRequired(), Length(min=4, max=15), EqualTo('netid')])
+# -----------------------------------------------------------------------
+
+class PasswordResetForum(Form):
+    password = PasswordField('Password', validators=[
+                             DataRequired(), Length(min=8, max=80)])
+
+# -----------------------------------------------------------------------
+class ChangeEmailForm(Form):
+    email1 = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
+    email2 = StringField('email', validators=[InputRequired(), Email(), Length(max=50)])
+
+    def validate_email(self, email):
+        user = alumni.query.filter_by(aluminfoemail = email.data).first()
+        if user:
+            raise ValidationError("That email is taken. Please use another")

@@ -1,7 +1,7 @@
 {% extends "pages/admin/base.html" %}
 
 {% block content %}
-<div class="padded-content">
+<div class="ml-3 mr-3 mt-4 mb-4">
     <div class="row">
         <div class="col-xl-6 col-md-12">
             <div class="card bg-primary text-white mb-4">
@@ -30,37 +30,13 @@
             <div class="card bg-dark text-white mb-4">
                 <div class="card-body">Email Notification</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" data-toggle="modal" data-target="#emailModal"></a>
+                    <a class="small text-white stretched-link" href="/admin/dashboard/notify">This will notify all current matches!</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
-
-<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" -->
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="profileModalLongTitle">Email Notification</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-            </div>
-            <div class="modal-body">
-                <h5>Would you like to send an email notification to all matched participants?</h5>
-                <div class="row">
-                    <a href="/admin/dashboard/notify" class="btn btn-primary text-center col-6" data-dismiss="modal">Notify</a>
-                    <button type="button" class="btn btn-light text-center col-6" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 {% block modify_matches %}active{% endblock %}
