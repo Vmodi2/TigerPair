@@ -218,7 +218,7 @@ def student_matches(match=None):
 
             message = request.form.get("message")
             msg = Message(
-                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', bcc=[email])
             msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
             mail.send(msg)
         except Exception as e:
@@ -248,7 +248,7 @@ def student_email():
     else:
         current.studentinfoemail = email1
         db.session.commit()
-    html = render_template('pages/student/dashboard.html',
+    html = render_template('pages/student/account.html',
                            active_email=True, errorMsg=errorMsg, student=current, side="student")
     return make_response(html)
 
@@ -1118,7 +1118,7 @@ def adminlogin():
                 # url_for('alum_info')
 
         else:
-            flash("Invalid username or password")
+            flask("Invalid username or password")
 
     html = render_template('pages/login/admin.html', form=form)
     return make_response(html)

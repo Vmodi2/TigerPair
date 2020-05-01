@@ -12,9 +12,6 @@ from database import alumni, admins
 from wtforms.validators import DataRequired, Email, Length, ValidationError, InputRequired, EqualTo
 from werkzeug.security import check_password_hash
 
-
-
-
 # -----------------------------------------------------------------------
 
 class LoginForm(FlaskForm):
