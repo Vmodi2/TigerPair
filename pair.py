@@ -514,6 +514,7 @@ def verify_email_regex(request):
 
 @app.route('/resend_email', methods=['GET', 'POST'])
 def resend_email():
+    error=""
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -530,10 +531,10 @@ def resend_email():
             return redirect(url_for('gotoemail'))
 
         else:
-            flash("Invalid credentials")
+            error="Invalid credentials"
 
     html = render_template(
-        'pages/login/resend_email.html', form=form)  # MAKE THIS
+        'pages/login/resend_email.html', form=form, errors=[error])  # MAKE THIS
     return make_response(html)
 
 
@@ -593,6 +594,7 @@ def matching():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    error=""
     # print("login")
     if current_user.is_authenticated:
         return redirect(url_for('alumni_info'))
@@ -612,12 +614,11 @@ def login():
                     return redirect(url_for('alumni_info'))
                     # url_for('alum_info')
             else:
-                flash("email not verified")
-
+                error="email not verified"
         else:
-            flash("Invalid username or password")
-
-    html = render_template('pages/login/login.html', form=form)
+            error="Invalid email or password"
+    
+    html = render_template('pages/login/login.html', form=form, errors=[error])
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -625,6 +626,7 @@ def login():
 # THIS IS NEW !!!!!!!
 @app.route('/pages/login/update', methods=['GET', 'POST'])
 def update():
+    error=""
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -641,10 +643,10 @@ def update():
             return redirect(url_for('gotoemail'))
 
         else:
-            flash("Invalid credentials")
+            error="Invalid credentials"
 
     html = render_template(
-        'pages/login/email_update.html', form=form)  # MAKE THIS
+        'pages/login/email_update.html', form=form, errors=[error])  # MAKE THIS
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -693,6 +695,7 @@ def gotoemail():
 
 @app.route('/login/signup', methods=['GET', 'POST'])
 def signup():
+    error=""
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -720,9 +723,9 @@ def signup():
 
             return redirect(url_for('gotoemail'))
 
-        flash('A user already exists with that email address.')
+        error='A user already exists with that email address.'
 
-    html = render_template('pages/login/signup.html', form=form)
+    html = render_template('pages/login/signup.html', form=form, errors=[error])
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -1100,7 +1103,7 @@ def upsert_alum(alum):
 
 @app.route('/login/admin', methods=['POST', 'GET'])
 def adminlogin():
-
+    error=""
     form = AdminLoginForm()
     if form.validate_on_submit():
         # print("submitted form")
@@ -1118,16 +1121,16 @@ def adminlogin():
                 # url_for('alum_info')
 
         else:
-            flask("Invalid username or password")
+            error="Invalid username or password"
 
-    html = render_template('pages/login/admin.html', form=form)
+    html = render_template('pages/login/admin.html', form=form, errors=[error])
     return make_response(html)
 
 
 @app.route('/login/asignup', methods=['GET', 'POST'])
 def asignup():
+    error=""
     form = AdminRegisterForm()
-
     if form.validate_on_submit():
         username = form.username.data
         hashed_password = generate_password_hash(
@@ -1141,9 +1144,9 @@ def asignup():
 
             return redirect(url_for('admin_dashboard'))
 
-    flash('A user already exists with that email address.')
+    error='A user already exists with that email address'
 
-    html = render_template('pages/login/asignup.html', form=form)
+    html = render_template('pages/login/asignup.html', form=form, errors=[error])
     return make_response(html)
 
 

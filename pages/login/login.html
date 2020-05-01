@@ -28,6 +28,9 @@ Login
             <h3 class="card-title text-center"><strong>Sign In</strong></h3>
             <form class="form-group" method="post" action="/login">
               {{ form.hidden_tag() }}
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               <div class="form-label-group">
                 {{wtf.form_field(form.email, id='email', class='form-control', placeholder='Email')}}
               </div>
@@ -47,9 +50,6 @@ Login
                   <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>
                 </center>
               </div>
-              {% for error in errors %}
-              <span style="color: yellow;">[{{ error }}]</span>
-              {% endfor %}
 
               <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
               <hr class="my-4">

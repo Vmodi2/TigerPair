@@ -27,7 +27,9 @@ Sign Up
             <form id="signup" class="form-signin" method="POST" action="#">
               <h3 class="card-title text-center"><strong>Sign Up</strong></h3>
               {{ form.hidden_tag() }}
-
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               {% include '/pages/login/flasherror.html' %}
 
               <div class="form-label-group">

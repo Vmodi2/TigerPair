@@ -26,7 +26,9 @@
             <form class="form-signin" method="POST" action="#">
               <h3 class="card-title text-center"><strong>Enter Email</strong></h3>
               {{ form.hidden_tag() }}
-
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               <div class="form-label-group">
                 <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
                 {{wtf.form_field(form.email, id='email', class='form-control', placeholder='Email')}}

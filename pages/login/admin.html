@@ -31,7 +31,9 @@
             <h3 class="card-title text-center"><strong>Sign In</strong></h3>
             <form class="form-signin" method="post" action="/admin/dashboard">
               {{ form.hidden_tag() }}
-
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               <div class="form-label-group">
                 {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
 
