@@ -17,7 +17,8 @@
             <div class="card bg-danger text-white mb-4">
                 <div class="card-body">Clear matches</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="/admin/dashboard/clearall">This will erase all
+                    <a class="small text-white stretched-link" href="/admin/dashboard/clearall" id="clear-all">This will
+                        erase all
                         current
                         matches!</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -30,7 +31,8 @@
             <div class="card bg-dark text-white mb-4">
                 <div class="card-body">Email Notification</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="/admin/dashboard/notify">This will notify all current matches!</a>
+                    <a class="small text-white stretched-link" href="/admin/dashboard/notify" id>This will notify all
+                        current matches!</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -40,3 +42,6 @@
 </div>
 {% endblock %}
 {% block modify_matches %}active{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/confirm_clear.js"></script>
+{% endblock %}

@@ -1,7 +1,3 @@
-.body {
-  font-size: 100%;
-}
-
 /* background */
 .landing {
     height: 100vh;
@@ -14,6 +10,10 @@
     background-repeat: no-repeat;  */
     max-width:100vw;
    /* font-family:  'Montserrat', sans-serif;*/
+   padding-top: 160px;
+}
+.main-landing-row {
+  margin-bottom: 150px;
 }
 .team{
   /* background-image: url("/static/images/20140610_NAB_013.jpg"); */
@@ -160,12 +160,20 @@
 
   
 
-  .name {
-    min-height: 70px;
+.name {
+  min-height: 70px;
+}
+
+
+
+@media screen and (max-width: 576px) {
+  a {
+    font-size: 80% !important;
   }
-
-
-
+  h1 {
+    font-size: 350% !important;
+  }
+}
 
   
 /* ===================================================================
