@@ -8,7 +8,6 @@
   {% endblock %}
 
   {% block styles %}
-  {{super()}}
 
   <head>
 
@@ -18,21 +17,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     </link>
-    <link rel="stylesheet" href="{{url_for('.static', filename='/css/login.css')}}">
+    <link rel="stylesheet" href="{{url_for('.static', filename='/css/index.css')}}">
   </head>
 
   {% endblock %}
 
   {% block content %}
-  <div class="container">
+  <div class="container landing">
     <div class="row" style="padding-top: 13%">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
-            <h5 class="card-title text-center"><strong>Sign In</strong></h5>
+            <h3 class="card-title text-center"><strong>Sign In</strong></h3>
             <form class="form-signin" method="post" action="/admin/dashboard">
               {{ form.hidden_tag() }}
-
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               <div class="form-label-group">
                 {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Username')}}
 

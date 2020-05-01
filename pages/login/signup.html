@@ -27,7 +27,9 @@ Sign Up
             <form id="signup" class="form-signin" method="POST" action="#">
               <h3 class="card-title text-center"><strong>Sign Up</strong></h3>
               {{ form.hidden_tag() }}
-
+              {% for error in errors %}
+              <span style="color: #a94442;">{{error}}</span>
+              {% endfor %}
               {% include '/pages/login/flasherror.html' %}
 
               <div class="form-label-group">
@@ -49,6 +51,7 @@ Sign Up
               <hr class="my-4">
               <center>
                 <p>Already have an account? <a id="signup" href="/login">Sign In!</a></p>
+                <p>Click <a id="signup" href="/resend_email">here</a> to resend verification email.</p>
               </center>
             </form>
           </div>

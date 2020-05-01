@@ -1,24 +1,24 @@
 {% extends "pages/admin/base.html" %}
 
 {% block content %}
-<h1 class="mt-4">Welcome to your dashboard, {{username}}</h1>
+<h1 class="ml-3 mr-3 mt-4 mb-4">Welcome to your dashboard, {{username}}</h1>
 <div class="row">
     <div class="col-xl-6">
-        <div class="card mb-4">
+        <div class="card ml-3 mr-3 mt-4 mb-4">
             <div class="card-header"><i class="fas fa-chart-area mr-1"></i>New alum sign-ups over the
                 past few days</div>
             <div class="card-body"><canvas id="myAreaChartAlum" width="100%" height="40"></canvas></div>
         </div>
     </div>
     <div class="col-xl-6">
-        <div class="card mb-4">
+        <div class="card ml-3 mr-3 mt-4 mb-4">
             <div class="card-header"><i class="fas fa-chart-bar mr-1"></i>New student sign-ups over the past
                 few days</div>
             <div class="card-body"><canvas id="myAreaChartStudent" width="100%" height="40"></canvas></div>
         </div>
     </div>
 </div>
-<div class="card mb-4">
+<div class="card ml-3 mr-3 mt-4 mb-4">
     <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
     <div class="card-body">
         <div class="table-responsive">
