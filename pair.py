@@ -380,16 +380,16 @@ def alumni_info():
         alum.aluminfonamelast = request.form.get('lastname')
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
-        print("HERE")
+        #print("HERE")
         if alum.group_id is None:
-            print("group id is none YAY")
+            #print("group id is none YAY")
             try:
                 alum.group_id = int(request.form.get('group_id'))
-                print("group id is: " + str(alum.group_id) + " YAY")
+                #print("group id is: " + str(alum.group_id) + " YAY")
             except:
                 alum.group_id = 0
-                print("group id is 0 NOOOOOOOO")
-        print("Group id is not none and is" + str(alum.group_id))
+                #print("group id is 0 NOOOOOOOO")
+        #print("Group id is not none and is" + str(alum.group_id))
         db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
@@ -1197,7 +1197,8 @@ def admin_change():
                 errorMsg = 'The selected user already has an account'
         else:
             errorMsg = "The entered net id's don't match"
-    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg, username=username, id=id)
+    html = render_template('pages/admin/adminchange.html', errorMsg=errorMsg, username=username, id=id,
+    side='admin')
     return make_response(html)
 
 
