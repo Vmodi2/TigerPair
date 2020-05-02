@@ -176,7 +176,7 @@ def student_information():
                 html = render_template(
                     'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
                 return make_response(html)
-            if admin.group_password != info.get('group_password'):
+            elif admin.group_password and admin.group_password != info.get('group_password'):
                 html = render_template(
                     'pages/student/new.html', student=current, errorMsg="The group password you entered is incorrect")
                 return make_response(html)
@@ -393,7 +393,7 @@ def alumni_info():
                     html = render_template(
                         'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
                     return make_response(html)
-                elif admin.group_password != request.form.get('group_password'):
+                elif admin.group_password and admin.group_password != request.form.get('group_password'):
                     html = render_template(
                         'pages/alum/new.html', user=alum, errorMsg="The group password you entered is incorrect")
                     return make_response(html)
