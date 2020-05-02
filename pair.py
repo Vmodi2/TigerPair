@@ -794,8 +794,8 @@ def admin_dashboard():
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    matches = get_matches(id)
-    html = render_template('pages/admin/dashboard.html', matches=matches,
+    match_list = matches.query.filter_by(group_id=id).all();
+    html = render_template('pages/admin/dashboard.html', matches=match_list,
                            side='admin', username=username, id=id)
     return make_response(html)
 
