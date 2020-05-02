@@ -2,7 +2,7 @@ $(document).ready(() => {
     update_majors();
     update_careers();
 });
-d
+
 function update_careers() {
     careers = ["Accounting", "Advertising", "Architecture/Planning", "Building/Construction", "Car\
 e-Other", "Care-Physical", "Consulting", "Energy Resources", "Engr-Chemical", "Engr\
@@ -22,7 +22,7 @@ ports/Recreation", "Teaching-Arts", "Teaching-Humanities", "Teaching-Other", "Te
 ing-Science/Engr", "Teaching-Social Science", "Tech-Biotechnology", "Tech-E-Commerc\
 e", "Tech-Hardware", "Tech-Information Services/Systems", "Tech-Software Dev", "Tec\
 h-Telecommunications", "Technology-Other", "Transportation/Travel", "Trust & Estate\
-", "Veterinary Medicine", "Visual/Fine Arts", "Writing/Editing"]
+", "Veterinary Medicine", "Visual/Fine Arts", "Writing/Editing"];
 
     career_menu = document.getElementById("career");
     for (var i = 0; i < careers.length; i++) {

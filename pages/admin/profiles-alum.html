@@ -24,7 +24,7 @@
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
-			    <th data-orderable="false"></th>
+                            <th data-orderable="false"></th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -35,7 +35,8 @@
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
-			    <th data-orderable="false"></th>
+                            <th data-orderable="false">
+                            <th><input type="checkbox" id="select-all" name="select-all" value="" class="members"></th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -48,7 +49,7 @@
                             <td>{{alum.alumcareerfield}}</td>
                             <td>{% if alum.matched==1 %}Yes{% else %}No{% endif %}
                             </td>
-			    <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
+                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
                                     value="{{alum.aluminfoemail}}" class="members">
                         </tr>
                         {% endfor %}
