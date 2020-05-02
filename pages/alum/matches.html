@@ -23,53 +23,55 @@
         </form>
         {% endif %}
         {% else %}
-        
 
-<div class="match-info">
-    <div>
-        <h1 class="display-4">You have not been matched yet.</h1>
-        <p class="lead">Please check back later!</p>
-        {% endif %}
-    </div>
 
-    <br><br><br><br>
-        <div class="offset-3 w-50">
-            <form method="post">
-                <label for="message">Send a message to your group admin:</label>
-                <textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"></textarea>
-                <br>
-                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
-                <br><br>
-            </form>
-        </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="profileModalLongTitle">{{match.studentinfonamefirst}}
-                    {{match.studentinfonamelast}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="match-info">
+            <div>
+                <h1 class="display-4">You have not been matched yet.</h1>
+                <p class="lead">Please check back later!</p>
+                {% endif %}
             </div>
-            <div class="modal-body">
-                <h5>Major: {{match.studentacademicsmajor}}</h5>
-                <h5>Career: {{match.studentcareerdesiredfield}}</h5>
-                <h5>Email: <a href="mailto:{{match.studentinfoemail}}"></a>{{match.studentinfoemail}}</h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+            <br><br><br><br>
+            <div class="offset-3 w-50">
+                <form method="post">
+                    <label for="message">Send a message to your group admin:</label>
+                    <textarea class="form-control" id="message" name="message" rows="3" required
+                        style="resize:none;"></textarea>
+                    <br>
+                    <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0"
+                        id="submit">&nbsp;Submit&nbsp;</button>
+                    <br><br>
+                </form>
             </div>
         </div>
-    </div>
-</div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="profileModalLongTitle">{{match.studentinfonamefirst}}
+                            {{match.studentinfonamelast}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Major: {{match.studentacademicsmajor}}</h5>
+                        <h5>Career: {{match.studentcareerdesiredfield}}</h5>
+                        <h5>Emaifdfl: <a href="mailto:{{match.studentinfoemail}}">{{match.studentinfoemail}}</a></h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-{% endblock %}
-{% block view_matches %}active{% endblock %}
-{% block extra_scripts %}
-<script src="/static/js/scripts.js"></script>{% endblock %}
+        {% endblock %}
+        {% block view_matches %}active{% endblock %}
+        {% block extra_scripts %}
+        <script src="/static/js/scripts.js"></script>{% endblock %}

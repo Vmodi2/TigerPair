@@ -4,7 +4,7 @@
 <div class="card ml-3 mr-3 mt-4 mb-4">
     <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
     <div class="card-body">
-        <form action="/admin/action-alum" method="post" class="mb-3">
+        <form action="/admin/action-alum" method="post" class="mb-3" id="action-form">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     {% if alumni %}
@@ -67,4 +67,5 @@
 {% block extra_scripts %}
 <script src="/static/js/datatables-demo.js"></script>
 <script src="/static/js/delete.js"></script>
+<script src="/static/js/action.js"></script>
 {% endblock %}
