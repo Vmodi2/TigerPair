@@ -1,0 +1,104 @@
+{% extends 'pages/admin/base.html' %}
+
+{% block content %}
+<div class="card bg-dark text-white ml-3 mr-3 mt-4 mb-4">
+    <div class="card-body">Set a group password</div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <a data-toggle="modal" type="button" data-target="#passwordModal" class="small text-white stretched-link">This
+            will be the password that alumni and students use to join your matching
+            group.</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+    </div>
+</div>
+<div class="card bg-danger text-white ml-3 mr-3 mt-4 mb-4">
+    <div class="card-body">Transfer account</div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <a data-toggle="modal" type="button" data-target="#profileModal" class="small text-white stretched-link">Note:
+            This action is permanent!</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+    </div>
+</div>
+
+<p class="lead text-danger font-weight-bold">{{errorMsg}}</p>
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle">
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="profileModalLongTitle">Permanently transfer account
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <form id="change-account" action="/admin/change-id" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="netid">Net ID:</label>
+                        <input type="text" name="netid" value="" id="netid" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_netid">Confirm Net ID:</label>
+                        <input type="text" name="confirm_netid" value="" id="confirm_netid" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" type="submit">Confirm</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalTitle">
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="passwordModalLongTitle">Set your group password
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <form id="change-password" action="/admin/change-password" method="post">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="staticpassword" class="col-sm-4 col-form-label">Current password</label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext text-center" id="staticpassword"
+                                value="{{user.group_password if user.group_password}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-4 col-form-label">New password</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="password" name="password">
+                        </div>
+                        <br><br>
+                        <label for="confirm_password" class="col-sm-4 col-form-label">Confirm password</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="confirm_password" name="confirm_password">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" type="submit">Confirm</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+
+<script src="/static/js/change_account.js">
+
+
+
+</script>
+{% endblock %}
+{% block admin_change %}active{% endblock %}

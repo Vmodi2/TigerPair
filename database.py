@@ -116,6 +116,7 @@ class admins(db.Model):
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
     password = db.Column('password', db.Unicode)
+    group_password = db.Column('group_password', db.Unicode)
 
     def __init__(self, username, password):
         self.username = username
