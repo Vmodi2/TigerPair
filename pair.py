@@ -987,51 +987,33 @@ def admin_get_registrations_student():
 
 
 @login_required
-@app.route('/admin/import-students')
+@app.route('/admin/import-students', methods=['GET', 'POST'])
 def admin_import_students():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    if request.method == 'POST':
+        return process_import(is_alumni=False)
     html = render_template('pages/admin/import-students.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
 
 
 @login_required
-@app.route('/admin/import-alumni')
+@app.route('/admin/import-alumni', methods=['GET', 'POST'])
 def admin_import_alumni():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    if request.method == 'POST':
+        return process_import(is_alumni=True)
     html = render_template('pages/admin/import-alumni.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
-
-
-@login_required
-@app.route('/admin/import-students/process', methods=["POST"])
-def admin_import_students_process():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    return process_import(is_alumni=False)
-
-
-@login_required
-@app.route('/admin/import-alumni/process', methods=["POST"])
-def admin_import_alumni_process():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    return process_import(is_alumni=True)
 
 
 def process_import(is_alumni):
@@ -1040,26 +1022,32 @@ def process_import(is_alumni):
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    html = ''
     try:
-        request_file = request.files['data_file']
-        if not request_file:
-            return "No file"
-        csv_reader = DictReader(chunk.decode() for chunk in request_file)
-        if is_alumni:
-            for row in csv_reader:
-                new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
-                                  aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
-                print(new_alum.group_id)
-                upsert_alum(new_alum)
+        request_file = request.files.get('data_file')
+        if not request_file.filename.strip():
+            html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
+                                   errorMsg='No file uploaded')
         else:
-            for row in csv_reader:
-                new_student = students(row['netid'], row['First Name'],
-                                       row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], group_id=id)
-                upsert_student(new_student)
-        db.session.commit()
-        return make_response("Success processing your upload!")
+            csv_reader = DictReader(chunk.decode() for chunk in request_file)
+            if is_alumni:
+                for row in csv_reader:
+                    new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
+                                      aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                    print(new_alum.group_id)
+                    upsert_alum(new_alum)
+            else:
+                for row in csv_reader:
+                    new_student = students(row['netid'], row['First Name'],
+                                           row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], group_id=id)
+                    upsert_student(new_student)
+            db.session.commit()
+            html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
+                                   successMsg='Success processing your upload!')
     except Exception as e:
-        return make_response("Error processing your upload. It's possible that you are attempting to upload duplicate information.\n" + str(e))
+        html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}")
+    return make_response(html)
 
 
 @app.route('/admin/action-student', methods=["POST"])

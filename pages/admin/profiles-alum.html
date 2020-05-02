@@ -9,12 +9,11 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     {% if alumni %}
                     <div class="actions text-center mb-3">
-                        <select name="action" id="action">
+                        <select name="action" id="action-select">
                             <option value="no-action">Select an action</option>
-                            <option value="delete">Delete</option>
+                            <option class="action-option" value="delete">Delete</option>
                         </select>
                         <input type="hidden" id="checked-members" name="checked-members" value="">
-                        <input type="submit" value="Submit">
                     </div>
                     <thead>
                         <tr>
@@ -24,7 +23,8 @@
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
-                            <th data-orderable="false"></th>
+                            <th class="prof-cell" data-orderable="false"><input type="checkbox" id="select-all"
+                                    name="select-all" value=""></th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -35,8 +35,7 @@
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
-                            <th data-orderable="false">
-                            <th><input type="checkbox" id="select-all" name="select-all" value="" class="members"></th>
+                            <th class="prof-cell"></th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -51,6 +50,7 @@
                             </td>
                             <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
                                     value="{{alum.aluminfoemail}}" class="members">
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
