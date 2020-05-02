@@ -289,7 +289,7 @@ def student_id():
                 group = admins.query.filter_by(id=new_id).first()
                 if not group:
                     response['msg'] = 'The chosen group id does not belong to an existing group'
-                elif group.group_password != request.form.get('password'):
+                elif group.group_password and group.group_password != request.form.get('password'):
                     response['msg'] = 'The group password you entered is incorrect'
                 else:
                     current.group_id = new_id
@@ -452,7 +452,7 @@ def alumni_id():
                 group = admins.query.filter_by(id=new_id).first()
                 if not group:
                     response['msg'] = 'The chosen group id does not belong to an existing group'
-                elif group.group_password != request.form.get('password'):
+                elif group.group_password and group.group_password != request.form.get('password'):
                     response['msg'] = 'The group password you entered is incorrect'
                 else:
                     current.group_id = new_id
