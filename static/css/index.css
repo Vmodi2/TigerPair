@@ -12,6 +12,11 @@
    /* font-family:  'Montserrat', sans-serif;*/
    padding-top: 45px;
 }
+@media screen and (max-height: 610px) {
+  .landing {
+    height: 110%;
+  }
+}
 .main-landing-row {
   max-height: 100%;
 }
