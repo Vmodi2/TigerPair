@@ -48,25 +48,25 @@
 	</div>
 	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
 		<form method="post" action="/student/more-information">
-			<label for="class_year">Class year</label>
-			<input class="form-control mr-sm-2" type="number" min="1900" max="2050" id="info-2" name="class_year"
-				value="{{student.class_year}}" readonly>
+			<label for="info-1">Custom Information 1</label>
+			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1"
+				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<label for="certificate1">Certificate</label>
-			<input class="form-control mr-sm-2" type="text" id="certificate1" name="certificate1"
-				value="{{student.certificate1}}" readonly>
+			<label for="info-2">Custom Information 2</label>
+			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2"
+				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<label for="extracurricular">Extracurricular</label>
-			<input class="form-control mr-sm-2" type="text" id="extracurricular" name="extracurricular"
-				value="{{student.extracurricular1}}" readonly>
+			<label for="info-3">Custom Information 3</label>
+			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3"
+				value="{{student.studentinfocustom1}}" readonly>
 			<br />
-			<!-- <label for="info-4">Custom Information 4</label>
+			<label for="info-4">Custom Information 4</label>
 			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
 				<option value="{{student.studentinfocustom4}}" selected>
 					{{student.studentinfocustom4}}
 				</option>
 			</select>
-			<br /> -->
+			<br />
 			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>

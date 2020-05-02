@@ -4,8 +4,8 @@
 <!-- Info side -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
-			role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
+		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab"
+			href="#home" role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
 	</li>
 	<!--<li class="nav-item">
 		<a class="nav-link dashtab" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab" aria-controls="page-1"
@@ -51,36 +51,28 @@
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
-	<!--<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
+	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
 		<form method="post" action="/alum/more-information">
-			<label for="info-1">Custom Information 1</label>
-			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1" value="{{alum.aluminfocustom1}}"
-				readonly>
+			<label for="certificate-1">Certificate 1</label>
+			<input class="form-control mr-sm-2" type="text" id="certificate-1" name="certificate-1"
+				value="{{alum.certificate1 if alum.certificate1}}" readonly>
 			<br />
-			<label for="info-2">Custom Information 2</label>
-			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2" value="{{alum.aluminfocustom2}}"
-				readonly>
+			<label for="extracurricular-1">Extracurricular 1</label>
+			<input class="form-control mr-sm-2" type="text" id="extracurricular-1" name="extracurricular-1"
+				value="{{alum.extracurricular1 if alum.extracurricular1}}" readonly>
 			<br />
-			<label for="info-3">Custom Information 3</label>
-			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3" value="{{alum.aluminfocustom3}}"
-				readonly>
-			<br />
-			<label for="info-4">Custom Information 4</label>
-			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
-				<option value="{{alum.aluminfocustom4}}" selected>
-					{{alum.aluminfocustom4}}
-				</option>
-			</select>
+			<label for="class-year">Class Year</label>
+			<input class="form-control mr-sm-2" type="text" id="class-year" name="class-year"
+				value="{{alum.class_year if alum.class_year}}" readonly>
 			<br />
 			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
-			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2"
-				hidden>&nbsp;Submit&nbsp;</button>
+			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
-		
-	</div>-->
-	<img src="/static/images/bigtiger-orange.png" class="d-flex align-items-end flex-wrap float-right"alt="little tiger" id="littletiger-img"
-			class="landing-tiger">
-	
+
+	</div>
+	<img src="/static/images/bigtiger-orange.png" class="d-flex align-items-end flex-wrap float-right"
+		alt="little tiger" id="littletiger-img" class="landing-tiger">
+
 </div>
 {% endblock %}
 {% block edit_profile %}active{% endblock %}
