@@ -77,8 +77,7 @@ def admin_logout():
 
 
 def get_cas():
-    # username = strip_user(CASClient().authenticate())
-    username = "barkachi"
+    username = strip_user(CASClient().authenticate())
     return username
 
 
@@ -795,7 +794,7 @@ def admin_dashboard():
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    match_list = matches.query.filter_by(group_id=id).all();
+    match_list = matches.query.filter_by(group_id=id).all()
     html = render_template('pages/admin/dashboard.html', matches=match_list,
                            side='admin', username=username, id=id)
     return make_response(html)
