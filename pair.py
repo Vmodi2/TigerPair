@@ -363,7 +363,7 @@ def student_delete():
         matches.query.filter_by(studentid=username).delete()
     students.query.filter_by(studentid=username).delete()
     db.session.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for("confirm_delete"))
 
 
 def get_match_student(username):
@@ -596,7 +596,7 @@ def alum_delete():
         matches.query.filter_by(info_email=email).delete()
     alumni.query.filter_by(info_email=email).delete()
     db.session.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('confirm_delete'))
 
 
 def get_match_alum(email):
@@ -1290,6 +1290,10 @@ def admin_change_password():
     return make_response(html)
 
 
+@app.route('/delete/confirm')
+def confirm_delete():
+    html = render_template('pages/login/delete_confirm.html')
+    return make_response(html)
 # @app.route('/alum/join-group', methods=['GET', 'POST'])
 # def alum_join_group():
 #     if request.method == 'POST':
