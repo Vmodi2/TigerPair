@@ -32,6 +32,8 @@ Login
               {% for error in errors %}
               <p class="help-block">{{error}}</p>
               {% endfor %}
+              {% include '/pages/login/flasherror.html' %}
+
               <div class="form-label-group">
                 {{wtf.form_field(form.email, id='email', class='form-control', placeholder='Email')}}
               </div>
