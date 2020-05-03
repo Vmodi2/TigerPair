@@ -12,7 +12,7 @@
     text-transform: uppercase;
     outline: #ffffff;
     background:#3a3939
-    background: rgba(255, 255, 255, 0.212);
+    /* background: rgba(255, 255, 255, 0.212); */
   }
 
 
@@ -25,6 +25,11 @@
     outline: #ffffff;
     background: rgba(255, 255, 255, 0.212);
   }
+
+  .btn-secondary{
+    border-radius: 2px;
+  }
+  
 
 .btn-primary, .btn-primary:focus, .btn-primary:active, #signup .btn-primary:active, 
 #signin .btn-primary:active, .btn-primary.active {
