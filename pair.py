@@ -139,7 +139,6 @@ def get_student_info():
         upsert_student(new_student)
 
 
-
 def verify_user(side):
     if side == 'alum':
         if not current_user:
@@ -161,13 +160,16 @@ def verify_user(side):
 @app.route('/<side>/dashboard', methods=['POST', 'GET'])
 def user_dashboard(side):
     username, user = verify_user(side)
-    html = render_template('pages/user/dashboard.html', side="student", user=user, username=username)
+    html = render_template('pages/user/dashboard.html',
+                           side="student", user=user, username=username)
     return make_response(html)
 
 
 def update_info(is_new):
-#     create new user with all information except group info
-#     if is_new -> take to general change id function (same function will deal with change your group button)
+    #     create new user with all information except group info
+    #     if is_new -> take to general change id function (same function will deal with change your group button)
+    pass
+
 
 @app.route('/<side>/information', methods=['POST'])
 def user_information(side):
