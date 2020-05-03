@@ -161,21 +161,8 @@ def verify_user(side):
 def user_dashboard(side):
     username, user = verify_user(side)
     print(username, user)
-    if not current:
-        get_student_info()
-        current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/user/new.html',
-                               user=current, side="student")
-        return make_response(html)
-    else:
-        # print("in student dashboard")
-        username = get_cas()
-        current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/user/dashboard.html',
-                               user=current, side="student")
-        return make_response(html)
     html = render_template('pages/user/dashboard.html',
-                           side="student", user=user, username=username)
+                           side=side, user=user, username=username)
     return make_response(html)
 
 
