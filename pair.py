@@ -93,8 +93,6 @@ def route_new_student():
 @app.route('/<side>/new')
 def user_new(side):
     username, user = verify_user(side)
-    username = get_cas()
-    current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/user/new.html', user=current, side="student")
     return make_response(html)
 
@@ -145,51 +143,51 @@ def get_student_info():
 def verify_user(side):
     if side == 'alum':
         if not current_user:
-            abort(redirect('alumlogin'))
+            abort(redirect(url_for('alumlogin')))
         if not current_user.email_confirmed:
-            abort(redirect('confirmemail'))
+            abort(redirect(url_for('gotoemail')))
         if not current_user.info_firstname:
-            abort(redirect('new', side=alum, user=current_user))
+            abort(redirect(url_for('login')))
         username = current_user.info_email
         user = alumni.query.filter_by(info_email=username).first()
     else:
-        username = username = CASClient().authenticate().replace('\n', '')
+        username = CASClient().authenticate().replace('\n', '')
         user = students.query.filter_by(studentid=username).first()
+        if not user:
+            abort(redirect(url_for('user_new')))
     return username, user
+
 
 @app.route('/<side>/dashboard', methods=['POST', 'GET'])
 def user_dashboard(side):
     username, user = verify_user(side)
-    print(username, user)
-    html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username)
+    html = render_template('pages/user/dashboard.html', side="student", user=user, username=username)
     return make_response(html)
 
 
-@app.route('/student/information', methods=['POST'])
-def student_information():
-    route_new_student()
-    username = get_cas()
-    group_id = -1
-    current = students.query.filter_by(studentid=username).first()
+def update_info(is_new):
+#     create new user with all information except group info
+#     if is_new -> take to general change id function (same function will deal with change your group button)
+
+@app.route('/<side>/information', methods=['POST'])
+def user_information(side):
+    username, user = verify_user(side)
     info = request.form
     # WTF IS THIS Group is auto going to 0 rn
-
-    if not current:
-        try:
-            group_id = int(info.get('group_id'))
-            print(group_id)
-            admin = admins.query.filter_by(id=group_id).first()
-            if not admin:
-                html = render_template('pages/user/new.html', user=current, side="student",
-                                       errorMsg="The group id you specified does not belong to an existing group")
-                return make_response(html)
-            elif admin.group_password and admin.group_password != info.get('group_password'):
-                html = render_template('pages/user/new.html', user=current, side="student",
-                                       errorMsg="The group password you entered is incorrect")
-                return make_response(html)
-        except:
-            group_id = 0
+    try:
+        group_id = int(info.get('group_id'))
+        print(group_id)
+        admin = admins.query.filter_by(id=group_id).first()
+        if not admin:
+            html = render_template('pages/user/new.html', user=current, side="student",
+                                   errorMsg="The group id you specified does not belong to an existing group")
+            return make_response(html)
+        elif admin.group_password and admin.group_password != info.get('group_password'):
+            html = render_template('pages/user/new.html', user=current, side="student",
+                                   errorMsg="The group password you entered is incorrect")
+            return make_response(html)
+    except:
+        group_id = 0
 
     else:
         group_id = current.group_id
