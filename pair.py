@@ -197,6 +197,8 @@ def student_information():
 def student_matches(match=None):
     route_new_student()
     username = get_cas()
+    errorMsg = ''
+    successMsg = ''
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
@@ -223,32 +225,34 @@ def student_matches(match=None):
     if request.form.get("message") is not None:
         # Due to database issues (that won't be in the final product) this may not send
         # what is this?
-        db.engine.execute(
-            'UPDATE students SET last_message=now()')
-        db.session.commit()
         try:
             try:
                 time = current.last_message
-                print(time)
                 last_time = datetime.strptime(str(time).split('.')[
                     0], '%Y-%m-%d %H:%M:%S')
-                if (datetime.utcnow() - last_time).seconds / 3600 < 1:
-                    # display an error on the page
-                    redirect(url_for('student_matches'))
             except:
                 pass
+            if (datetime.utcnow() - last_time).seconds / 3600 < 1:
+                errorMsg = 'You may not send more than one message per hour.'
+            else:
+                db.engine.execute(
+                    f"UPDATE students SET last_message=now() WHERE studentid='{current.studentid}'")
+                db.session.commit()
+                group_id = current.group_id
+                admin = admins.query.filter_by(id=group_id).first()
+                email = admin.username + "@princeton.edu"
 
-            group_id = current.group_id
-            admin = admins.query.filter_by(id=group_id).first()
-            email = admin.username + "@princeton.edu"
-
-            message = request.form.get("message")
-            msg = Message(
-                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
-            msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
-            mail.send(msg)
+                message = request.form.get("message")
+                msg = Message(
+                    'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+                msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
+                mail.send(msg)
+                successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
+        html = render_template('pages/student/matches.html',
+                               match=match, username=username, student=current, side="student",
+                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
 
     return make_response(html)
 
@@ -485,6 +489,8 @@ def alumni_id():
 @login_required
 def alum_matches(match=None):
     # username = get_cas()
+    errorMsg = ''
+    successMsg = ''
     if current_user.aluminfonamefirst is None:
         return redirect(url_for('alumni_dashboard'))
 
@@ -509,29 +515,36 @@ def alum_matches(match=None):
 
     if request.form.get("message") is not None:
         # Due to database issues (that won't be in the final product) this may not send
+        # what is this?
         try:
             try:
-                last_time = datetime.strptime(str(current_user.last_message).split('.')[
+                time = current_user.last_message
+                last_time = datetime.strptime(str(time).split('.')[
                     0], '%Y-%m-%d %H:%M:%S')
-                if (datetime.utcnow() - last_time).seconds / 3600 < 1:
-                    return redirect(url_for('alum_matches'))
             except:
                 pass
-            current_user.last_message = str(datetime.utcnow())
-            db.session.commit()
-            group_id = current_user.group_id
-            admin = admins.query.filter_by(id=group_id).first()
-            email = admin.username + "@princeton.edu"
+            if (datetime.utcnow() - last_time).seconds / 3600 < 1:
+                errorMsg = 'You may not send more than one message per hour.'
+            else:
+                db.engine.execute(
+                    f"UPDATE alumni SET last_message=now() WHERE aluminfoemail='{current_user.aluminfoemail}'")
+                db.session.commit()
+                group_id = current_user.group_id
+                admin = admins.query.filter_by(id=group_id).first()
+                email = admin.username + "@princeton.edu"
 
-            message = request.form.get("message")
-            msg = Message(
-                'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
-            msg.body = message + "\n --- \nThis message was sent to you from the student: " + \
-                current_user.aluminfonamefirst + " " + current_user.aluminfonamelast
-            mail.send(msg)
+                message = request.form.get("message")
+                msg = Message(
+                    'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+                msg.body = message + \
+                    f"\n --- \nThis message was sent to you from the alum: {current_user.aluminfonamefirst} {current_user.aluminfonamelast}"
+                mail.send(msg)
+                successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
-
+        html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
+                               match=match, side="alum",
+                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
     return make_response(html)
 
 
