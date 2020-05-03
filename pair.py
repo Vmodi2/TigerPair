@@ -93,7 +93,7 @@ def route_new_student():
 @app.route('/student/new')
 def student_new():
     username = get_cas()
-    html = render_template('pages/student/new.html',
+    html = render_template('pages/user/student/new.html',
                            student=students.query.filter_by(studentid=username))
     return make_response(html)
 
@@ -148,14 +148,14 @@ def student_dashboard():
     if not current:
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/student/new.html',
+        html = render_template('pages/user/student/new.html',
                                student=current)
         return make_response(html)
     else:
         # print("in student dashboard")
         username = get_cas()
         current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/student/dashboard.html',
+        html = render_template('pages/user/student/dashboard.html',
                                student=current, username=username, side="student")
         return make_response(html)
 
@@ -176,11 +176,11 @@ def student_information():
             admin = admins.query.filter_by(id=group_id).first()
             if not admin:
                 html = render_template(
-                    'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
+                    'pages/user/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
                 return make_response(html)
             elif admin.group_password and admin.group_password != info.get('group_password'):
                 html = render_template(
-                    'pages/student/new.html', student=current, errorMsg="The group password you entered is incorrect")
+                    'pages/user/student/new.html', student=current, errorMsg="The group password you entered is incorrect")
                 return make_response(html)
         except:
             group_id = 0
@@ -230,7 +230,7 @@ def student_matches(match=None):
             studentid=username).first().contacted
 
     current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/student/matches.html',
+    html = render_template('pages/user/student/matches.html',
                            match=match, username=username, student=current, side="student",
                            contacted=contacted)
 
@@ -262,7 +262,7 @@ def student_matches(match=None):
                 successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
-        html = render_template('pages/student/matches.html',
+        html = render_template('pages/user/student/matches.html',
                                match=match, username=username, student=current, side="student",
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
 
@@ -294,7 +294,7 @@ def student_email():
     else:
         current.info_email = email1
         db.session.commit()
-    html = render_template('pages/student/account.html',
+    html = render_template('pages/user/student/account.html',
                            active_email=True, errorMsg=errorMsg, student=current, side="student")
     return make_response(html)
 
@@ -343,7 +343,7 @@ def student_account():
         return redirect(url_for('student_dashboard'))
 
     current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/student/account.html',
+    html = render_template('pages/user/student/account.html',
                            active_email=True, username=username, student=current, side="student")
     return make_response(html)
 
@@ -383,7 +383,7 @@ def get_match_student(username):
 # def alum_dashboard():
     # if not current_user.email_confirmed:
     # return redirect(url_for('login'))
-    # html = render_template('pages/alum/dashboard.html',
+    # html = render_template('pages/user/alum/dashboard.html',
     # alum=current_user, username=current_user.info_email, side="alum")
     # return make_response(html)
 
@@ -396,10 +396,10 @@ def alumni_dashboard():
     current = alumni.query.filter_by(
         info_email=current_user.info_email).first()
     if not current.info_firstname:
-        html = render_template('pages/alum/new.html',
+        html = render_template('pages/user/alum/new.html',
                                user=current, username=current.info_email, side="alum")
     else:
-        html = render_template('pages/alum/dashboard.html', alum=current_user,
+        html = render_template('pages/user/alum/dashboard.html', alum=current_user,
                                username=current_user.info_email, side="alum")
     return make_response(html)
 
@@ -423,11 +423,11 @@ def alumni_info():
                 admin = admins.query.filter_by(id=id).first()
                 if not admin:
                     html = render_template(
-                        'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
+                        'pages/user/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
                     return make_response(html)
                 elif admin.group_password and admin.group_password != request.form.get('group_password'):
                     html = render_template(
-                        'pages/alum/new.html', user=alum, errorMsg="The group password you entered is incorrect")
+                        'pages/user/alum/new.html', user=alum, errorMsg="The group password you entered is incorrect")
                     return make_response(html)
                 else:
                     alum.group_id = id
@@ -472,7 +472,7 @@ def alumni_email():
         current_user.info_email = email1
         db.session.commit()
         return redirect(url_for('alum_logout'))
-    html = render_template('pages/alum/account.html',
+    html = render_template('pages/user/alum/account.html',
                            active_email=True, errorMsg=errorMsg, alum=current, side="alum")
     return make_response(html)
 
@@ -533,7 +533,7 @@ def alum_matches(match=None):
         contacted = matches.query.filter_by(
             studentid=match.studentid).first().contacted
 
-    html = render_template('pages/alum/matches.html', username=current_user.info_email, alum=current_user,
+    html = render_template('pages/user/alum/matches.html', username=current_user.info_email, alum=current_user,
                            match=match, side="alum",
                            contacted=contacted)
 
@@ -567,7 +567,7 @@ def alum_matches(match=None):
         except Exception as e:
             pass
         print(errorMsg)
-        html = render_template('pages/alum/matches.html', username=current_user.info_email, alum=current_user,
+        html = render_template('pages/user/alum/matches.html', username=current_user.info_email, alum=current_user,
                                match=match, side="alum",
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
     return make_response(html)
@@ -580,7 +580,7 @@ def alum_account():
         return redirect(url_for('alumni_dashboard'))
     username = current_user.info_email
     current = alumni.query.filter_by(info_email=username).first()
-    html = render_template('pages/alum/account.html',
+    html = render_template('pages/user/alum/account.html',
                            active_email=True, username=username, alum=current, side="alum")
     return make_response(html)
 
@@ -674,18 +674,18 @@ def confirm_email(token):
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
 def index():
-    html = render_template('pages/index.html', side="landing")
+    html = render_template('pages/visitor/index.html', side="landing")
     return make_response(html)
 
 
 @app.route('/team', methods=['GET'])
 def team():
-    return render_template('pages/team.html')
+    return render_template('pages/visitor/team.html')
 
 
 @app.route('/admin-info', methods=['GET'])
 def admininfo():
-    return render_template('pages/admininfo.html')
+    return render_template('pages/visitor/admininfo.html')
 
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site

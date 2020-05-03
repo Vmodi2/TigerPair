@@ -22,7 +22,8 @@
     <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link text-white" href="#" role="button" id="sidebarToggle" aria-haspopup="true" aria-expanded="false" onclick="toggle(); return false;">
+                <a class="nav-link text-white" href="#" role="button" id="sidebarToggle" aria-haspopup="true"
+                    aria-expanded="false" onclick="toggle(); return false;">
                     <i class="fas fa-angle-double-left"></i></a>
             </li>
             <li class="nav-item">
@@ -41,14 +42,14 @@
 
 <!-- NOTE: Sometimes these can go the wrong direction (on smaller screens specifically) -->
 <script>
-function toggle() {
-    var html = document.getElementById("sidebarToggle").innerHTML;
-    if (html.search('left') == -1) {
-        html = '<i class="fas fa-angle-double-left"></i>';
-    } else {
-        html = '<i class="fas fa-angle-double-right"></i>';
-    }
+    function toggle() {
+        var html = document.getElementById("sidebarToggle").innerHTML;
+        if (html.search('left') == -1) {
+            html = '<i class="fas fa-angle-double-left"></i>';
+        } else {
+            html = '<i class="fas fa-angle-double-right"></i>';
+        }
 
-    document.getElementById("sidebarToggle").innerHTML = html;
-}
+        document.getElementById("sidebarToggle").innerHTML = html;
+    }
 </script>
