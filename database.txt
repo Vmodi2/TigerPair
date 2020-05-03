@@ -43,7 +43,7 @@ alter table alumni rename column infoemail to info_email;
 alter table alumni rename column info_firstname to info_firstname;
 alter table alumni rename column info_lastname to info_lastname;
 alter table alumni rename column academics_major to academics_major;
-alter table alumni rename column career_field to career_field;
+alter table azlumni rename column career_field to career_field;
 alter table alumni rename column academics_certificate1 to academics_academics_certificate1;
 alter table alumni rename column academics_certificate2 to academics_academics_certificate2;
 alter table alumni rename column academics_certificate3 to academics_academics_certificate3;
