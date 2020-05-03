@@ -1,0 +1,343 @@
+<<<<<<< HEAD:pages/team.html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TigerPair</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    {% include "/pages/homenav.html" %}
+
+    <div class="container-fluid pb-4">
+        <!-- <div class="overlay"></div> -->
+        <div class="row">
+            <div class="col">
+                <h1 id="team" class="display-2 text-center text-dark font-weight-bold pt-5 mt-5 pb-4">Meet the Team</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p id="credits" class="display-5 text-center text-dark pb-4">TigerPair is an alumni-pairing platform
+                    developed
+                    as a final project for COS333: Advanced Programming Techniques taught by Robert Dondero in Spring
+                    2020.</p>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="members" style="width:100%">
+        <div id="member" class="row d-flex justify-content-center" style="background-color:transparent;">
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/abhinaya.jpg" alt="Abhinaya" style="width:100%;">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Abhinaya Raghunathan</h5>
+                        </div>
+                        <p class="description title">Design Lead</p>
+                        <p>Abhinaya is a second-year BSE COS major.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:abhinaya@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/chris.jpg" alt="Chris" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Chris Barkachi</h5>
+                        </div>
+                        <p class="description title">Technical Lead</p>
+                        <p>Chris is a second-year BSE COS major.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:barkachi@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/daniel.jpg" alt="Daniel" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Daniel Goodman</h5>
+                        </div>
+                        <p class="description title">Frontend Lead</p>
+                        <p>Daniel is a second-year BSE COS major who enjoys rapping and solving Rubik's Cubes in his spare time.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:danielmg@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/tara.jpg" alt="Tara" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Tara Cubeisy</h5>
+                        </div>
+                        <p class="description title">Process Lead</p>
+                        <p>Tara is somehow surviving Zoom University despite half her classes taking place at 1 in the morning.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:tcubeisy@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/vikash.jpg" alt="Vikash" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Vikash Modi</h5>
+                        </div>
+                        <p class="description title">Team Leader</p>
+                        <p>Vikash is an ELE major, though he thinks he's COS. He enjoys building whether hardware or software, and is picky about pushing to master.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:vikashm@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3 id="credits" class="display-5 text-center text-dark font-weight-bold pb-4">Acknowledgements</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p id="credits" class="display-5 text-center text-dark font-weight-bold ">Dr. Robert Dondero</p>
+            <p id="credits" class="display-5 text-center text-dark pb-4">Spring 2020 COS333 Instructor</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p id="credits" class="display-5 text-center text-dark font-weight-bold ">Joseph Eichenhofer </p>
+            <p id="credits" class="display-5 text-center text-dark pb-4">Spring 2020 COS333 Advisor</p>
+        </div>
+    </div>
+    </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/landing.js"></script>
+    <script src="static/js/plugins.js"></script>
+    <script src="static/js/main.js"></script>
+
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TigerPair</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    {% include "/pages/home_nav.html" %}
+
+    <div class="container-fluid pb-4">
+        <!-- <div class="overlay"></div> -->
+        <div class="row">
+            <div class="col">
+                <h1 id="team" class="display-2 text-center text-dark font-weight-bold pt-5 mt-5 pb-4">Meet the Team</h1>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col">
+                <p id="credits" class="display-5 text-center text-dark pb-4">TigerPair is an alumni-pairing platform
+                    developed
+                    as a final project for COS333: Advanced Programming Techniques taught by Robert Dondero in Spring
+                    2020.</p>
+            </div>
+        </div> -->
+
+
+    </div>
+    <div id="members" style="width:100%">
+        <div id="member" class="row d-flex justify-content-center" style="background-color:transparent;">
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/abhinaya.jpg" alt="Abhinaya" style="width:100%;">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Abhinaya Raghunathan</h5>
+                        </div>
+                        <p class="description title">Design Lead</p>
+                        <p>Abhinaya is a second-year BSE COS major.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:abhinaya@princeton.edu"
+                                class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/chris.jpg" alt="Chris" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Chris Barkachi</h5>
+                        </div>
+                        <p class="description title">Technical Lead</p>
+                        <p>Chris is very particular about using the correct form of
+                            'alum,' but even he draws the line at 'alumnus' because he thinks it's too pretentious. 😭
+                        </p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:barkachi@princeton.edu"
+                                class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/daniel.jpg" alt="Daniel" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Daniel Goodman</h5>
+                        </div>
+                        <p class="description title">Frontend Lead</p>
+                        <p>Daniel is a second-year BSE COS major who enjoys rapping and solving Rubik's Cubes in his
+                            spare time.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:danielmg@princeton.edu"
+                                class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/tara.jpg" alt="Tara" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Tara Cubeisy</h5>
+                        </div>
+                        <p class="description title">Process Lead</p>
+                        <p>Tara is somehow surviving Zoom University despite half her classes taking place at 1 in the
+                            morning.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:tcubeisy@princeton.edu"
+                                class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column col-12 col-sm-12 col-md-4 col-lg-2 px-sm-5 px-md-4 px-lg-1">
+                <div class="card h-100">
+                    <img src="../static/images/team/vikash.jpg" alt="Vikash" style="width:100%">
+                    <div class="container">
+                        <div class="name pt-3">
+                            <h5>Vikash Modi</h5>
+                        </div>
+                        <p class="description title">Team Leader</p>
+                        <p>Vikash is an ELE major, though he thinks he's COS. He enjoys building whether hardware or
+                            software, and is picky about pushing to master.</p>
+                    </div>
+                    <div class="container h-100 text-center align-bottom d-flex flex-column">
+                        <span class="mt-auto">
+                            <a href="mailto:vikashm@princeton.edu" class="btn btn-primary btn-stroke submit">Contact</a>
+                            <br><br>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="row">
+        <div class="col">
+            <h3 id="credits" class="display-5 text-center text-dark font-weight-bold pb-4">Acknowledgements</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p id="credits" class="display-5 text-center text-dark font-weight-bold ">Dr. Robert Dondero</p>
+            <p id="credits" class="display-5 text-center text-dark pb-4">Spring 2020 COS333 Instructor</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p id="credits" class="display-5 text-center text-dark font-weight-bold ">Joseph Eichenhofer </p>
+            <p id="credits" class="display-5 text-center text-dark pb-4">Spring 2020 COS333 Advisor</p>
+        </div>
+    </div> -->
+    </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/landing.js"></script>
+    <script src="static/js/plugins.js"></script>
+    <script src="static/js/main.js"></script>
+
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e:pages/visitor/team.html
+</body>

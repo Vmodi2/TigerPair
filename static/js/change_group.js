@@ -23,4 +23,5 @@ form.addEventListener('submit', async function (ev) {
     alert(text);
     $('#exampleModal').modal('toggle');
     $('#id').val('');
+    $('#password').val('');
 });

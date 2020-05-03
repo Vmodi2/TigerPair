@@ -8,11 +8,6 @@ from sqlalchemy import update
 from database import students as students_table, alumni as alumni_table, matches as matches_table
 from config import db
 
-weight_vector = (1, 3)
-student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
-                'StudentCareerDesiredField')
-alum_list = ('AlumInfoNameFirst', 'AlumAcademicsMajor', 'AlumCareerField')
-
 
 def get_ranking(student):
     if 'rankings' not in get_ranking.__dict__:
@@ -24,20 +19,54 @@ def get_ranking(student):
 
 
 def get_rankings(id):
-    students = [(student.studentid, student.studentacademicsmajor,
-                 student.studentcareerdesiredfield) for student in get_unmatched_students(id)]
-    alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
-              for alum in get_unmatched_alumni(id)]
+    weight_vector = (1, 3)
+    # NEED to vectorize this, esp for "X1/2/3" where order is unimportant
+    student_weightings = {
+        'academics_major': 5,
+        'career_field': 10,
+        'academics_certificate1': 3,
+        'academics_certificate2': 2,
+        'academics_certificate3': 1,
+        'extracurricular1': 3,
+        'extracurricular2': 2,
+        'extracurricular3': 1
+    }
+    alum_weightings = {
+        'academics_major': 5,
+        'career_field': 10,
+        'academics_certificate1': 3,
+        'academics_certificate2': 2,
+        'academics_certificate3': 1,
+        'extracurricular1': 3,
+        'extracurricular2': 2,
+        'extracurricular3': 1
+    }
+
+    students = get_unmatched_students(id)
+    alumni = get_unmatched_alumni(id)
+
+    file = open('output.txt', 'w')
     students_alumni = {}
-    for i in range(len(students)):
+    for student in students:
         student_alumni = []
-        # assuming index 0 netid, index 1 is major, index 2 is career
-        for j in range(len(alumni)):
-            # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
-            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j]
-                        [k + 1] else 0 for k in range(len(weight_vector)))
-            student_alumni.append((alumni[j][0], score))
-        students_alumni[students[i][0]] = student_alumni
+        for alum in alumni:
+            score = 0
+            for attr, weight in student_weightings.items():
+                student_val = getattr(student, attr)
+                alum_val = getattr(alum, attr.replace(
+                    'student', 'alum').replace('desired', ''))
+                score += weight * \
+                    (not not student_val and not not alum_val and student_val == alum_val)
+                f = attr
+                h = student_val
+                g = attr.replace(
+                    'student', 'alum').replace('desired', '')
+                mam = alum_val
+                c = not not student_val and not not alum_val and student_val == alum_val
+                d = weight * c
+                file.write(f"""{f}\n{h}\n{g}\n{mam}\n{c}\n{d}""")
+            student_alumni.append((alum.info_email, score))
+        students_alumni[student.studentid] = student_alumni
 
     # sort rankings
     for student in students_alumni:
@@ -65,7 +94,7 @@ def create_new_matches(id):
                 student.matched = 1
 
                 alum = alumni_table.query.filter_by(
-                    aluminfoemail=alum).first()
+                    info_email=alum).first()
                 alum.matched += 1
                 break
     db.session.commit()
@@ -73,7 +102,7 @@ def create_new_matches(id):
 
 def get_matches(id):
     matches_list = matches_table.query.filter_by(group_id=id)
-    matches_list = [(match.studentid, match.aluminfoemail)
+    matches_list = [(match.studentid, match.info_email)
                     for match in matches_list]
     db.session.commit()
     return matches_list
@@ -84,8 +113,8 @@ def get_alumni(id):
 
 
 def get_alum(email):
-    alum = alumni_table.query.filter_by(aluminfoemail=email).first()
-    matches = matches_table.query.filter_by(aluminfoemail=email).all()
+    alum = alumni_table.query.filter_by(info_email=email).first()
+    matches = matches_table.query.filter_by(info_email=email).all()
     return alum, matches
 
 
@@ -108,11 +137,11 @@ def get_unmatched_alumni(id):
     return alumni_table.query.filter_by(matched=0).filter_by(group_id=id)
 
 
-def create_one(id, studentid, aluminfoemail):
+def create_one(id, studentid, info_email):
     students_table.query.filter_by(studentid=studentid).first().matched = 1
     alumni_table.query.filter_by(
-        aluminfoemail=aluminfoemail).first().matched += 1
-    new_match = matches_table(studentid, aluminfoemail, id)
+        info_email=info_email).first().matched += 1
+    new_match = matches_table(studentid, info_email, id)
     db.session.add(new_match)
     db.session.commit()
 
@@ -131,7 +160,7 @@ def clear_matches(id):
 def clear_match(student, alum):
     db.session.query(matches_table).filter_by(studentid=student).delete()
     student = students_table.query.filter_by(studentid=student).first()
-    alum = alumni_table.query.filter_by(aluminfoemail=alum).first()
+    alum = alumni_table.query.filter_by(info_email=alum).first()
     assert (student.matched == 1)
     assert (alum.matched >= 1)
     student.matched = 0
@@ -145,20 +174,20 @@ def delete_student(id, studentid):
     match = matches_table.query.filter_by(studentid=studentid)
     row = match.first()
     if row is not None:
-        clear_match(studentid, row.aluminfoemail)
+        clear_match(studentid, row.info_email)
     db.session.commit()
 
 
-def delete_alum(id, aluminfoemail):
+def delete_alum(id, info_email):
     db.session.query(alumni_table).filter_by(
-        aluminfoemail=aluminfoemail).first().group_id = -1
+        info_email=info_email).first().group_id = -1
     # Check and reset matches table
-    match = matches_table.query.filter_by(aluminfoemail=aluminfoemail)
+    match = matches_table.query.filter_by(info_email=info_email)
     row = match.first()
     if row is not None:
-        clear_match(row.studentid, aluminfoemail)
+        clear_match(row.studentid, info_email)
     db.session.commit()
 
 
 if __name__ == '__main__':
-    create_new_matches()
+    create_new_matches(336)

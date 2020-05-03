@@ -1,9 +1,10 @@
-{% extends 'pages/user_base.html' %}
+{% extends 'pages/user/user_base.html' %}
 
 {% block content %}
 
 <div class="tab-pane fade {% if active_email %}active show{% endif %} pt-5 px-5 pb-3" id="change-email" role="tabpanel"
 	aria-labelledby="change-email-tab">
+<<<<<<< HEAD:pages/alum/account.html
 	<div class="card px-5 pb-3">
 		<h3 class="pt-5 pb-2 text-center">Change Email</h3>
 		<p class="text-danger font-weight-bold">{{errorMsg}}</p>
@@ -14,6 +15,16 @@
 					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
 						value="{{alum.aluminfoemail if alum.aluminfoemail}}">
 				</div>
+=======
+	<h2 class="pt-5 pb-3">Change Email</h2>
+	<p class="text-danger font-weight-bold">{{errorMsg}}</p>
+	<form action="/{{side}}/email" method="post">
+		<div class="form-group row">
+			<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
+			<div class="col-sm-10">
+				<input type="text" readonly class="form-control-plaintext" id="staticEmail"
+					value="{{user.info_email if user.info_email}}">
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e:pages/user/account.html
 			</div>
 			<div class="form-group row px-3">
 				<label for="email" class="col-sm-2 col-form-label">New Email</label>
@@ -32,6 +43,7 @@
 		</form>
 	</div>
 </div>
+<<<<<<< HEAD:pages/alum/account.html
 <hr>
 <div class="pt-3 px-5 pb-3" id="change-email" role="tabpanel">
 	 <div class="card px-5 pb-3">
@@ -39,6 +51,15 @@
 	<h5 class="small text-center">Note: This action is permanent!</h5>
 	<div class="text-center pb-3">
 		<a href="/alum/delete"><button type="submit" class="btn btn-danger col-3 text-center my-2 my-sm-0">&nbsp;Delete&nbsp;</button></a>
+=======
+<h2 class="pt-5 pb-3">Delete Account</h2>
+<div class="card bg-danger text-white mb-4 mt-4">
+	<div class="card-body">Delete account</div>
+	<div class="card-footer d-flex align-items-center justify-content-between">
+		<a class="small text-white stretched-link" href="/{{side}}/delete" id="delete-account">Note: This action is
+			permanent!</a>
+		<div class="small text-white"><i class="fas fa-angle-right"></i></div>
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e:pages/user/account.html
 	</div>
 </div>
 </div>
@@ -47,4 +68,8 @@
 {% block account %}active{% endblock %}
 {% block individual_scripts %}
 <script src="/static/js/delete_account.js"></script>
+<<<<<<< HEAD:pages/alum/account.html
 {% endblock %}
+=======
+{% endblock %}
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e:pages/user/account.html

@@ -2,10 +2,9 @@
 
 {% block content %}
 <div class="pt-5 px-5 pb-3">
-<div class="card pt-3 pb-5">
+<div class="card pt-3 pb-3">
 <h2 class="ml-3 mr-3 mt-4 mb-4 text-center">Create a manual match</h2>
-<div class="row d-flex justify-content-center">
-<form class="px-4 col-8" action="/admin/dashboard/createone" id="manual-match-form" method="post">
+<form class="px-4" action="/admin/dashboard/createone" id="manual-match-form" method="post">
     <select class="custom-select custom-select-lg mb-3 px-3" id="student-select" name="student">
         <option selected>Select a student</option>
         {% if students %}
@@ -18,7 +17,7 @@
         <option selected>Select an alum</option>
         {% if alumni %}
         {% for alum in alumni %}
-        <option value="{{alum.aluminfoemail}}">{{alum.aluminfoemail}}</option>
+        <option value="{{alum.info_email}}">{{alum.info_email}}</option>
         {% endfor %}
         {% endif %}
     </select>
@@ -26,7 +25,6 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </div>
 </form>
-</div>
 </div>
 </div>
 

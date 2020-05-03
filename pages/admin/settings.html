@@ -1,36 +1,21 @@
 {% extends 'pages/admin/base.html' %}
 
 {% block content %}
-<div class="pt-5 px-5 pb-3">
-    <div class="card pt-5 ">
-        <h3 class="text-center">Settings</h3>
-        <div class="row d-flex justify-content-center">
-            <div class="card col-6 bg-white ml-3 mr-3 mt-4 mb-4">
-                <div class="row">
-                    <span class="icons text-dark icon-padlock lead pl-3 pt-3 pb-2" style="font-size:2rem;"></span>
-                <div class="card-body">Set a group password</div>
-            </div>
-                <div class="card-footer bg-white d-flex align-items-center justify-content-between">
-                    <a data-toggle="modal" type="button" data-target="#passwordModal" class="small stretched-link">This
-                        will be the password that alumni and students use to join your matching
-                        group.</a>
-                    <div class="small"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="row d-flex justify-content-center">
-            <div class="card col-6 bg-white ml-3 mr-3 mt-4 mb-4">
-                <div class="row">
-                    <span class="icons text-dark icon-arrow-right lead pl-3 pt-3 pb-2" style="font-size:2rem;"></span>
-                    <div class="card-body">Transfer account</div>
-                </div>
-                <div class="card-footer bg-white d-flex align-items-center justify-content-between">
-                    <a data-toggle="modal" type="button" data-target="#profileModal" class="small stretched-link">Note:
-                        This action is permanent!</a>
-                    <div class="small"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
+<div class="card bg-dark text-white ml-3 mr-3 mt-4 mb-4">
+    <div class="card-body">Set a group password</div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <a data-toggle="modal" type="button" data-target="#passwordModal" class="small text-white stretched-link">This
+            will be the password that alumni and students use to join your matching
+            group.</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+    </div>
+</div>
+<div class="card bg-danger text-white ml-3 mr-3 mt-4 mb-4">
+    <div class="card-body">Transfer account</div>
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <a data-toggle="modal" type="button" data-target="#profileModal" class="small text-white stretched-link">Note:
+            This action is permanent!</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
     </div>
 </div>
 
@@ -66,7 +51,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalTitle">
     aria-hidden="true">

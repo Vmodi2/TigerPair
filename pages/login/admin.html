@@ -9,8 +9,13 @@
   <link rel="stylesheet" href="{{url_for('.static', filename='/css/index.css')}}">
 </head>
 
+<<<<<<< HEAD
 <body class="landing pt-5" id="top">
   {% include "/pages/homenav.html" %}
+=======
+<body class="landing d-flex align-items-center" id="top">
+  {% include "/pages/home_nav.html" %}
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e
   <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
@@ -20,8 +25,17 @@
             <p class="lead">Are you sure you would like to proceed?</p>
             <p class="lead">An administrator manages student and alum profiles for mentorship opportunities.</p>
             <div class="buttons d-flex justify-content-around">
+<<<<<<< HEAD
               <a class="btn btn-primary" href="/admin/dashboard">Yes</a>
               <a class="btn btn-primary" href="/">No</a>
+=======
+              <form action="/login/admin" method="post">
+                <input type="submit" class="btn btn-primary" value="Yes"></input>
+              </form>
+              <form action="/" method="get">
+                <input type="submit" class="btn btn-primary" value="No"></input>
+              </form>
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e
             </div>
           </div>
         </div>

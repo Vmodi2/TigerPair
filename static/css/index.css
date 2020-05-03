@@ -1,7 +1,11 @@
 /* background */
 .landing {
+<<<<<<< HEAD
   /* this doesn't work hm */
     height: 100vh;
+=======
+    height: 110vh;
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e
     /* background: url("/static/images/bg-pattern.png"), rgb(255,162,0);
     background: url("/static/images/bg-pattern.png"), linear-gradient(90deg, rgba(255,162,0,0.9920343137254902) 0%, rgba(255,175,0,1) 43%); */
     /* background: url("/static/images/blankorangegrid.png"); */

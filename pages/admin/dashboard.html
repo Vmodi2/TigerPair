@@ -44,6 +44,7 @@
                     {% for match in matches: %}
                     <tr>
                         <td><a
+<<<<<<< HEAD
                                 href='{{url_for('.admin_profile_student', netid=match.studentid)}}'>{{match.studentid}}</a>
                         </td>
                         <td><a
@@ -53,6 +54,16 @@
                         <td><a
                                 href='
                             {{url_for('.admin_dashboard_clearone', student=match.studentid, alum=match.aluminfoemail)}}'>Delete
+=======
+                                href='{{url_for('.admin_profile', username=match.studentid, side='student')}}'>{{match.studentid}}</a>
+                        </td>
+                        <td><a
+                                href='{{url_for('.admin_profile', username=match.info_email, side='alum')}}'>{{match.info_email}}</a>
+                        </td>
+                        <td>{% if match.contacted %}Yes{% else %}No{% endif%}</td>
+                        <td><a href='
+                            {{url_for('.admin_dashboard_clearone', student=match.studentid, alum=match.info_email)}}'>Delete
+>>>>>>> 11add7ba867191d7c9da1bad0babe838f196ed6e
                                 Match</a></td>
                     </tr>
                     {% endfor %}

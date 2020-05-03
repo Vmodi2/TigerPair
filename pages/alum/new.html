@@ -24,27 +24,15 @@
         <option disabled selected value> -- select an option -- </option>
     </select>
     <br />
-    <div class="row">
-        <div class="col">
-            <label for="group_id">Your
-                Group
-                ID</label>
-            <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
-                data-placement="top"
-                data-content="If you don't specify a group ID you'll be placed in the general matching group">
-                <i class="fas fa-question fa-xs"></i>
-            </button>
-            <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
-        </div>
-        <div class="col">
-            <label for="group_password">Group Password</label>
-            <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
-                data-placement="top" data-content="Leave this blank if your group does not have a password">
-                <i class="fas fa-question fa-xs"></i>
-            </button>
-            <input class="form-control mr-sm-2" type="text" id="group_password" name="group_password">
-        </div>
-    </div>
+    <label for="group_id">Your
+        Group
+        ID</label>
+    <button type="button" class="btn btn-secondary ml-1 mb-1" data-container="body" data-toggle="popover"
+        data-placement="top"
+        data-content="If you don't specify a group ID you'll be placed in the general matching group">
+        <i class="fas fa-question fa-xs"></i>
+    </button>
+    <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
     <br />
     <p class="text-danger font-weight-bold">{{errorMsg}}</p>
     <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
