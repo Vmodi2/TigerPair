@@ -519,8 +519,8 @@ def alum_matches(match=None):
         try:
             try:
                 time = current_user.last_message
-                last_time = datetime.strptime(str(time).split('.')[
-                    0], '%Y-%m-%d %H:%M:%S')
+                last_time = datetime.strptime(
+                    str(time).split('.')[0], '%Y-%m-%d %H:%M:%S')
             except:
                 pass
             if (datetime.utcnow() - last_time).seconds / 3600 < 1:
@@ -542,6 +542,7 @@ def alum_matches(match=None):
                 successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
+        print(errorMsg)
         html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
                                match=match, side="alum",
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
@@ -1176,27 +1177,16 @@ def upsert_alum(alum):
 
 @app.route('/login/admin', methods=['POST', 'GET'])
 def adminlogin():
-    error = ""
-    form = AdminLoginForm()
-    if form.validate_on_submit():
-        # print("submitted form")
-        user = admins.query.filter_by(
-            username=form.username.data).first()  # CHECK DATABASE.PY
-        if user is not None:
-            # print("user is not none")
-
-            # print("email is confirmed")
-            if check_password_hash(user.password, form.password.data):
-                # print("password is correct")
-                db.session.commit()  # could we remove this
-                login_user(user, remember=form.remember.data)
-                return redirect(url_for('admin_dashboard'))
-                # url_for('alum_info')
-
-        else:
-            error = "Invalid username or password"
-
-    html = render_template('pages/login/admin.html', form=form, errors=[error])
+    username = get_cas()
+    if admins.query.filter_by(username=username).first():
+        return redirect('admin_dashboard')
+    if request.method == 'POST':
+        admin = admins(username=username)
+        db.session.add(admin)
+        db.session.commit()
+        print("heyyy")
+        return redirect(url_for('admin_dashboard'))
+    html = render_template('pages/login/admin.html')
     return make_response(html)
 
 

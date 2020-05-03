@@ -45,6 +45,8 @@ class alumni(db.Model):
     email_confirmed = db.Column('email_confirmed', db.Boolean)
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)
+    last_message = db.Column('last_message', db.DateTime,
+                             server_default=str(datetime.utcnow()))
 
     def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
                  email_confirmed=False, group_id=None):
@@ -90,12 +92,10 @@ class admins(db.Model):
     id = db.Column('id', db.Unicode, db.Sequence(
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
-    password = db.Column('password', db.Unicode)
     group_password = db.Column('group_password', db.Unicode)
 
-    def __init__(self, username, password):
+    def __init__(self, username):
         self.username = username
-        self.password = password
 
     def is_authenticated(self):
         return self.authenticated

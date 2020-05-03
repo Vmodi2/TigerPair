@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{{url_for('.static', filename='/css/index.css')}}">
 </head>
 
-<body class="landing pt-5" id="top">
+<body class="landing d-flex align-items-center" id="top">
   {% include "/pages/homenav.html" %}
   <div class="container">
     <div class="row">
@@ -20,8 +20,12 @@
             <p class="lead">Are you sure you would like to proceed?</p>
             <p class="lead">An administrator manages student and alum profiles for mentorship opportunities.</p>
             <div class="buttons d-flex justify-content-around">
-              <a class="btn btn-primary" href="/admin/dashboard">Yes</a>
-              <a class="btn btn-primary" href="/">No</a>
+              <form action="/login/admin" method="post">
+                <input type="submit" class="btn btn-primary" value="Yes"></input>
+              </form>
+              <form action="/" method="get">
+                <input type="submit" class="btn btn-primary" value="No"></input>
+              </form>
             </div>
           </div>
         </div>
