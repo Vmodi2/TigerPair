@@ -90,8 +90,23 @@ def route_new_student():
     pass
 
 
-@app.route('/student/new')
-def student_new():
+@login_required
+def verify_alum():
+
+    user = alumni.query.filter_by(info_email=current_user.info_email).first()
+
+
+def verify_user(func):
+    if side == 'alum':
+        if not current_user.email_confirmed:
+            return redirect(url_for('gotoemail'))
+    else:
+        get_cas()
+
+
+@app.route('/<side>/new')
+def user_new(side):
+    username, user = verify_user(side)
     username = get_cas()
     current = students.query.filter_by(studentid=username).first()
     html = render_template('pages/user/new.html', user=current, side="student")
@@ -140,11 +155,29 @@ def get_student_info():
         upsert_student(new_student)
 
 
-@app.route('/student/dashboard', methods=['POST', 'GET'])
-def student_dashboard():
-    route_new_student()
-    username = get_cas()
-    current = students.query.filter_by(studentid=username).first()
+def verify_user(func):
+    def func_wrapper(side):
+        if side == 'alum':
+            @login_required
+            def verify_alum():
+                if not current_user.email_confirmed:
+                    return redirect(url_for('gotoemail'))
+                if not current_user.info_firstname:
+                    user = alumni.query.filter_by(
+                        info_email=current_user.info_email).first()
+                func(side)
+            return verify_alum
+        else:
+            username = get_cas()
+            user = students.query.filter_by(studentid=username).first()
+            return func(side, username, user)
+    return func_wrapper
+
+
+@app.route('/<side>/dashboard', methods=['POST', 'GET'])
+@verify_user
+def student_dashboard(side):
+    print(username)
     if not current:
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
@@ -856,8 +889,8 @@ def admin_dashboard():
         return redirect(url_for('adminlogin'))
     id = user.id
     match_list = matches.query.filter_by(group_id=id).all()
-    html = render_template('pages/admin/dashboard.html', matches=match_list,
-                           side='admin', username=username, id=id)
+    html = render_template('pages/admin/dashboard.html',
+                           matches=match_list, username=username, id=id)
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -908,8 +941,8 @@ def admin_dashboard_modify_matches():
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    html = render_template('pages/admin/modify-matches.html', matches=matches,
-                           side='admin', username=username, id=id)
+    html = render_template('pages/admin/modify-matches.html',
+                           matches=matches, username=username, id=id)
     return make_response(html)
 
 
@@ -944,8 +977,8 @@ def admin_dashboard_manual_match():
     id = user.id
     alumni = get_unmatched_alumni(id)
     students = get_unmatched_students(id)
-    html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
-                           side='admin', username=username, id=id)
+    html = render_template('pages/admin/manual-match.html',
+                           alumni=alumni, students=students, username=username, id=id)
     return make_response(html)
 
 
@@ -1053,8 +1086,8 @@ def admin_import(side):
     if request.method == 'POST':
         return process_import(is_alumni=(side == 'alum'))
     page_suffix = 'alumni' if side == 'alum' else 'students'
-    html = render_template(f'pages/admin/import-{page_suffix}.html',
-                           side="Admin", username=username, id=id)
+    html = render_template(
+        f'pages/admin/import-{page_suffix}.html', username=username, id=id)
     return make_response(html)
 
 
@@ -1084,8 +1117,7 @@ def process_import(is_alumni):
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded',
-                                   side="Admin", username=username, id=id)
+                                   errorMsg='No file uploaded', username=username, id=id)
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
@@ -1101,12 +1133,10 @@ def process_import(is_alumni):
                     upsert_student(new_student)
             db.session.commit()
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   successMsg='Success processing your upload!',
-                                   side="Admin", username=username, id=id)
+                                   successMsg='Success processing your upload!', username=username, id=id)
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}",
-                               side="Admin", username=username, id=id)
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id)
     return make_response(html)
 
 
@@ -1240,7 +1270,7 @@ def admin_settings():
     user = admins.query.filter_by(username=username).first()
     id = user.id
     html = render_template('pages/admin/settings.html',
-                           username=username, id=id, side='admin', user=user)
+                           username=username, id=id, user=user)
     return make_response(html)
 
 
@@ -1263,8 +1293,8 @@ def admin_change_id():
                 errorMsg = 'The selected user already has an account'
         else:
             errorMsg = "The entered net id's don't match"
-    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
-                           side='admin', user=user)
+    html = render_template('pages/admin/settings.html',
+                           errorMsg=errorMsg, username=username, id=id, user=user)
     return make_response(html)
 
 
@@ -1282,8 +1312,8 @@ def admin_change_password():
             db.session.commit()
         else:
             errorMsg = 'The entered passwords must match'
-    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
-                           side='admin', user=user)
+    html = render_template('pages/admin/settings.html',
+                           errorMsg=errorMsg, username=username, id=id, user=user)
     return make_response(html)
 
 
