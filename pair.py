@@ -78,7 +78,7 @@ def admin_logout():
 
 
 def get_cas():
-    username = strip_user(CASClient().authenticate())
+    username = CASClient().authenticate().replace('\n', '')
     return username
 
 
@@ -88,20 +88,6 @@ def route_new_student():
     # if not current:
     #     student_new()
     pass
-
-
-@login_required
-def verify_alum():
-
-    user = alumni.query.filter_by(info_email=current_user.info_email).first()
-
-
-def verify_user(func):
-    if side == 'alum':
-        if not current_user.email_confirmed:
-            return redirect(url_for('gotoemail'))
-    else:
-        get_cas()
 
 
 @app.route('/<side>/new')
@@ -155,29 +141,26 @@ def get_student_info():
         upsert_student(new_student)
 
 
-def verify_user(func):
-    def func_wrapper(*args, **kwargs):
-        if side == 'alum':
-            @login_required
-            def verify_alum():
-                if not current_user.email_confirmed:
-                    return redirect(url_for('gotoemail'))
-                if not current_user.info_firstname:
-                    user = alumni.query.filter_by(
-                        info_email=current_user.info_email).first()
-                func(*args, **kwargs)
-            return verify_alum
-        else:
-            username = get_cas()
-            user = students.query.filter_by(studentid=username).first()
-            return func(*args, **kwargs)
-    return func_wrapper
 
+def verify_user(side):
+    if side == 'alum':
+        if not current_user:
+            abort(redirect('alumlogin'))
+        if not current_user.email_confirmed:
+            abort(redirect('confirmemail'))
+        if not current_user.info_firstname:
+            abort(redirect('new', side=alum, user=current_user))
+        username = current_user.info_email
+        user = alumni.query.filter_by(info_email=username).first()
+    else:
+        username = username = CASClient().authenticate().replace('\n', '')
+        user = students.query.filter_by(studentid=username).first()
+    return username, user
 
 @app.route('/<side>/dashboard', methods=['POST', 'GET'])
-@verify_user
-def student_dashboard(side):
-    print(username)
+def user_dashboard(side):
+    username, user = verify_user(side)
+    print(username, user)
     if not current:
         get_student_info()
         current = students.query.filter_by(studentid=username).first()
@@ -191,6 +174,9 @@ def student_dashboard(side):
         html = render_template('pages/user/dashboard.html',
                                user=current, side="student")
         return make_response(html)
+    html = render_template('pages/user/dashboard.html',
+                           side="student", user=user, username=username)
+    return make_response(html)
 
 
 @app.route('/student/information', methods=['POST'])
