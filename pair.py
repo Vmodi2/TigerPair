@@ -54,7 +54,7 @@ def user_loader(user_id):
 
 @app.route("/student/logout")
 # @login_required <- this makes it redirect to login when student logs out
-def student_logout():
+def user_logout():
     casClient = CASClient()
     casClient.authenticate()
     casClient.logout()
@@ -199,11 +199,9 @@ def user_information(side):
     return redirect(url_for('student_dashboard'))
 
 
-@app.route('/student/information-additional', methods=['POST'])
-def student_information_additional():
-    route_new_student()
-    username = get_cas()
-    user = students.query.filter_by(studentid=username).first()
+@app.route('/<side>/information-additional', methods=['POST'])
+def user_information_additional():
+    username, user = verify_user(side)
     for field in request.form:
         if field:
             setattr(user, field, request.form.get(field))
@@ -211,10 +209,9 @@ def student_information_additional():
     return redirect(url_for('student_dashboard'))
 
 
-@app.route('/student/matches', methods=['GET', 'POST'])
-def student_matches(match=None):
-    route_new_student()
-    username = get_cas()
+@app.route('/<side>/matches', methods=['GET', 'POST'])
+def user_matches(match=None):
+    username, user = verify_user(side)
     errorMsg = ''
     successMsg = ''
 
@@ -275,13 +272,14 @@ def student_matches(match=None):
     return make_response(html)
 
 
-@app.route('/student/email', methods=['GET', 'POST'])
-def student_email():
+@app.route('/<side>/email', methods=['GET', 'POST'])
+def user_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
 
-    route_new_student()
-    username = get_cas()
+    # route_new_student()
+    # username = get_cas()
+    username, user = verify_user(side)
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
@@ -305,12 +303,13 @@ def student_email():
     return make_response(html)
 
 
-@app.route('/student/id', methods=['GET', 'POST'])
-def student_id():
+@app.route('/<side>/id', methods=['GET', 'POST'])
+def user_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    route_new_student()
-    username = get_cas()
+    # route_new_student()
+    # username = get_cas()
+    username, user = verify_user(side)
 
     if students.query.filter_by(studentid=username).first() is None:
         return redirect(url_for('student_dashboard'))
@@ -340,26 +339,21 @@ def student_id():
     return jsonify(response)
 
 
-@app.route('/student/account', methods=['GET'])
-def student_account():
-    route_new_student()
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/user/account.html',
-                           active_email=True, username=username, user=current, side="student")
+@app.route('/<side>/account', methods=['GET'])
+def user_account():
+    # route_new_student()
+    # username = get_cas()
+    username, user = verify_user(side)
+    html = render_template('pages/user/account.html', active_email=True, username=username, user=current, side="student")
     return make_response(html)
 
 
-@app.route('/student/delete', methods=['GET'])
-def student_delete():
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
+@app.route('/<side>/delete', methods=['GET'])
+def user_delete():
+    # username = get_cas()
+    username, user = verify_user(side)
+    # if students.query.filter_by(studentid=username).first() is None:
+    #     return redirect(url_for('student_dashboard'))
 
     # find if matched already and delete current match could use clear match
     # but then I would have to find student object
@@ -371,7 +365,7 @@ def student_delete():
     db.session.commit()
     return redirect(url_for("confirm_delete"))
 
-
+#can this be static
 def get_match_student(username):
     match = matches.query.filter_by(studentid=username).first()
     if not match:
@@ -1302,8 +1296,8 @@ def confirm_delete():
 #     return make_response(html)
 
 
-# @app.route('/student/join-group', methods=['GET', 'POST'])
-# def student_join_group():
+# @app.route('/<side>/join-group', methods=['GET', 'POST'])
+# def user_join_group():
 #     if request.method == 'POST':
 #         pass
 #     html = render_template('pages/admin/enter_group.html', side='student')
