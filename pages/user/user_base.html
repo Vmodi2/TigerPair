@@ -26,15 +26,18 @@
             </div>
             <div class="sb-sidenav-footer">
                 <div class="small">Logged in as:</div>
-                <span>{{username}}</span>
+                <span>{{user.info_email}}</span>
                 <div class="small">Your group ID:</div>
                 <!-- print id -->
                 {% if user %}<span
                     class="id-display">{{user.group_id if user.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
-                <br>
+                <br><br>
                 <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal"
                     data-target="#exampleModal">Change
                     your group</a>
+                <span class="d-lg-none">
+                    <br><br><br>
+                </span>
             </div>
         </nav>
     </div>
