@@ -58,10 +58,10 @@ function handleResponse(response, type) {
 }
 
 function getRegistrations() {
-  fetch('/admin/get-registrations-alum')
+  fetch('/admin/get-registrations/alum')
     .then(response => response.json())
     .then(data => handleResponse(data, 'Alum'));
-  fetch('/admin/get-registrations-student')
+  fetch('/admin/get-registrations/student')
     .then(response => response.json())
     .then(data => handleResponse(data, 'Student'));
 }

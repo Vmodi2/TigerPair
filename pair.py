@@ -876,7 +876,6 @@ def admin_dashboard_create():
 # Notify when a match has been made
 @app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
 def notify():
-    print("notify")
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
@@ -975,14 +974,14 @@ def admin_dashboard_createone():
 
 # SINGLE alum profile page
 # @login_required
-@app.route('/admin/profile')
-def admin_profile():
+@app.route('/admin/profile/<side>')
+def admin_profile(side):
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    side = request.args.get('side')
+    # side = request.args.get('side')
     if side == 'alum':
         user, match_list = get_alum(request.args.get('username'))
     else:
@@ -991,19 +990,18 @@ def admin_profile():
         match_list = matches.query.filter_by(
             studentid=request.args.get('username')).all()
     html = render_template('pages/admin/profile.html', matches=match_list, user=user,
-                           side=request.args.get('side'), username=username, id=id)
+                           side=side, username=username, id=id)
     return make_response(html)
 
 
 # @login_required
-@app.route('/admin/profiles')
-def admin_profiles_student():
+@app.route('/admin/profiles/<side>')
+def admin_profiles(side):
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    side = request.args.get('side')
     if side == 'alum':
         users = get_alumni(id)
     else:
@@ -1030,61 +1028,49 @@ def admin_profiles_student():
 
 
 @login_required
-@app.route('/admin/get-registrations-alum', methods=['GET'])
-def admin_get_registrations_alum():
+@app.route('/admin/get-registrations/<side>', methods=['GET'])
+def admin_get_registrations(side):
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    table = 'alumni' if side == 'alum' else 'students'
     registrations = db.engine.execute(
-        "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM alumni GROUP BY unique_date ORDER BY unique_date ASC;")
+        f"SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM {table} WHERE group_id={id} GROUP BY unique_date ORDER BY unique_date ASC;")
     response = {str(row[0]): row[1] for row in registrations}
     return jsonify(response)
 
 
 @login_required
-@app.route('/admin/get-registrations-student', methods=['GET'])
-def admin_get_registrations_student():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    registrations = db.engine.execute(
-        "SELECT DISTINCT (DATE(date_created)) AS unique_date, COUNT(*) AS amount FROM students GROUP BY unique_date ORDER BY unique_date ASC;")
-    response = {str(row[0]): row[1] for row in registrations}
-    return jsonify(response)
-
-
-@login_required
-@app.route('/admin/import-students', methods=['GET', 'POST'])
-def admin_import_students():
+@app.route('/admin/import/<side>', methods=['GET', 'POST'])
+def admin_import(side):
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
     if request.method == 'POST':
-        return process_import(is_alumni=False)
-    html = render_template('pages/admin/import-students.html',
+        return process_import(is_alumni=(side == 'alum'))
+    page_suffix = 'alumni' if side == 'alum' else 'students'
+    html = render_template(f'pages/admin/import-{page_suffix}.html',
                            side="Admin", username=username, id=id)
     return make_response(html)
 
 
-@login_required
-@app.route('/admin/import-alumni', methods=['GET', 'POST'])
-def admin_import_alumni():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    if request.method == 'POST':
-        return process_import(is_alumni=True)
-    html = render_template('pages/admin/import-alumni.html',
-                           side="Admin", username=username, id=id)
-    return make_response(html)
+# @login_required
+# @app.route('/admin/import-alumni', methods=['GET', 'POST'])
+# def admin_import_alumni():
+#     username = get_cas()
+#     user = admins.query.filter_by(username=username).first()
+#     if user is None:
+#         return redirect(url_for('adminlogin'))
+#     id = user.id
+#     if request.method == 'POST':
+#         return process_import(is_alumni=True)
+#     html = render_template('pages/admin/import-alumni.html',
+#                            side="Admin", username=username, id=id)
+#     return make_response(html)
 
 
 def process_import(is_alumni):
@@ -1124,32 +1110,33 @@ def process_import(is_alumni):
     return make_response(html)
 
 
-@app.route('/admin/action-student', methods=["POST"])
-def admin_action_student():
+@app.route('/admin/action/<side>', methods=["POST"])
+def admin_action(side):
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
     if request.form.get('action') == 'delete':
-        students = request.form.get('checked-members').split(',')
-        for student in students:
-            delete_student(id, student)
-    return redirect(url_for('admin_profiles_student'))
+        users = request.form.get('checked-members').split(',')
+        delete = delete_alum if side == 'alum' else delete_student
+        for user in users:
+            delete(id, user)
+    return redirect(url_for('admin_profiles', side=side))
 
 
-@app.route('/admin/action-alum', methods=["POST"])
-def admin_action_alum():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    if request.form.get('action') == 'delete':
-        alumni = request.form.get('checked-members').split(',')
-        for alum in alumni:
-            delete_alum(id, alum)
-    return redirect(url_for('admin_profiles_alum'))
+# @app.route('/admin/action-alum', methods=["POST"])
+# def admin_action_alum():
+#     username = get_cas()
+#     user = admins.query.filter_by(username=username).first()
+#     if user is None:
+#         return redirect(url_for('adminlogin'))
+#     id = user.id
+#     if request.form.get('action') == 'delete':
+#         alumni = request.form.get('checked-members').split(',')
+#         for alum in alumni:
+#             delete_alum(id, alum)
+#     return redirect(url_for('admin_profiles_alum'))
 
 
 # REDIRECT HERE FROM THE BUTTON
