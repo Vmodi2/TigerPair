@@ -1,44 +1,49 @@
 {% extends 'pages/user_base.html' %}
 
 {% block content %}
-<div class="tab-pane fade {% if active_email %}active show{% endif %} mb-5 pb-5" id="change-email" role="tabpanel"
+
+<div class="tab-pane fade {% if active_email %}active show{% endif %} pt-5 px-5 pb-3" id="change-email" role="tabpanel"
 	aria-labelledby="change-email-tab">
-	<form action="/student/email" method="post">
-		<h2 class="pt-5 pb-3">Change Email</h2>
+	<div class="card px-5 pb-3">
+		<h3 class="pt-5 pb-2 text-center">Change Email</h3>
 		<p class="text-danger font-weight-bold">{{errorMsg}}</p>
-		<div class="form-group row">
-			<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
-			<div class="col-sm-10">
-				<input type="text" readonly class="form-control-plaintext" id="staticEmail"
-					value="{{student.studentinfoemail if student.studentinfoemail}}">
+		<form action="/student/email" method="post">
+			<div class="form-group row px-3 pt-2">
+				<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
+						value="{{student.studentinfoemail if student.studentinfoemail}}">
+				</div>
 			</div>
-		</div>
-		<div class="form-group row">
-			<label for="email" class="col-sm-2 col-form-label">New Email</label>
-			<div class="col-sm-10">
-				<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com" required>
+			<div class="form-group row px-3">
+				<label for="email" class="col-sm-2 col-form-label">New Email</label>
+				<div class="col-sm-10 pb-2">
+					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com">
+				</div>
+				<label for="email-repeated px-3 " class="col-sm-2 col-form-label">Confirm Email</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="email-repeated" name="email-repeated"
+						placeholder="email@domain.com">
+				</div>
 			</div>
-			<br><br>
-			<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
-			<div class="col-sm-10">
-				<input type="text" class="form-control" id="email-repeated" name="email-repeated"
-					placeholder="email@domain.com" required>
+			<div class="text-center pb-3">
+				<button type="submit" class="btn col-3 text-center btn-primary my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
 			</div>
-		</div>
-		<button type="submit" class="btn btn-primary my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
-	</form>
-</div>
-<h2 class="pt-2 pb-3">Delete Account</h2>
-<div class="card bg-danger text-white mb-4">
-	<div class="card-body">Delete account</div>
-	<div class="card-footer d-flex align-items-center justify-content-between">
-		<a class="small text-white stretched-link" href="/student/delete" id="delete-account">Note: This action is
-			permanent!</a>
-		<div class="small text-white"><i class="fas fa-angle-right"></i></div>
+		</form>
 	</div>
 </div>
+<hr>
+<div class="pt-3 px-5 pb-3" id="change-email" role="tabpanel">
+	 <div class="card px-5 pb-3">
+	<h3 class="pt-5 pb-4 text-center">Delete Account</h3>
+	<h5 class="small text-center">Note: This action is permanent!</h5>
+	<div class="text-center pb-3">
+		<a href="/student/delete"><button type="submit" class="btn btn-danger col-3 text-center my-2 my-sm-0">&nbsp;Delete&nbsp;</button></a>
+	</div>
+</div>
+</div>
+</div>
 {% endblock %}
-
 {% block account %}active{% endblock %}
 {% block individual_scripts %}
 <script src="/static/js/delete_account.js"></script>
