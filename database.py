@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, jsonify
 from config import db
+from datetime import datetime
 
 
 class students(db.Model):
@@ -19,9 +20,11 @@ class students(db.Model):
     extracurricular1 = db.Column('extracurricular1', db.Unicode)
     extracurricular2 = db.Column('extracurricular2', db.Unicode)
     extracurricular3 = db.Column('extracurricular3', db.Unicode)
-    class_year = db.Column('classyear', db.Unicode)
+    class_year = db.Column('class_year', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
     group_id = db.Column('group_id', db.Unicode)
+    last_message = db.Column('last_message', db.DateTime,
+                             server_default=str(datetime.utcnow()))
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail, studentacademicsmajor, studentcareerdesiredfield=None, matched=0, group_id=None, certificate1=None, certificate2=None, certificate3=None, extracurricular1=None, extracurricular2=None, extracurricular3=None, class_year=None):
         self.studentid = studentid
@@ -57,12 +60,14 @@ class alumni(db.Model):
     extracurricular1 = db.Column('extracurricular1', db.Unicode)
     extracurricular2 = db.Column('extracurricular2', db.Unicode)
     extracurricular3 = db.Column('extracurricular3', db.Unicode)
-    class_year = db.Column('classyear', db.Unicode)
+    class_year = db.Column('class_year', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
     password = db.Column('password', db.Unicode)
     email_confirmed = db.Column('email_confirmed', db.Boolean)
     authenticated = False
     group_id = db.Column('group_id', db.Unicode)
+    last_message = db.Column('last_message', db.DateTime,
+                             server_default=str(datetime.utcnow()))
 
     def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
                  email_confirmed=False, group_id=None, certificate1=None, certificate2=None, certificate3=None, extracurricular1=None, extracurricular2=None, extracurricular3=None, class_year=None):
@@ -115,12 +120,10 @@ class admins(db.Model):
     id = db.Column('id', db.Unicode, db.Sequence(
         'alumni_id_seq'), primary_key=True)
     username = db.Column('username', db.Unicode)
-    password = db.Column('password', db.Unicode)
     group_password = db.Column('group_password', db.Unicode)
 
-    def __init__(self, username, password):
+    def __init__(self, username):
         self.username = username
-        self.password = password
 
     def is_authenticated(self):
         return self.authenticated

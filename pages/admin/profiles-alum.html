@@ -9,46 +9,47 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     {% if alumni %}
                     <div class="actions text-center mb-3">
-                        <select name="action" id="action">
+                        <select name="action" id="action-select">
                             <option value="no-action">Select an action</option>
-                            <option value="delete">Delete</option>
+                            <option class="action-option" value="delete">Delete</option>
                         </select>
                         <input type="hidden" id="checked-members" name="checked-members" value="">
-                        <input type="submit" value="Submit">
                     </div>
                     <thead>
                         <tr>
-                            <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
+                            <th class="prof-cell" data-orderable="false"><input type="checkbox" id="select-all"
+                                    name="select-all" value=""></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
+                            <th class="prof-cell"></th>
                         </tr>
                     </tfoot>
                     <tbody>
                         {% for alum in alumni: %}
                         <tr {% if alum.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
-                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
-                                    value="{{alum.aluminfoemail}}" class="members">
                             <td>{{alum.aluminfonamefirst}}</td>
                             <td>{{alum.aluminfonamelast}}</td>
                             <td>{{alum.aluminfoemail}}</td>
                             <td>{{alum.alumacademicsmajor}}</td>
                             <td>{{alum.alumcareerfield}}</td>
                             <td>{% if alum.matched==1 %}Yes{% else %}No{% endif %}
+                            </td>
+                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
+                                    value="{{alum.aluminfoemail}}" class="members">
                             </td>
                         </tr>
                         {% endfor %}

@@ -18,38 +18,39 @@
                     </div>
                     <thead>
                         <tr>
-                            <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
+                            <th class="prof-cell" data-orderable="false"><input type="checkbox" id="select-all"
+                                    name="select-all" value=""></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Major</th>
                             <th>Career</th>
                             <th>Matched?</th>
+                            <th class="prof-cell"></th>
                         </tr>
                     </tfoot>
                     <tbody>
                         {% for student in students: %}
                         <tr {% if student.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
-                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
-                                    value="{{student.studentid}}" class="members">
-                            </td>
                             <td>{{student.studentinfonamefirst}}</td>
                             <td>{{student.studentinfonamelast}}</td>
                             <td>{{student.studentinfoemail}}</td>
                             <td>{{student.studentacademicsmajor}}</td>
                             <td>{{student.studentcareerdesiredfield}}</td>
                             <td>{% if student.matched==1 %}Yes{% else %}No{% endif %}
+                            </td>
+                            <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
+                                    value="{{student.studentid}}" class="members">
                             </td>
                         </tr>
                         {% endfor %}
