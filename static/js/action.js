@@ -1,6 +1,7 @@
 let form = $('#action-form');
 let action = $('#action-select');
 let selectedUsers = $('#checked-members');
+let selectAll = $('#select-all');
 
 action.on('input', () => {
     function reset() {

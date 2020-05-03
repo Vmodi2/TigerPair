@@ -4,8 +4,8 @@
 <!-- Info side -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home"
-			role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
+		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab"
+			href="#home" role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
 	</li>
 	<!--<li class="nav-item">
 		<a class="nav-link dashtab {{active_more}}" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab"
@@ -71,14 +71,13 @@
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>-->
-	
-		<img src="/static/images/littletiger-orange.png" class="d-flex align-items-end flex-wrap float-right"alt="little tiger" id="littletiger-img"
-			class="landing-tiger">
+
+	<img src="/static/images/littletiger-orange.png" class="d-flex align-items-end flex-wrap float-right"
+		alt="little tiger" id="littletiger-img" class="landing-tiger">
 </div>
 {% endblock %}
 {% block edit_profile %}{% endblock %}
 {% block individual_scripts %}
 <script src="/static/js/update.js"></script>
 <script src="/static/js/options.js"></script>
-<script src="/static/js/scripts.js"></script>
 {% endblock %}

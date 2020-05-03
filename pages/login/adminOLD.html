@@ -3,7 +3,7 @@
 
 
 {% block title %}
-Login
+Admin Login
 {% endblock %}
 
 {% block styles %}
@@ -25,33 +25,32 @@ Login
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
-          <div id="signin" class="card-body">
+          <div class="card-body">
             <h3 class="card-title text-center"><strong>Sign In</strong></h3>
-            <form class="form-group" method="post" action="#">
+            <form class="form-signin" method="post" action="#">
               {{ form.hidden_tag() }}
               {% for error in errors %}
               <p class="help-block">{{error}}</p>
               {% endfor %}
               <div class="form-label-group">
-                {{wtf.form_field(form.email, id='email', class='form-control', placeholder='Email')}}
+                {{wtf.form_field(form.username, id='username', class='form-control', placeholder='Net ID')}}
+
+                <!-- <label for="username">Username</label> -->
               </div>
-              <div class="form-group">
+              <div class="form-label-group">
                 <!-- <input type="password" id="inputPassword" class="form-control" placeholder="Password" required> -->
                 {{ wtf.form_field(form.password, id="inputPassword", class="form-control", placeholder="Password") }}
-                <!--  -->
+                <!-- <label for="inputPassword">Password</label> -->
               </div>
+              <center>
+                <p>Don't have an account? <a id="signup" href="asignup">Sign up!</a></p>
+                <!-- <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>  ADD THIS TARA -->
+              </center>
               <div class="custom-control custom-checkbox mb-3">
                 <input type="checkbox" class="custom-control-input" id="customCheck1">
                 {{ wtf.form_field(form.remember, class="custom-control-label", for="customCheck1") }}
                 <!-- <label class="custom-control-label" for="customCheck1">Remember password</label> -->
               </div>
-              <div class="pb-3">
-                <center>
-                  <p>Don't have an account? <a id="signup" href="login/signup">Sign up!</a></p>
-                  <a id="forgotpass" href='pages/login/update'>Forgot your password?</a>
-                </center>
-              </div>
-
               <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
               <hr class="my-4">
 

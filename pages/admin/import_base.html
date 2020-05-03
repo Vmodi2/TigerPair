@@ -13,14 +13,18 @@
     </li>
 </ul>
 <br>
-<form action="/admin/import-{{ self.import_side() }}/process" method="post" enctype="multipart/form-data"
-    target="_blank">
+<form action="/admin/import-{{ self.import_side() }}" method="post" enctype="multipart/form-data">
     <input type="file" name="data_file" />
     <input type="submit" />
 </form>
 
 <br>
-<h6>Note: an Excel or Google Sheets spreadsheet must be saved and uploaded as a CSV file</h6>
+<h5>Additional information</h5>
+<ul>
+    <li class="font-weight-bold">An Excel or Google Sheets spreadsheet must be saved and uploaded as a CSV file.
+    </li>
+    <li class="font-weight-bold">Uploading a CSV with members already in your group will update their information.</li>
+</ul>
+<span class="font-weight-bold text-danger">{{errorMsg}}</span>
+<span class="font-weight-bold text-success">{{successMsg}}</span>
 {% endblock %}
-</div>
-</div>
