@@ -8,11 +8,6 @@ from sqlalchemy import update
 from database import students as students_table, alumni as alumni_table, matches as matches_table
 from config import db
 
-weight_vector = (1, 3)
-student_list = ('StudentInfoNameFirst', 'StudentAcademicsMajor',
-                'StudentCareerDesiredField')
-alum_list = ('AlumInfoNameFirst', 'AlumAcademicsMajor', 'AlumCareerField')
-
 
 def get_ranking(student):
     if 'rankings' not in get_ranking.__dict__:
@@ -24,20 +19,54 @@ def get_ranking(student):
 
 
 def get_rankings(id):
-    students = [(student.studentid, student.studentacademicsmajor,
-                 student.studentcareerdesiredfield) for student in get_unmatched_students(id)]
-    alumni = [(alum.aluminfoemail, alum.alumacademicsmajor, alum.alumcareerfield)
-              for alum in get_unmatched_alumni(id)]
+    weight_vector = (1, 3)
+    # NEED to vectorize this, esp for "X1/2/3" where order is unimportant
+    student_weightings = {
+        'studentacademicsmajor': 5,
+        'studentcareerdesiredfield': 10,
+        'certificate1': 3,
+        'certificate2': 2,
+        'certificate3': 1,
+        'extracurricular1': 3,
+        'extracurricular2': 2,
+        'extracurricular3': 1
+    }
+    alum_weightings = {
+        'alumacademicsmajor': 5,
+        'alumcareerfield': 10,
+        'certificate1': 3,
+        'certificate2': 2,
+        'certificate3': 1,
+        'extracurricular1': 3,
+        'extracurricular2': 2,
+        'extracurricular3': 1
+    }
+
+    students = get_unmatched_students(id)
+    alumni = get_unmatched_alumni(id)
+
+    file = open('output.txt', 'w')
     students_alumni = {}
-    for i in range(len(students)):
+    for student in students:
         student_alumni = []
-        # assuming index 0 netid, index 1 is major, index 2 is career
-        for j in range(len(alumni)):
-            # can easily use this form to generalize to any number of features (columns will definitely change so keep an eye on range() especially)
-            score = sum(weight_vector[k] if students[i][k + 1] == alumni[j]
-                        [k + 1] else 0 for k in range(len(weight_vector)))
-            student_alumni.append((alumni[j][0], score))
-        students_alumni[students[i][0]] = student_alumni
+        for alum in alumni:
+            score = 0
+            for attr, weight in student_weightings.items():
+                student_val = getattr(student, attr)
+                alum_val = getattr(alum, attr.replace(
+                    'student', 'alum').replace('desired', ''))
+                score += weight * \
+                    (not not student_val and not not alum_val and student_val == alum_val)
+                f = attr
+                h = student_val
+                g = attr.replace(
+                    'student', 'alum').replace('desired', '')
+                mam = alum_val
+                c = not not student_val and not not alum_val and student_val == alum_val
+                d = weight * c
+                file.write(f"""{f}\n{h}\n{g}\n{mam}\n{c}\n{d}""")
+            student_alumni.append((alum.aluminfoemail, score))
+        students_alumni[student.studentid] = student_alumni
 
     # sort rankings
     for student in students_alumni:
@@ -161,4 +190,4 @@ def delete_alum(id, aluminfoemail):
 
 
 if __name__ == '__main__':
-    create_new_matches()
+    create_new_matches(336)

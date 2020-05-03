@@ -17,6 +17,13 @@ class students(db.Model):
     group_id = db.Column('group_id', db.Unicode)
     last_message = db.Column('last_message', db.DateTime,
                              server_default=str(datetime.utcnow()))
+    certificate1 = db.Column('certificate1', db.Unicode)
+    certificate2 = db.Column('certificate2', db.Unicode)
+    certificate3 = db.Column('certificate3', db.Unicode)
+    extracurricular1 = db.Column('extracurricular1', db.Unicode)
+    extracurricular2 = db.Column('extracurricular2', db.Unicode)
+    extracurricular3 = db.Column('extracurricular3', db.Unicode)
+    class_year = db.Column('class_year', db.Unicode)
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
                  studentacademicsmajor, studentcareerdesiredfield=None, matched=0, group_id=None):
@@ -47,6 +54,13 @@ class alumni(db.Model):
     group_id = db.Column('group_id', db.Unicode)
     last_message = db.Column('last_message', db.DateTime,
                              server_default=str(datetime.utcnow()))
+    certificate1 = db.Column('certificate1', db.Unicode)
+    certificate2 = db.Column('certificate2', db.Unicode)
+    certificate3 = db.Column('certificate3', db.Unicode)
+    extracurricular1 = db.Column('extracurricular1', db.Unicode)
+    extracurricular2 = db.Column('extracurricular2', db.Unicode)
+    extracurricular3 = db.Column('extracurricular3', db.Unicode)
+    class_year = db.Column('class_year', db.Unicode)
 
     def __init__(self, aluminfoemail, aluminfonamefirst=None, aluminfonamelast=None, alumacademicsmajor=None, alumcareerfield=None, matched=0, password=None,
                  email_confirmed=False, group_id=None):

@@ -193,6 +193,18 @@ def student_information():
     return redirect(url_for('student_dashboard'))
 
 
+@app.route('/student/information-additional', methods=['POST'])
+def student_information_additional():
+    route_new_student()
+    username = get_cas()
+    user = students.query.filter_by(studentid=username).first()
+    for field in request.form:
+        if field:
+            setattr(user, field, request.form.get(field))
+    db.session.commit()
+    return redirect(url_for('student_dashboard'))
+
+
 @app.route('/student/matches', methods=['GET', 'POST'])
 def student_matches(match=None):
     route_new_student()
@@ -422,6 +434,18 @@ def alumni_info():
             except:
                 alum.group_id = 0
         db.session.commit()
+    return redirect(url_for('alumni_dashboard'))
+
+
+@app.route('/alum/information-additional', methods=['POST'])
+@login_required
+def alum_information_additional():
+    user = alumni.query.filter_by(
+        aluminfoemail=current_user.aluminfoemail).first()
+    for field in request.form:
+        if field:
+            setattr(user, field, request.form.get(field))
+    db.session.commit()
     return redirect(url_for('alumni_dashboard'))
 
 
@@ -1066,7 +1090,8 @@ def process_import(is_alumni):
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded')
+                                   errorMsg='No file uploaded',
+                                   side="Admin", username=username, id=id)
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
@@ -1082,10 +1107,12 @@ def process_import(is_alumni):
                     upsert_student(new_student)
             db.session.commit()
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   successMsg='Success processing your upload!')
+                                   successMsg='Success processing your upload!',
+                                   side="Admin", username=username, id=id)
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}")
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}",
+                               side="Admin", username=username, id=id)
     return make_response(html)
 
 

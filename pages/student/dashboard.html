@@ -7,14 +7,10 @@
 		<a class="nav-link dashtab {% if not active_email %}active{% endif %}" id="home-tab" data-toggle="tab"
 			href="#home" role="tab" aria-controls="home" aria-selected="true">Basic Information</a>
 	</li>
-	<!--<li class="nav-item">
+	<li class="nav-item">
 		<a class="nav-link dashtab {{active_more}}" id="page-1-tab" data-toggle="tab" href="#page-1" role="tab"
 			aria-controls="page-1" aria-selected="false">More Info</a>
-	</li>-->
-	<!-- <li class="nav-item">
-		<a class="nav-link {% if active_email %}active{% endif %}" id="change-email-tab" data-toggle="tab"
-			href="#change-email" role="tab" aria-controls="change-email" aria-selected="false">Change Email</a>
-	</li> -->
+	</li>
 </ul>
 
 <div class="tab-content" id="myTabContent">
@@ -22,21 +18,21 @@
 		aria-labelledby="home-tab">
 		<form method="post" action="/student/information">
 			<label for="firstname">First Name</label>
-			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
+			<input class="form-control info-1 mr-sm-2" type="text" id="firstname" name="firstname"
 				value="{{student.studentinfonamefirst}}" required readonly>
 			<br />
 			<label for="lastname">Last Name</label>
-			<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
+			<input class="form-control info-1 mr-sm-2" type="text" id="lastname" name="lastname"
 				value="{{student.studentinfonamelast}}" required readonly>
 			<br />
 			<label for="major">Major</label>
-			<select class="form-control mr-sm-2" id="major" name="major" required disabled>
+			<select class="form-control info-1 mr-sm-2" id="major" name="major" required disabled>
 				<option value="{{student.studentacademicsmajor}}" selected>{{student.studentacademicsmajor}}
 				</option>
 			</select>
 			<br />
 			<label for="career">Desired Career Field</label>
-			<select class="form-control mr-sm-2" id="career" name="career" required disabled>
+			<select class="form-control info-1 mr-sm-2" id="career" name="career" required disabled>
 				<option value="{{student.studentcareerdesiredfield}}" selected>
 					{{student.studentcareerdesiredfield}}
 				</option>
@@ -46,31 +42,36 @@
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
-	<!-- <div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
-		<form method="post" action="/student/more-information">
-			<label for="info-1">Custom Information 1</label>
-			<input class="form-control mr-sm-2" type="text" id="info-1" name="info-1"
-				value="{{student.studentinfocustom1}}" readonly>
+	<div class="tab-pane fade {{active_more}}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
+		<form method="post" action="/student/information-additional">
+			<label for="class_year">Class Year</label>
+			<input class="form-control info-2 mr-sm-2" type="number" id="class_year" name="class_year"
+				value="{{student.class_year if student.class_year}}" readonly>
 			<br />
-			<label for="info-2">Custom Information 2</label>
-			<input class="form-control mr-sm-2" type="text" id="info-2" name="info-2"
-				value="{{student.studentinfocustom1}}" readonly>
+			<label for="certificate1">Certificate 1</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="certificate1" name="certificate1"
+				value="{{student.certificate1 if student.certificate1}}" readonly>
+			<label for="certificate2">Certificate 2</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="certificate2" name="certificate2"
+				value="{{student.certificate2 if student.certificate2}}" readonly>
+			<label for="certificate3">Certificate 3</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="certificate3" name="certificate3"
+				value="{{student.certificate3 if student.certificate3}}" readonly>
 			<br />
-			<label for="info-3">Custom Information 3</label>
-			<input class="form-control mr-sm-2" type="text" id="info-3" name="info-3"
-				value="{{student.studentinfocustom1}}" readonly>
-			<br />
-			<label for="info-4">Custom Information 4</label>
-			<select class="form-control mr-sm-2" id="info-4" name="info-4" disabled>
-				<option value="{{student.studentinfocustom4}}" selected>
-					{{student.studentinfocustom4}}
-				</option>
-			</select>
+			<label for="extracurricular1">Extracurricular 1</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="extracurricular1" name="extracurricular1"
+				value="{{student.extracurricular1 if student.extracurricular1}}" readonly>
+			<label for="extracurricular2">Extracurricular 2</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="extracurricular2" name="extracurricular2"
+				value="{{student.extracurricular2 if student.extracurricular2}}" readonly>
+			<label for="extracurricular3">Extracurricular 3</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="extracurricular3" name="extracurricular3"
+				value="{{student.extracurricular3 if student.extracurricular3}}" readonly>
 			<br />
 			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
-	</div> -->
+	</div>
 
 	<img src="/static/images/littletiger-orange.png" class="d-flex align-items-end flex-wrap float-right"
 		alt="little tiger" id="littletiger-img" class="landing-tiger">

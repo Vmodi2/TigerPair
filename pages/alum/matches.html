@@ -38,7 +38,7 @@
                 <textarea class="form-control" id="message" name="message" rows="3" required
                     style="resize:none;"></textarea>
                 <br>
-                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0"
+                <button type="submit" name="action" class="btn btn-warning my-2 my-sm-0 text-center"
                     id="submit">&nbsp;Submit&nbsp;</button>
                 <br><br>
             </form>
@@ -62,7 +62,14 @@
                 <div class="modal-body">
                     <h5>Major: {{match.studentacademicsmajor}}</h5>
                     <h5>Career: {{match.studentcareerdesiredfield}}</h5>
-                    <h5>Emaifdfl: <a href="mailto:{{match.studentinfoemail}}">{{match.studentinfoemail}}</a></h5>
+                    <h5>Email: <a href="mailto:{{match.studentinfoemail}}">{{match.studentinfoemail}}</a></h5>
+                    <h5>Class Year: {{match.class_year}}</h5>
+                    <p class="font-weight-bold">Certificate 1: {{match.certificate1}}</p>
+                    <p class="font-weight-bold">Certificate 2: {{match.certificate2}}</p>
+                    <p class="font-weight-bold">Certificate 3: {{match.certificate3}}</p>
+                    <p class="font-weight-bold">Extracurricular 1: {{match.extracurricular1}}</p>
+                    <p class="font-weight-bold">Extracurricular 2: {{match.extracurricular2}}</p>
+                    <p class="font-weight-bold">Extracurricular 3: {{match.extracurricular3}}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
