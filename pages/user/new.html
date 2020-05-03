@@ -1,16 +1,16 @@
 {% extends 'pages/user/newuser_base.html' %}
 
 {% block specific_form %}
-<form method="post" action="/student/information">
+<form method="post" action="/{{side}}/information">
     <label for="name">Name</label>
     <div class="row">
         <div class="col">
-            <input type="text" class="form-control" placeholder="First name" value="{{student.info_firstname}}"
-                name="firstname" required>
+            <input type="text" class="form-control" placeholder="First name"
+                value="{{user.info_firstname if user.info_firstname}}" name="firstname" required>
         </div>
         <div class="col">
-            <input type="text" class="form-control" placeholder="Last name" value="{{student.info_lastname}}"
-                name="lastname" required>
+            <input type="text" class="form-control" placeholder="Last name"
+                value="{{user.info_lastname if user.info_lastname}}" name="lastname" required>
         </div>
     </div>
     <br />
@@ -19,7 +19,7 @@
         <option disabled selected value> -- select an option -- </option>
     </select>
     <br />
-    <label for="career">Desired Career Field</label>
+    <label for="career">Career Field</label>
     <select class="form-control mr-sm-2" id="career" name="career" required>
         <option disabled selected value> -- select an option -- </option>
     </select>
