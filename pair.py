@@ -156,7 +156,7 @@ def get_student_info():
 
 
 def verify_user(func):
-    def func_wrapper(side):
+    def func_wrapper(*args, **kwargs):
         if side == 'alum':
             @login_required
             def verify_alum():
@@ -165,12 +165,12 @@ def verify_user(func):
                 if not current_user.info_firstname:
                     user = alumni.query.filter_by(
                         info_email=current_user.info_email).first()
-                func(side)
+                func(*args, **kwargs)
             return verify_alum
         else:
             username = get_cas()
             user = students.query.filter_by(studentid=username).first()
-            return func(side, username, user)
+            return func(*args, **kwargs)
     return func_wrapper
 
 
