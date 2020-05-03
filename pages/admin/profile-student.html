@@ -2,14 +2,14 @@
 
 {% block content %}
 {% if student %}
-<h1 class="ml-3 mr-3 mt-4 mb-4">{{student.studentinfonamefirst}} {{student.studentinfonamelast}}</h1>
-<h3>Contact: <a href="mailto:{{student.studentinfoemail}}">{{student.studentinfoemail}}</a></h3>
-<h3>Major: {{student.studentacademicsmajor}}</h3>
-<h3>Career: {{student.studentcareerdesiredfield}}</h3>
+<h1 class="ml-3 mr-3 mt-4 mb-4">{{student.info_firstname}} {{student.info_lastname}}</h1>
+<h3>Contact: <a href="mailto:{{student.info_email}}">{{student.info_email}}</a></h3>
+<h3>Major: {{student.academics_major}}</h3>
+<h3>Career: {{student.career_field}}</h3>
 <p class="font-weight-bold">Class Year: {{student.class_year}}</p>
-<p class="font-weight-bold">Certificate 1: {{student.certificate1}}</p>
-<p class="font-weight-bold">Certificate 2: {{student.certificate2}}</p>
-<p class="font-weight-bold">Certificate 3: {{student.certificate3}}</p>
+<p class="font-weight-bold">Certificate 1: {{student.academics_certificate1}}</p>
+<p class="font-weight-bold">Certificate 2: {{student.academics_certificate2}}</p>
+<p class="font-weight-bold">Certificate 3: {{student.academics_certificate3}}</p>
 <p class="font-weight-bold">Extracurricular 1: {{student.extracurricular1}}</p>
 <p class="font-weight-bold">Extracurricular 2: {{student.extracurricular2}}</p>
 <p class="font-weight-bold">Extracurricular 3: {{student.extracurricular3}}</p>
@@ -18,7 +18,7 @@
 <h3>Matched with:</h3>
 <ul>
     {% for match in matches %}
-    <li><a href='{{url_for('.admin_profile_alum', email=match.aluminfoemail)}}'>{{match.aluminfoemail}}</a></li>
+    <li><a href='{{url_for('.admin_profile_alum', email=match.info_email)}}'>{{match.info_email}}</a></li>
     {% endfor %}
 </ul>
 {% else %}

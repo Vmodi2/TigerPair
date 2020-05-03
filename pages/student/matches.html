@@ -7,16 +7,16 @@
 <div class="match-info text-center">
     {% if match %}
     <h1 class="display-4">You've been matched</h1>
-    <p class="lead">...with <strong><mark>{{match.aluminfonamefirst}}
-                {{match.aluminfonamelast}}</mark></strong>!</p>
+    <p class="lead">...with <strong><mark>{{match.info_firstname}}
+                {{match.info_lastname}}</mark></strong>!</p>
     <hr class="my-4">
     <p>View their profile below</p>
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
-        data-target="#profileModal">{{match.aluminfonamefirst}}'s Profile</button>
+        data-target="#profileModal">{{match.info_firstname}}'s Profile</button>
     <hr class="my-4">
     {% if contacted == False: %}
     <form method="post">
-        <p>Confirm that you have contacted {{match.aluminfonamefirst}}.</p>
+        <p>Confirm that you have contacted {{match.info_firstname}}.</p>
         <input type="submit" class="btn btn-primary btn-lg" name="action" value="Confirm">
     </form>
     {% endif %}
@@ -49,20 +49,20 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="profileModalLongTitle">{{match.aluminfonamefirst}}
-                        {{match.aluminfonamelast}}
+                    <h3 class="modal-title" id="profileModalLongTitle">{{match.info_firstname}}
+                        {{match.info_lastname}}
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                 </div>
                 <div class="modal-body">
-                    <h5>Major: {{match.alumacademicsmajor}}</h5>
-                    <h5>Career: {{match.alumcareerfield}}</h5>
-                    <h5>Email: <a href="mailto:{{match.aluminfoemail}}">{{match.aluminfoemail}}</a></h5>
+                    <h5>Major: {{match.academics_major}}</h5>
+                    <h5>Career: {{match.career_field}}</h5>
+                    <h5>Email: <a href="mailto:{{match.info_email}}">{{match.info_email}}</a></h5>
                     <h5>Class Year: {{match.class_year}}</h5>
-                    <p class="font-weight-bold">Certificate 1: {{match.certificate1}}</p>
-                    <p class="font-weight-bold">Certificate 2: {{match.certificate2}}</p>
-                    <p class="font-weight-bold">Certificate 3: {{match.certificate3}}</p>
+                    <p class="font-weight-bold">Certificate 1: {{match.academics_certificate1}}</p>
+                    <p class="font-weight-bold">Certificate 2: {{match.academics_certificate2}}</p>
+                    <p class="font-weight-bold">Certificate 3: {{match.academics_certificate3}}</p>
                     <p class="font-weight-bold">Extracurricular 1: {{match.extracurricular1}}</p>
                     <p class="font-weight-bold">Extracurricular 2: {{match.extracurricular2}}</p>
                     <p class="font-weight-bold">Extracurricular 3: {{match.extracurricular3}}</p>

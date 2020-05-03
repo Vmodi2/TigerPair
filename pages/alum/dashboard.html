@@ -19,23 +19,23 @@
 		<form method="post" action="/alum/information">
 			<label for="firstname">First Name</label>
 			<input class="form-control mr-sm-2" type="text" id="firstname" name="firstname"
-				value="{{alum.aluminfonamefirst if alum.aluminfonamefirst}}" required readonly>
+				value="{{alum.info_firstname if alum.info_firstname}}" required readonly>
 			<br />
 			<label for="lastname">Last Name</label>
 			<input class="form-control mr-sm-2" type="text" id="lastname" name="lastname"
-				value="{{alum.aluminfonamelast if alum.aluminfonamelast}}" required readonly>
+				value="{{alum.info_lastname if alum.info_lastname}}" required readonly>
 			<br />
 			<label for="major">Major</label>
 			<select class="form-control mr-sm-2" id="major" name="major" required disabled>
-				<option value="{{alum.alumacademicsmajor if alum.alumacademicsmajor}}" selected>
-					{{alum.alumacademicsmajor if alum.alumacademicsmajor}}
+				<option value="{{alum.academics_major if alum.academics_major}}" selected>
+					{{alum.academics_major if alum.academics_major}}
 				</option>
 			</select>
 			<br />
 			<label for="career">Desired Career Field</label>
 			<select class="form-control mr-sm-2" id="career" name="career" required disabled>
-				<option value="{{alum.alumcareerfield if alum.alumcareerfield}}" selected>
-					{{alum.alumcareerfield if alum.alumcareerfield}}
+				<option value="{{alum.career_field if alum.career_field}}" selected>
+					{{alum.career_field if alum.career_field}}
 				</option>
 			</select>
 			<br />
@@ -49,15 +49,18 @@
 			<input class="form-control info-2 mr-sm-2" type="number" id="class_year" name="class_year"
 				value="{{alum.class_year if alum.class_year}}" readonly>
 			<br />
-			<label for="certificate1">Certificate 1</label>
-			<input class="form-control info-2 mr-sm-2" type="text" id="certificate1" name="certificate1"
-				value="{{alum.certificate1 if alum.certificate1}}" readonly>
-			<label for="certificate2">Certificate 2</label>
-			<input class="form-control info-2 mr-sm-2" type="text" id="certificate2" name="certificate2"
-				value="{{alum.certificate2 if alum.certificate2}}" readonly>
-			<label for="certificate3">Certificate 3</label>
-			<input class="form-control info-2 mr-sm-2" type="text" id="certificate3" name="certificate3"
-				value="{{alum.certificate3 if alum.certificate3}}" readonly>
+			<label for="academics_certificate1">Certificate 1</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="academics_certificate1"
+				name="academics_certificate1" value="{{alum.academics_certificate1 if alum.academics_certificate1}}"
+				readonly>
+			<label for="academics_certificate2">Certificate 2</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="academics_certificate2"
+				name="academics_certificate2" value="{{alum.academics_certificate2 if alum.academics_certificate2}}"
+				readonly>
+			<label for="academics_certificate3">Certificate 3</label>
+			<input class="form-control info-2 mr-sm-2" type="text" id="academics_certificate3"
+				name="academics_certificate3" value="{{alum.academics_certificate3 if alum.academics_certificate3}}"
+				readonly>
 			<br />
 			<label for="extracurricular1">Extracurricular 1</label>
 			<input class="form-control info-2 mr-sm-2" type="text" id="extracurricular1" name="extracurricular1"

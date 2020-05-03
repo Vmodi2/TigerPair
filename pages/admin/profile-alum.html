@@ -2,14 +2,14 @@
 
 {% block content %}
 {% if alum %}
-<h1 class="ml-3 mr-3 mt-4 mb-4">{{alum.aluminfonamefirst}} {{alum.aluminfonamelast}}</h1>
-<h3>Contact: <a href="mailto:{{alum.aluminfoemail}}">{{alum.aluminfoemail}}</a></h3>
-<h3>Major: {{alum.alumacademicsmajor}}</h3>
-<h3>Career: {{alum.alumcareerfield}}</h3>
+<h1 class="ml-3 mr-3 mt-4 mb-4">{{alum.info_firstname}} {{alum.info_lastname}}</h1>
+<h3>Contact: <a href="mailto:{{alum.info_email}}">{{alum.info_email}}</a></h3>
+<h3>Major: {{alum.academics_major}}</h3>
+<h3>Career: {{alum.career_field}}</h3>
 <p class="font-weight-bold">Class Year: {{alum.class_year}}</p>
-<p class="font-weight-bold">Certificate 1: {{alum.certificate1}}</p>
-<p class="font-weight-bold">Certificate 2: {{alum.certificate2}}</p>
-<p class="font-weight-bold">Certificate 3: {{alum.certificate3}}</p>
+<p class="font-weight-bold">Certificate 1: {{alum.academics_certificate1}}</p>
+<p class="font-weight-bold">Certificate 2: {{alum.academics_certificate2}}</p>
+<p class="font-weight-bold">Certificate 3: {{alum.academics_certificate3}}</p>
 <p class="font-weight-bold">Extracurricular 1: {{alum.extracurricular1}}</p>
 <p class="font-weight-bold">Extracurricular 2: {{alum.extracurricular2}}</p>
 <p class="font-weight-bold">Extracurricular 3: {{alum.extracurricular3}}</p>

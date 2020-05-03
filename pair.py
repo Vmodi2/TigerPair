@@ -49,7 +49,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def user_loader(user_id):
-    return alumni.query.filter_by(aluminfoemail=user_id).first()
+    return alumni.query.filter_by(info_email=user_id).first()
 
 
 @app.route("/student/logout")
@@ -289,10 +289,10 @@ def student_email():
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
-    elif students.query.filter_by(studentinfoemail=email1).first():
+    elif students.query.filter_by(info_email=email1).first():
         errorMsg = "That email already belongs to another account"
     else:
-        current.studentinfoemail = email1
+        current.info_email = email1
         db.session.commit()
     html = render_template('pages/student/account.html',
                            active_email=True, errorMsg=errorMsg, student=current, side="student")
@@ -370,7 +370,7 @@ def get_match_student(username):
     match = matches.query.filter_by(studentid=username).first()
     if not match:
         return None
-    return alumni.query.filter_by(aluminfoemail=match.aluminfoemail).first()
+    return alumni.query.filter_by(info_email=match.info_email).first()
 # -----------------------------------------------------------------------
 
 # Dynamic page function for alum info page call
@@ -384,7 +384,7 @@ def get_match_student(username):
     # if not current_user.email_confirmed:
     # return redirect(url_for('login'))
     # html = render_template('pages/alum/dashboard.html',
-    # alum=current_user, username=current_user.aluminfoemail, side="alum")
+    # alum=current_user, username=current_user.info_email, side="alum")
     # return make_response(html)
 
 # NEW ALUM START
@@ -394,13 +394,13 @@ def alumni_dashboard():
     if not current_user.email_confirmed:
         return redirect(url_for('gotoemail'))
     current = alumni.query.filter_by(
-        aluminfoemail=current_user.aluminfoemail).first()
-    if not current.aluminfonamefirst:
+        info_email=current_user.info_email).first()
+    if not current.info_firstname:
         html = render_template('pages/alum/new.html',
-                               user=current, username=current.aluminfoemail, side="alum")
+                               user=current, username=current.info_email, side="alum")
     else:
         html = render_template('pages/alum/dashboard.html', alum=current_user,
-                               username=current_user.aluminfoemail, side="alum")
+                               username=current_user.info_email, side="alum")
     return make_response(html)
 
 
@@ -411,11 +411,11 @@ def alumni_info():
         return redirect(url_for('gotoemail'))
     if (flask.request.method == 'POST'):
         alum = alumni.query.filter_by(
-            aluminfoemail=current_user.aluminfoemail).first()
-        alum.aluminfonamefirst = request.form.get('firstname')
-        alum.aluminfonamelast = request.form.get('lastname')
-        alum.alumacademicsmajor = request.form.get('major')
-        alum.alumcareerfield = request.form.get('career')
+            info_email=current_user.info_email).first()
+        alum.info_firstname = request.form.get('firstname')
+        alum.info_lastname = request.form.get('lastname')
+        alum.academics_major = request.form.get('major')
+        alum.career_field = request.form.get('career')
         db.session.commit()
         if not alum.group_id:
             try:
@@ -441,7 +441,7 @@ def alumni_info():
 @login_required
 def alum_information_additional():
     user = alumni.query.filter_by(
-        aluminfoemail=current_user.aluminfoemail).first()
+        info_email=current_user.info_email).first()
     for field in request.form:
         if field:
             setattr(user, field, request.form.get(field))
@@ -454,10 +454,10 @@ def alum_information_additional():
 def alumni_email():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    if current_user.aluminfonamefirst is None:
+    if current_user.info_firstname is None:
         return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
-        aluminfoemail=current_user.aluminfoemail).first()
+        info_email=current_user.info_email).first()
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
@@ -465,11 +465,11 @@ def alumni_email():
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
-    elif alumni.query.filter_by(aluminfoemail=email1).first():
+    elif alumni.query.filter_by(info_email=email1).first():
         errorMsg = "That email already belongs to another account"
     else:
-        current.aluminfoemail = email1
-        current_user.aluminfoemail = email1
+        current.info_email = email1
+        current_user.info_email = email1
         db.session.commit()
         return redirect(url_for('alum_logout'))
     html = render_template('pages/alum/account.html',
@@ -482,13 +482,13 @@ def alumni_email():
 def alumni_id():
     # check model to see if you can modify current_user directly
     # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    if current_user.aluminfonamefirst is None:
+    if current_user.info_firstname is None:
         return redirect(url_for('alumni_dashboard'))
     current = alumni.query.filter_by(
-        aluminfoemail=current_user.aluminfoemail).first()
+        info_email=current_user.info_email).first()
     response = {}
     if request.method == "POST":
-        if matches.query.filter_by(aluminfoemail=current_user.aluminfoemail).first():
+        if matches.query.filter_by(info_email=current_user.info_email).first():
             response['msg'] = 'You may not change groups while you are matched'
         else:
             new_id = request.form.get('id').strip()
@@ -515,11 +515,11 @@ def alum_matches(match=None):
     # username = get_cas()
     errorMsg = ''
     successMsg = ''
-    if current_user.aluminfonamefirst is None:
+    if current_user.info_firstname is None:
         return redirect(url_for('alumni_dashboard'))
 
     if not match:
-        match = get_match_alum(current_user.aluminfoemail)
+        match = get_match_alum(current_user.info_email)
 
     if request.form.get("action") == "Confirm":
         if match is not None:
@@ -533,7 +533,7 @@ def alum_matches(match=None):
         contacted = matches.query.filter_by(
             studentid=match.studentid).first().contacted
 
-    html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
+    html = render_template('pages/alum/matches.html', username=current_user.info_email, alum=current_user,
                            match=match, side="alum",
                            contacted=contacted)
 
@@ -551,7 +551,7 @@ def alum_matches(match=None):
                 errorMsg = 'You may not send more than one message per hour.'
             else:
                 db.engine.execute(
-                    f"UPDATE alumni SET last_message=now() WHERE aluminfoemail='{current_user.aluminfoemail}'")
+                    f"UPDATE alumni SET last_message=now() WHERE info_email='{current_user.info_email}'")
                 db.session.commit()
                 group_id = current_user.group_id
                 admin = admins.query.filter_by(id=group_id).first()
@@ -561,13 +561,13 @@ def alum_matches(match=None):
                 msg = Message(
                     'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
                 msg.body = message + \
-                    f"\n --- \nThis message was sent to you from the alum: {current_user.aluminfonamefirst} {current_user.aluminfonamelast}"
+                    f"\n --- \nThis message was sent to you from the alum: {current_user.info_firstname} {current_user.info_lastname}"
                 mail.send(msg)
                 successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
         print(errorMsg)
-        html = render_template('pages/alum/matches.html', username=current_user.aluminfoemail, alum=current_user,
+        html = render_template('pages/alum/matches.html', username=current_user.info_email, alum=current_user,
                                match=match, side="alum",
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
     return make_response(html)
@@ -576,10 +576,10 @@ def alum_matches(match=None):
 @app.route('/alum/account', methods=['GET'])
 @login_required
 def alum_account():
-    if current_user.aluminfonamefirst is None:
+    if current_user.info_firstname is None:
         return redirect(url_for('alumni_dashboard'))
-    username = current_user.aluminfoemail
-    current = alumni.query.filter_by(aluminfoemail=username).first()
+    username = current_user.info_email
+    current = alumni.query.filter_by(info_email=username).first()
     html = render_template('pages/alum/account.html',
                            active_email=True, username=username, alum=current, side="alum")
     return make_response(html)
@@ -588,21 +588,21 @@ def alum_account():
 @app.route('/alum/delete', methods=['GET'])
 @login_required
 def alum_delete():
-    if current_user.aluminfonamefirst is None:
+    if current_user.info_firstname is None:
         return redirect(url_for('alumni_dashboard'))
-    email = current_user.aluminfoemail
+    email = current_user.info_email
     # find if matched already and delete current match
     student = get_match_alum(email=email)
     if student is not None:
         student.matched = 0
-        matches.query.filter_by(aluminfoemail=email).delete()
-    alumni.query.filter_by(aluminfoemail=email).delete()
+        matches.query.filter_by(info_email=email).delete()
+    alumni.query.filter_by(info_email=email).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
 
 def get_match_alum(email):
-    match = matches.query.filter_by(aluminfoemail=email).first()
+    match = matches.query.filter_by(info_email=email).first()
     if not match:
         return None
     return students.query.filter_by(studentid=match.studentid).first()
@@ -623,7 +623,7 @@ def resend_email():
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = alumni.query.filter_by(aluminfoemail=email).first()
+        user = alumni.query.filter_by(info_email=email).first()
         if user is not None:
 
             token = s.dumps(email, salt='email-confirm')
@@ -657,7 +657,7 @@ def confirm_email(token):
         abort(404)
 
     # give email column indexability
-    user = alumni.query.filter_by(aluminfoemail=email).first_or_404()
+    user = alumni.query.filter_by(info_email=email).first_or_404()
     user.email_confirmed = True
     db.session.commit()
 
@@ -705,7 +705,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # print("submitted form")
-        user = alumni.query.filter_by(aluminfoemail=form.email.data).first()
+        user = alumni.query.filter_by(info_email=form.email.data).first()
         if user is not None:
             # print("user is not none")
             if user.email_confirmed:
@@ -739,7 +739,7 @@ def update():
     form = ForgotForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = alumni.query.filter_by(aluminfoemail=email).first()
+        user = alumni.query.filter_by(info_email=email).first()
         if user is not None:
 
             token = s.dumps(email, salt='password-update')
@@ -777,7 +777,7 @@ def update_password(token):
     if form.validate_on_submit():
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
-        user = alumni.query.filter_by(aluminfoemail=email).first_or_404()
+        user = alumni.query.filter_by(info_email=email).first_or_404()
         user.password = hashed_password
         db.session.commit()
         return redirect(url_for('password_changed'))
@@ -812,7 +812,7 @@ def signup():
         # username = form.username.data
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
-        existing_user = alumni.query.filter_by(aluminfoemail=email).first()
+        existing_user = alumni.query.filter_by(info_email=email).first()
         if existing_user is None:
 
             # email verification code
@@ -889,7 +889,7 @@ def notify():
     alum_emails = []
     for match in matches:
         student = students_table.query.filter_by(
-            studentid=match[0]).first().studentinfoemail
+            studentid=match[0]).first().info_email
         student_emails.append(student)
         alum_emails.append(match[1])
     student_msg = Message('You\'ve been Matched!',
@@ -1096,8 +1096,8 @@ def process_import(is_alumni):
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
                 for row in csv_reader:
-                    new_alum = alumni(aluminfonamefirst=row['First Name'], aluminfonamelast=row['Last Name'],
-                                      aluminfoemail=row['Email'], alumacademicsmajor=row['Major'].upper(), alumcareerfield=row['Career'], group_id=id)
+                    new_alum = alumni(info_firstname=row['First Name'], info_lastname=row['Last Name'],
+                                      info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'], group_id=id)
                     print(new_alum.group_id)
                     upsert_alum(new_alum)
             else:
@@ -1170,11 +1170,11 @@ def upsert_student(student):
     table_student = students.query.filter_by(
         studentid=student.studentid).first()
     if table_student:
-        table_student.studentinfonamefirst = student.studentinfonamefirst
-        table_student.studentinfonamelast = student.studentinfonamelast
-        table_student.studentinfoemail = student.studentinfoemail
-        table_student.studentacademicsmajor = student.studentacademicsmajor
-        table_student.studentcareerdesiredfield = student.studentcareerdesiredfield
+        table_student.info_firstname = student.info_firstname
+        table_student.info_lastname = student.info_lastname
+        table_student.info_email = student.info_email
+        table_student.academics_major = student.academics_major
+        table_student.career_field = student.career_field
         table_student.group_id = student.group_id
     else:
         db.session.add(student)
@@ -1183,13 +1183,13 @@ def upsert_student(student):
 
 def upsert_alum(alum):
     table_alum = alumni.query.filter_by(
-        aluminfoemail=alum.aluminfoemail).first()
+        info_email=alum.info_email).first()
     if table_alum:
-        table_alum.aluminfonamefirst = alum.aluminfonamefirst
-        table_alum.aluminfonamelast = alum.aluminfonamelast
-        table_alum.aluminfoemail = alum.aluminfoemail
-        table_alum.alumacademicsmajor = alum.alumacademicsmajor
-        table_alum.alumcareerfield = alum.alumcareerfield
+        table_alum.info_firstname = alum.info_firstname
+        table_alum.info_lastname = alum.info_lastname
+        table_alum.info_email = alum.info_email
+        table_alum.academics_major = alum.academics_major
+        table_alum.career_field = alum.career_field
         table_alum.group_id = alum.group_id
     else:
         db.session.add(alum)

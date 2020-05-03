@@ -41,11 +41,11 @@
                     <tbody>
                         {% for student in students: %}
                         <tr {% if student.matched==1 %}class="table-success" {% else %}class="table-danger" {% endif %}>
-                            <td>{{student.studentinfonamefirst}}</td>
-                            <td>{{student.studentinfonamelast}}</td>
-                            <td>{{student.studentinfoemail}}</td>
-                            <td>{{student.studentacademicsmajor}}</td>
-                            <td>{{student.studentcareerdesiredfield}}</td>
+                            <td>{{student.info_firstname}}</td>
+                            <td>{{student.info_lastname}}</td>
+                            <td>{{student.info_email}}</td>
+                            <td>{{student.academics_major}}</td>
+                            <td>{{student.career_field}}</td>
                             <td>{% if student.matched==1 %}Yes{% else %}No{% endif %}
                             </td>
                             <td class="prof-cell"><input type="checkbox" id="selected" name="selected"
