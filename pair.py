@@ -961,62 +961,72 @@ def admin_dashboard_createone():
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route('/admin/profiles-alum')
-def admin_profiles_alum():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    alumni = get_alumni(id)
-    html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
-                           side='admin', username=username, id=id)
-    return make_response(html)
+# @app.route('/admin/profiles-alum')
+# def admin_profiles_alum():
+#     username = get_cas()
+#     user = admins.query.filter_by(username=username).first()
+#     if user is None:
+#         return redirect(url_for('adminlogin'))
+#     id = user.id
+#     alumni = get_alumni(id)
+#     html = render_template('pages/admin/profiles-alum.html', alumni=alumni,
+#                            side='admin', username=username, id=id)
+#     return make_response(html)
 
 # SINGLE alum profile page
-@login_required
-@app.route('/admin/profile-alum')
-def admin_profile_alum():
+# @login_required
+@app.route('/admin/profile')
+def admin_profile():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    alum, matches = get_alum(request.args['email'])
-    html = render_template('pages/admin/profile-alum.html',
-                           pages/user/account.htmlalum, matches=matches,
-                           side='admin', username=username, id=id)
+    side = request.args.get('side')
+    if side == 'alum':
+        user, match_list = get_alum(request.args.get('username'))
+    else:
+        user = students.query.filter_by(
+            studentid=request.args.get('username')).first()
+        match_list = matches.query.filter_by(
+            studentid=request.args.get('username')).all()
+    html = render_template('pages/admin/profile.html', matches=match_list, user=user,
+                           side=request.args.get('side'), username=username, id=id)
     return make_response(html)
 
 
-@login_required
-@app.route('/admin/profiles-student')
+# @login_required
+@app.route('/admin/profiles')
 def admin_profiles_student():
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    students = get_students(id)
+    side = request.args.get('side')
+    if side == 'alum':
+        users = get_alumni(id)
+    else:
+        users = get_students(id)
     html = render_template(
-        'pages/admin/profiles-student.html', students=students,
-        side='admin', username=username, id=id)
+        'pages/admin/profiles.html', users=users,
+        side=side, username=username, id=id)
     return make_response(html)
 
-# SINGLE student profile page
-@login_required
-@app.route('/admin/profile-student')
-def admin_profile_student():
-    username = get_cas()
-    user = admins.query.filter_by(username=username).first()
-    if user is None:
-        return redirect(url_for('adminlogin'))
-    id = user.id
-    student, matches = get_student(request.args['netid'])
-    html = render_template('pages/admin/profile-student.html',
-                           user=student, matches=matches,
-                           side='admin', username=username, id=id)
-    return make_response(html)
+# # SINGLE student profile page
+# @login_required
+# @app.route('/admin/profile-student')
+# def admin_profile_student():
+#     username = get_cas()
+#     user = admins.query.filter_by(username=username).first()
+#     if user is None:
+#         return redirect(url_for('adminlogin'))
+#     id = user.id
+#     student, matches = get_student(request.args['username'])
+#     html = render_template('pages/admin/profile.html',
+#                            user=student, matches=matches,
+#                            side='admin', username=username, id=id)
+#     return make_response(html)
 
 
 @login_required
