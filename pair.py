@@ -28,6 +28,7 @@ from datetime import datetime
 import requests
 import json
 from re import search
+import time
 
 # -----------------------------------------------------------------------
 
@@ -171,8 +172,9 @@ def student_information():
     if not current:
         try:
             group_id = int(info.get('group_id'))
+            print(group_id)
             admin = admins.query.filter_by(id=group_id).first()
-            if admin is None:
+            if not admin:
                 html = render_template(
                     'pages/student/new.html', student=current, errorMsg="The group id you specified does not belong to an existing group")
                 return make_response(html)
@@ -221,7 +223,21 @@ def student_matches(match=None):
     if request.form.get("message") is not None:
         # Due to database issues (that won't be in the final product) this may not send
         # what is this?
+        db.engine.execute(
+            'UPDATE students SET last_message=now()')
+        db.session.commit()
         try:
+            try:
+                time = current.last_message
+                print(time)
+                last_time = datetime.strptime(str(time).split('.')[
+                    0], '%Y-%m-%d %H:%M:%S')
+                if (datetime.utcnow() - last_time).seconds / 3600 < 1:
+                    # display an error on the page
+                    redirect(url_for('student_matches'))
+            except:
+                pass
+
             group_id = current.group_id
             admin = admins.query.filter_by(id=group_id).first()
             email = admin.username + "@princeton.edu"
@@ -385,11 +401,11 @@ def alumni_info():
         alum.alumacademicsmajor = request.form.get('major')
         alum.alumcareerfield = request.form.get('career')
         db.session.commit()
-        if alum.group_id is None:
+        if not alum.group_id:
             try:
                 id = int(request.form.get('group_id'))
                 admin = admins.query.filter_by(id=id).first()
-                if admin is None:
+                if not admin:
                     html = render_template(
                         'pages/alum/new.html', user=alum, errorMsg="The group id you specified does not belong to an existing group")
                     return make_response(html)
@@ -494,6 +510,15 @@ def alum_matches(match=None):
     if request.form.get("message") is not None:
         # Due to database issues (that won't be in the final product) this may not send
         try:
+            try:
+                last_time = datetime.strptime(str(current_user.last_message).split('.')[
+                    0], '%Y-%m-%d %H:%M:%S')
+                if (datetime.utcnow() - last_time).seconds / 3600 < 1:
+                    return redirect(url_for('alum_matches'))
+            except:
+                pass
+            current_user.last_message = str(datetime.utcnow())
+            db.session.commit()
             group_id = current_user.group_id
             admin = admins.query.filter_by(id=group_id).first()
             email = admin.username + "@princeton.edu"
@@ -1141,15 +1166,15 @@ def adminlogin():
     error = ""
     form = AdminLoginForm()
     if form.validate_on_submit():
-        #print("submitted form")
+        # print("submitted form")
         user = admins.query.filter_by(
             username=form.username.data).first()  # CHECK DATABASE.PY
         if user is not None:
-            #print("user is not none")
+            # print("user is not none")
 
             # print("email is confirmed")
             if check_password_hash(user.password, form.password.data):
-                #print("password is correct")
+                # print("password is correct")
                 db.session.commit()  # could we remove this
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('admin_dashboard'))

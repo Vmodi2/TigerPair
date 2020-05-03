@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, jsonify
 from config import db
+from datetime import datetime
 
 
 class students(db.Model):
@@ -14,6 +15,8 @@ class students(db.Model):
         'studentcareerdesiredfield', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
     group_id = db.Column('group_id', db.Unicode)
+    last_message = db.Column('last_message', db.DateTime,
+                             server_default=str(datetime.utcnow()))
 
     def __init__(self, studentid, studentinfonamefirst, studentinfonamelast, studentinfoemail,
                  studentacademicsmajor, studentcareerdesiredfield=None, matched=0, group_id=None):
