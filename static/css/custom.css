@@ -62,11 +62,13 @@
   /*tabs*/
 
   .dashtab{
-      background:#ffa050;
-      color:white;
+      background:#ffffff;
+      color:#495057;
+      border-color:#dee2e6 !important;
   }
 
   .dashtab:hover{
-    background:#f17209;
-    color:white;
+    background:#dddddd;
+    color:#495057;
+    border-color:#dee2e6 !important;
 }
