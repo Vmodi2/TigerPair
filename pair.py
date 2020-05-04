@@ -118,6 +118,10 @@ def get_student_info():
         upsert_student(new_student)
 
 
+def get_cas():
+    CASClient().authenticate().replace('\n', '')
+
+
 def verify_alum():
     if not current_user.is_authenticated:
         abort(redirect(url_for('login')))
@@ -131,7 +135,7 @@ def verify_user(side):
         username = verify_alum()
         user = alumni.query.filter_by(info_email=username).first()
     else:
-        username = CASClient().authenticate().replace('\n', '')
+        username = get_cas()
         user = students.query.filter_by(studentid=username).first()
         if not user:
             abort(redirect(url_for('user_new', side='student')))
