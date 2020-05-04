@@ -1,7 +1,7 @@
 {% extends 'pages/user/newuser_base.html' %}
 
 {% block specific_form %}
-<form method="post" action="/{{side}}/information">
+<form method="post" action="/{{side}}/new">
     <label for="name">Name</label>
     <div class="row">
         <div class="col">
@@ -46,7 +46,7 @@
         </div>
     </div>
     <br />
-    <p class="text-danger font-weight-bold">{{errorMsg}}</p>
+    <p class="text-danger font-weight-bold">{{msg}}</p>
     <button type="submit" class="btn btn-warning my-2 my-sm-0" id="submit">&nbsp;Submit&nbsp;</button>
 </form>
 {% endblock %}

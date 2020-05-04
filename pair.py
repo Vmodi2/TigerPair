@@ -7,7 +7,7 @@
 from sys import argv
 import flask
 from flask import request, make_response, redirect, url_for, jsonify
-from flask import render_template, flash
+from flask import render_template, flash, abort
 from flask_mail import Message
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from itsdangerous import SignatureExpired
@@ -54,7 +54,7 @@ def user_loader(user_id):
 
 @app.route("/student/logout")
 # @login_required <- this makes it redirect to login when student logs out
-def student_logout():
+def user_logout():
     casClient = CASClient()
     casClient.authenticate()
     casClient.logout()
@@ -74,28 +74,6 @@ def admin_logout():
     # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
-# -----------------------------------------------------------------------
-
-
-def get_cas():
-    username = strip_user(CASClient().authenticate())
-    return username
-
-
-def route_new_student():
-    # username = get_cas()
-    # current = students.query.filter_by(studentid=username).first()
-    # if not current:
-    #     student_new()
-    pass
-
-
-@app.route('/student/new')
-def student_new():
-    username = get_cas()
-    current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/user/new.html', user=current, side="student")
-    return make_response(html)
 
 
 def get_student_info():
@@ -140,106 +118,129 @@ def get_student_info():
         upsert_student(new_student)
 
 
-@app.route('/student/dashboard', methods=['POST', 'GET'])
-def student_dashboard():
-    route_new_student()
-    username = get_cas()
-    current = students.query.filter_by(studentid=username).first()
-    if not current:
-        get_student_info()
-        current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/user/new.html',
-                               user=current, side="student")
-        return make_response(html)
+def get_cas():
+    return CASClient().authenticate().replace('\n', '')
+
+
+def verify_alum():
+    if not current_user.is_authenticated:
+        abort(redirect(url_for('login')))
+    if not current_user.email_confirmed:
+        abort(redirect(url_for('gotoemail')))
+    return current_user.info_email
+
+
+def verify_user(side):
+    if side == 'alum':
+        username = verify_alum()
+        user = alumni.query.filter_by(info_email=username).first()
     else:
-        # print("in student dashboard")
         username = get_cas()
-        current = students.query.filter_by(studentid=username).first()
-        html = render_template('pages/user/dashboard.html',
-                               user=current, side="student")
-        return make_response(html)
+        user = students.query.filter_by(studentid=username).first()
+        if not user:
+            abort(redirect(url_for('user_new', side='student')))
+    return username, user
 
 
-@app.route('/student/information', methods=['POST'])
-def student_information():
-    route_new_student()
-    username = get_cas()
-    group_id = -1
-    current = students.query.filter_by(studentid=username).first()
-    info = request.form
-    # WTF IS THIS Group is auto going to 0 rn
+def route_new_user(user, side):
+    if not user.info_firstname:
+        abort(redirect(url_for('user_new', side=side)))
 
-    if not current:
+
+@app.route('/<side>/dashboard', methods=['POST', 'GET'])
+def user_dashboard(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
+    msg = ''
+    if request.method == 'POST':
+        msg = update_info(user, username, side, request.form, False)
+    html = render_template('pages/user/dashboard.html',
+                           side=side, user=user, username=username, msg=msg)
+    return make_response(html)
+
+
+@app.route('/<side>/new', methods=['POST', 'GET'])
+def user_new(side):
+    if side == 'student':
+        username = get_cas()
+        user = students.query.filter_by(studentid=username)
+    else:
+        username, user = verify_user(side)
+    msg = ''
+    if request.method == 'POST':
+        msg = update_info(user, username, side, request.form, True)
+        if not msg:
+            return redirect(url_for('user_dashboard', side=side))
+    html = render_template('pages/user/new.html', side=side,
+                           user=user, username=username, msg=msg)
+    return make_response(html)
+
+
+def update_info(user, username, side, info, with_group):
+    if side == 'alum':
+        new_user = alumni(info_firstname=info.get('firstname'), info_lastname=info.get(
+            'lastname'), info_email=username, academics_major=info.get('major').upper(), career_field=info.get('career'))
+    else:
+        new_user = students(username, info.get('firstname'), info.get(
+            'lastname'), f'{username}@princeton.edu', info.get('major'), info.get('career'))
+    if with_group:
         try:
             group_id = int(info.get('group_id'))
-            print(group_id)
             admin = admins.query.filter_by(id=group_id).first()
             if not admin:
-                html = render_template('pages/user/new.html', user=current, side="student",
-                                       errorMsg="The group id you specified does not belong to an existing group")
-                return make_response(html)
+                return "The group id you specified does not belong to an existing group"
             elif admin.group_password and admin.group_password != info.get('group_password'):
-                html = render_template('pages/user/new.html', user=current, side="student",
-                                       errorMsg="The group password you entered is incorrect")
-                return make_response(html)
+                return "The group password you entered is incorrect"
         except:
             group_id = 0
-
+        new_user.group_id = group_id
     else:
-        group_id = current.group_id
-    new_student = students(username, info.get('firstname'), info.get('lastname'),
-                           f'{username}@princeton.edu', info.get('major'), info.get('career'), group_id=group_id)
-    upsert_student(new_student)
-    return redirect(url_for('student_dashboard'))
+        new_user.group_id = user.group_id
+    upsert_user(new_user, side)
+    return ''
 
 
-@app.route('/student/information-additional', methods=['POST'])
-def student_information_additional():
-    route_new_student()
-    username = get_cas()
-    user = students.query.filter_by(studentid=username).first()
+@app.route('/<side>/information-additional', methods=['POST'])
+def user_information_additional(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
     for field in request.form:
         if field:
             setattr(user, field, request.form.get(field))
     db.session.commit()
-    return redirect(url_for('student_dashboard'))
+    html = render_template('pages/user/dashboard.html',
+                           side=side, user=user, username=username, active='more')
+    return make_response(html)
 
 
-@app.route('/student/matches', methods=['GET', 'POST'])
-def student_matches(match=None):
-    route_new_student()
-    username = get_cas()
+@app.route('/<side>/matches', methods=['GET', 'POST'])
+def user_matches(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
+    is_alum = side == 'alum'
     errorMsg = ''
     successMsg = ''
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    if not match:
-        match = get_match_student(username)
+    if is_alum:
+        match = matches.query.filter_by(info_email=username).first()
+    else:
+        match = matches.query.filter_by(studentid=username).first()  
 
     if request.form.get("action") == "Confirm":
         if match is not None:
-            match_item = matches.query.filter_by(studentid=username).first()
-            match_item.contacted = True
+            match.contacted = True
             db.session.commit()
 
     contacted = False
     if match is not None:
-        contacted = matches.query.filter_by(
-            studentid=username).first().contacted
+        contacted = match.contacted
 
-    current = students.query.filter_by(studentid=username).first()
-    html = render_template('pages/user/matches.html',
-                           match=match, username=username, user=current, side="student",
-                           contacted=contacted)
+    html = render_template('pages/user/matches.html', match=match,
+                           username=username, user=user, side=side, contacted=contacted)
 
     if request.form.get("message") is not None:
-        # Due to database issues (that won't be in the final product) this may not send
-        # what is this?
         try:
             try:
-                time = current.last_message
+                time = user.last_message
                 last_time = datetime.strptime(str(time).split('.')[
                     0], '%Y-%m-%d %H:%M:%S')
             except:
@@ -247,41 +248,34 @@ def student_matches(match=None):
             if (datetime.utcnow() - last_time).seconds / 3600 < 1:
                 errorMsg = 'You may not send more than one message per hour.'
             else:
+                where_clause = f"info_email='{user.info_email}'" if is_alum else f"studentid='{user.studentid}'"
                 db.engine.execute(
-                    f"UPDATE students SET last_message=now() WHERE studentid='{current.studentid}'")
+                    f"UPDATE {'alumni' if is_alum else 'students'} SET last_message=now() WHERE {where_clause}")
                 db.session.commit()
-                group_id = current.group_id
+                group_id = user.group_id
                 admin = admins.query.filter_by(id=group_id).first()
                 email = admin.username + "@princeton.edu"
 
                 message = request.form.get("message")
                 msg = Message(
-                    'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
-                msg.body = message + "\n --- \nThis message was sent to you from the student: " + username
+                    f'TigerPair {side.capitalize()} Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+                msg.body = message + \
+                    f"\n --- \nThis message was sent to you from the {side}: " + username
                 mail.send(msg)
                 successMsg = 'Message successfully sent!'
         except Exception as e:
-            pass
+            print(e)
         html = render_template('pages/user/matches.html',
-                               match=match, username=username, user=current, side="student",
+                               match=match, username=username, user=user, side=side,
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
 
     return make_response(html)
 
 
-@app.route('/student/email', methods=['GET', 'POST'])
-def student_email():
-    # check model to see if you can modify current_user directly
-    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-
-    route_new_student()
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    current = students.query.filter_by(
-        studentid=username).first()
+@app.route('/<side>/email', methods=['GET', 'POST'])
+def user_email(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
@@ -289,31 +283,26 @@ def student_email():
         errorMsg = "Your emails must match"
     elif not verify_email_regex(request):
         errorMsg = "Please enter a valid email address"
-    elif students.query.filter_by(info_email=email1).first():
-        errorMsg = "That email already belongs to another account"
     else:
-        current.info_email = email1
-        db.session.commit()
+        table = alumni if side == 'alum' else students
+        if table.query.filter_by(info_email=email1).first():
+            errorMsg = "That email already belongs to another account"
+        else:
+            user.info_email = email1
+            db.session.commit()
     html = render_template('pages/user/account.html',
-                           active_email=True, errorMsg=errorMsg, user=current, side="student")
+                           active_email=True, errorMsg=errorMsg, user=user, side=side)
     return make_response(html)
 
 
-@app.route('/student/id', methods=['GET', 'POST'])
-def student_id():
-    # check model to see if you can modify current_user directly
-    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    route_new_student()
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    current = students.query.filter_by(
-        studentid=username).first()
+@app.route('/<side>/id', methods=['GET', 'POST'])
+def user_id(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
     response = {}
     if request.method == "POST":
-        if matches.query.filter_by(studentid=username).first():
+        match = matches.query.filter_by(info_email=username).first() if side == 'alum' else matches.query.filter_by(studentid=username).first()
+        if match:
             response['msg'] = 'You may not change groups while you are matched'
         else:
             new_id = request.form.get('id').strip()
@@ -323,287 +312,47 @@ def student_id():
                     response['msg'] = 'The chosen group id does not belong to an existing group'
                 elif group.group_password and group.group_password != request.form.get('password'):
                     response['msg'] = 'The group password you entered is incorrect'
+                elif new_id == str(user.group_id):
+                    response['msg'] = 'You may not switch into your own group'
                 else:
-                    current.group_id = new_id
+                    user.group_id = new_id
+                    # is_alum = side == 'alum'
+                    # where_clause = f"info_email='{user.info_email}'" if is_alum else f"studentid='{user.studentid}'"
+                    # db.engine.execute(f"UPDATE {'alumni' if is_alum else 'students'} SET last_message=epoch from now() WHERE {where_clause}")
                     db.session.commit()
                     response['changed'] = True
                     response['id'] = new_id
                     response['msg'] = 'Success changing your group!'
+            else:
+                response['msg'] = 'Please enter a valid group id'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
 
 
-@app.route('/student/account', methods=['GET'])
-def student_account():
-    route_new_student()
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    current = students.query.filter_by(studentid=username).first()
+@app.route('/<side>/account', methods=['GET'])
+def user_account(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
     html = render_template('pages/user/account.html',
-                           active_email=True, username=username, user=current, side="student")
+                           active_email=True, username=username, user=user, side=side)
     return make_response(html)
 
 
-@app.route('/student/delete', methods=['GET'])
-def student_delete():
-    username = get_cas()
-
-    if students.query.filter_by(studentid=username).first() is None:
-        return redirect(url_for('student_dashboard'))
-
-    # find if matched already and delete current match could use clear match
-    # but then I would have to find student object
-    alum = get_match_student(username=username)
-    if alum is not None:
-        alum.matched -= 1
+@app.route('/<side>/delete', methods=['GET'])
+def user_delete(side):
+    username, user = verify_user(side)
+    route_new_user(user, side)
+    if side == 'alum':
+        matches.query.filter_by(info_email=username).delete()
+        alumni.query.filter_by(info_email=username).delete()
+    else:
         matches.query.filter_by(studentid=username).delete()
-    students.query.filter_by(studentid=username).delete()
+        students.query.filter_by(studentid=username).delete()
     db.session.commit()
     return redirect(url_for("confirm_delete"))
 
-
-def get_match_student(username):
-    match = matches.query.filter_by(studentid=username).first()
-    if not match:
-        return None
-    return alumni.query.filter_by(info_email=match.info_email).first()
 # -----------------------------------------------------------------------
-
-# Dynamic page function for alum info page call
-
-# WHY DO WE NEED THIS FUNCTION? Alumn info is trying to get info from
-# a form that does not exist until dashboard is called but we  call information first?
-
-# @app.route('/alum/dashboard', methods=['POST', 'GET'])
-# @login_required
-# def alum_dashboard():
-    # if not current_user.email_confirmed:
-    # return redirect(url_for('login'))
-    # html = render_template('pages/user/dashboard.html',
-    # pages/user/account.htmlcurrent_user, username=current_user.info_email, side="alum")
-    # return make_response(html)
-
-# NEW ALUM START
-@app.route('/alum/dashboard', methods=['GET', 'POST'])
-@login_required
-def alumni_dashboard():
-    if not current_user.email_confirmed:
-        return redirect(url_for('gotoemail'))
-    current = alumni.query.filter_by(
-        info_email=current_user.info_email).first()
-    if not current.info_firstname:
-        html = render_template('pages/user/new.html',
-                               user=current, username=current.info_email, side="alum")
-    else:
-        html = render_template('pages/user/dashboard.html',
-                               user=current, side="alum")
-    return make_response(html)
-
-
-@app.route('/alum/information', methods=['GET', 'POST'])
-@login_required
-def alumni_info():
-    if not current_user.email_confirmed:
-        return redirect(url_for('gotoemail'))
-    if (flask.request.method == 'POST'):
-        alum = alumni.query.filter_by(
-            info_email=current_user.info_email).first()
-        alum.info_firstname = request.form.get('firstname')
-        alum.info_lastname = request.form.get('lastname')
-        alum.academics_major = request.form.get('major')
-        alum.career_field = request.form.get('career')
-        db.session.commit()
-        if not alum.group_id:
-            try:
-                id = int(request.form.get('group_id'))
-                admin = admins.query.filter_by(id=id).first()
-                if not admin:
-                    html = render_template(
-                        'pages/user/new.html', user=alum, side="alum", errorMsg="The group id you specified does not belong to an existing group")
-                    return make_response(html)
-                elif admin.group_password and admin.group_password != request.form.get('group_password'):
-                    html = render_template(
-                        'pages/user/new.html', user=alum, side="alum", errorMsg="The group password you entered is incorrect")
-                    return make_response(html)
-                else:
-                    alum.group_id = id
-            except:
-                alum.group_id = 0
-        db.session.commit()
-    return redirect(url_for('alumni_dashboard'))
-
-
-@app.route('/alum/information-additional', methods=['POST'])
-@login_required
-def alum_information_additional():
-    user = alumni.query.filter_by(
-        info_email=current_user.info_email).first()
-    for field in request.form:
-        if field:
-            setattr(user, field, request.form.get(field))
-    db.session.commit()
-    return redirect(url_for('alumni_dashboard'))
-
-
-@app.route('/alum/email', methods=['GET', 'POST'])
-@login_required
-def alumni_email():
-    # check model to see if you can modify current_user directly
-    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    if current_user.info_firstname is None:
-        return redirect(url_for('alumni_dashboard'))
-    current = alumni.query.filter_by(
-        info_email=current_user.info_email).first()
-    errorMsg = ''
-    email1 = request.form.get('email')
-    email2 = request.form.get('email-repeated')
-    if email1 != email2:
-        errorMsg = "Your emails must match"
-    elif not verify_email_regex(request):
-        errorMsg = "Please enter a valid email address"
-    elif alumni.query.filter_by(info_email=email1).first():
-        errorMsg = "That email already belongs to another account"
-    else:
-        current.info_email = email1
-        current_user.info_email = email1
-        db.session.commit()
-        return redirect(url_for('alum_logout'))
-    html = render_template('pages/user/account.html',
-                           active_email=True, errorMsg=errorMsg, side="alum")
-    return make_response(html)
-
-
-@app.route('/alum/id', methods=['GET', 'POST'])
-@login_required
-def alumni_id():
-    # check model to see if you can modify current_user directly
-    # TODO CONFIRM EMAIL IS PRINCETON AND MAKE SURE THE EMAILS ARE THE SAME
-    if current_user.info_firstname is None:
-        return redirect(url_for('alumni_dashboard'))
-    current = alumni.query.filter_by(
-        info_email=current_user.info_email).first()
-    response = {}
-    if request.method == "POST":
-        if matches.query.filter_by(info_email=current_user.info_email).first():
-            response['msg'] = 'You may not change groups while you are matched'
-        else:
-            new_id = request.form.get('id').strip()
-            if new_id:
-                group = admins.query.filter_by(id=new_id).first()
-                if not group:
-                    response['msg'] = 'The chosen group id does not belong to an existing group'
-                elif group.group_password and group.group_password != request.form.get('password'):
-                    response['msg'] = 'The group password you entered is incorrect'
-                else:
-                    current.group_id = new_id
-                    db.session.commit()
-                    response['changed'] = True
-                    response['id'] = new_id
-                    response['msg'] = 'Success changing your group!'
-    else:
-        response['msg'] = 'An unexpected error occurred'
-    return jsonify(response)
-
-
-@app.route('/alum/matches', methods=['GET', 'POST'])
-@login_required
-def alum_matches(match=None):
-    # username = get_cas()
-    errorMsg = ''
-    successMsg = ''
-    if current_user.info_firstname is None:
-        return redirect(url_for('alumni_dashboard'))
-
-    if not match:
-        match = get_match_alum(current_user.info_email)
-
-    if request.form.get("action") == "Confirm":
-        if match is not None:
-            match_item = matches.query.filter_by(
-                studentid=match.studentid).first()
-            match_item.contacted = True
-            db.session.commit()
-
-    contacted = False
-    if match is not None:
-        contacted = matches.query.filter_by(
-            studentid=match.studentid).first().contacted
-
-    html = render_template('pages/user/matches.html', user=current_user, username=current_user.info_email,                       match=match, side="alum",
-                           contacted=contacted)
-
-    if request.form.get("message") is not None:
-        # Due to database issues (that won't be in the final product) this may not send
-        # what is this?
-        try:
-            try:
-                time = current_user.last_message
-                last_time = datetime.strptime(
-                    str(time).split('.')[0], '%Y-%m-%d %H:%M:%S')
-            except:
-                pass
-            if (datetime.utcnow() - last_time).seconds / 3600 < 1:
-                errorMsg = 'You may not send more than one message per hour.'
-            else:
-                db.engine.execute(
-                    f"UPDATE alumni SET last_message=now() WHERE info_email='{current_user.info_email}'")
-                db.session.commit()
-                group_id = current_user.group_id
-                admin = admins.query.filter_by(id=group_id).first()
-                email = admin.username + "@princeton.edu"
-
-                message = request.form.get("message")
-                msg = Message(
-                    'TigerPair Student Message', sender='tigerpaircontact@gmail.com', recipients=[email])
-                msg.body = message + \
-                    f"\n --- \nThis message was sent to you from the alum: {current_user.info_firstname} {current_user.info_lastname}"
-                mail.send(msg)
-                successMsg = 'Message successfully sent!'
-        except Exception as e:
-            pass
-        html = render_template('pages/user/matches.html', user=current_user, username=current_user.info_email,
-                               match=match, side="alum",
-                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
-    return make_response(html)
-
-
-@app.route('/alum/account', methods=['GET'])
-@login_required
-def alum_account():
-    if current_user.info_firstname is None:
-        return redirect(url_for('alumni_dashboard'))
-    username = current_user.info_email
-    current = alumni.query.filter_by(info_email=username).first()
-    html = render_template('pages/user/account.html', user=current,
-                           active_email=True, username=username, side="alum")
-    return make_response(html)
-
-
-@app.route('/alum/delete', methods=['GET'])
-@login_required
-def alum_delete():
-    if current_user.info_firstname is None:
-        return redirect(url_for('alumni_dashboard'))
-    email = current_user.info_email
-    # find if matched already and delete current match
-    student = get_match_alum(email=email)
-    if student is not None:
-        student.matched = 0
-        matches.query.filter_by(info_email=email).delete()
-    alumni.query.filter_by(info_email=email).delete()
-    db.session.commit()
-    return redirect(url_for('confirm_delete'))
-
-
-def get_match_alum(email):
-    match = matches.query.filter_by(info_email=email).first()
-    if not match:
-        return None
-    return students.query.filter_by(studentid=match.studentid).first()
 
 
 def verify_email_regex(request):
@@ -698,7 +447,7 @@ def login():
     error = ""
     # print("login")
     if current_user.is_authenticated:
-        return redirect(url_for('alumni_info'))
+        return redirect(url_for('user_dashboard', side='alum'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -713,7 +462,7 @@ def login():
                     print("this is a problem")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
-                    return redirect(url_for('alumni_info'))
+                    return redirect(url_for('user_dashboard', side='alum'))
                 else:
                     error = "Invalid email or password"
                     print("should be here")
@@ -797,6 +546,7 @@ def password_changed():
 
 @app.route('/login/gotoemail', methods=['GET', 'POST'])
 def gotoemail():
+    logout_user()
     return render_template('pages/login/gotoemail.html')
 
 
@@ -825,8 +575,8 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(email, password=hashed_password)
-            upsert_alum(user)
+            user = alumni(info_email=email, password=hashed_password)
+            upsert_user(user, side='alum')
 
             return redirect(url_for('gotoemail'))
 
@@ -856,8 +606,8 @@ def admin_dashboard():
         return redirect(url_for('adminlogin'))
     id = user.id
     match_list = matches.query.filter_by(group_id=id).all()
-    html = render_template('pages/admin/dashboard.html', matches=match_list,
-                           side='admin', username=username, id=id)
+    html = render_template('pages/admin/dashboard.html',
+                           matches=match_list, username=username, id=id)
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -876,26 +626,24 @@ def admin_dashboard_create():
 # Notify when a match has been made
 @app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
 def notify():
-    print("in notify")
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
+    msg = ''
     id = user.id
-    matches = get_matches(id)
-    print("matches: ", matches)
-    if matches is None:
-        error="No matches exist."
-        html = render_template('pages/admin/modify-matches.html', matches=matches,
-                           side='admin', username=username, id=id, errorMsg=error)
+    match_list = matches.query.filter_by(group_id=id).all()
+    if not match_list:
+        errorMsg = 'There are no members to notify'
+        html = render_template('pages/admin/modify-matches.html', errorMsg=errorMsg, username=username, id=id)
         return make_response(html)
     student_emails = []
     alum_emails = []
-    for match in matches:
+    for match in match_list:
         student = students_table.query.filter_by(
-            studentid=match[0]).first().info_email
+            studentid=match.studentid).first().info_email
         student_emails.append(student)
-        alum_emails.append(match[1])
+        alum_emails.append(match.info_email)
     student_msg = Message('You\'ve been Matched!',
                           sender='tigerpaircontact@gmail.com', bcc=student_emails)
     student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
@@ -905,19 +653,20 @@ def notify():
                        sender='tigerpaircontact@gmail.com', bcc=alum_emails)
     alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
     mail.send(alum_msg)
-    return redirect(url_for('admin_dashboard'))
+    successMsg = 'Email notifications successfully sent!'
+    html = render_template('pages/admin/modify-matches.html', successMsg=successMsg, username=username, id=id)
+    return make_response(html)
 
 
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
-    error=""
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
-    html = render_template('pages/admin/modify-matches.html', matches=matches,
-                           side='admin', username=username, id=id, errorMsg=error)
+    html = render_template('pages/admin/modify-matches.html',
+                           matches=matches, username=username, id=id)
     return make_response(html)
 
 
@@ -952,8 +701,8 @@ def admin_dashboard_manual_match():
     id = user.id
     alumni = get_unmatched_alumni(id)
     students = get_unmatched_students(id)
-    html = render_template('pages/admin/manual-match.html', alumni=alumni, students=students,
-                           side='admin', username=username, id=id)
+    html = render_template('pages/admin/manual-match.html',
+                           alumni=alumni, students=students, username=username, id=id)
     return make_response(html)
 
 
@@ -1061,8 +810,8 @@ def admin_import(side):
     if request.method == 'POST':
         return process_import(is_alumni=(side == 'alum'))
     page_suffix = 'alumni' if side == 'alum' else 'students'
-    html = render_template(f'pages/admin/import-{page_suffix}.html',
-                           side="Admin", username=username, id=id)
+    html = render_template(
+        f'pages/admin/import-{page_suffix}.html', username=username, id=id, side=side)
     return make_response(html)
 
 
@@ -1087,34 +836,47 @@ def process_import(is_alumni):
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    side = 'alum' if is_alumni else 'student'
     html = ''
+    errorMsg, successMsg = '', ''
+    bad_members = []
     try:
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded',
-                                   side="Admin", username=username, id=id)
+                                   errorMsg='No file uploaded', username=username, id=id, side=side)
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
                 for row in csv_reader:
                     new_alum = alumni(info_firstname=row['First Name'], info_lastname=row['Last Name'],
-                                      info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'], group_id=id)
-                    print(new_alum.group_id)
-                    upsert_alum(new_alum)
+                                      info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'])
+                    current = alumni.query.filter_by(info_email=new_alum.info_email).first()
+                    if current.group_id != id and current.group_id != -1:
+                        bad_members.append(new_alum.info_email)
+                        continue
+                    new_alum.group_id = id
+                    upsert_user(new_alum, side)
             else:
                 for row in csv_reader:
                     new_student = students(row['netid'], row['First Name'],
-                                           row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], group_id=id)
-                    upsert_student(new_student)
+                                           row['Last Name'], row['Email'], row['Major'].upper(), row['Career'])
+                    current = students.query.filter_by(studentid=new_student.studentid).first()
+                    if current.group_id != id and current.group_id != -1:
+                        bad_members.append(new_student.studentid)
+                        continue
+                    new_student.group_id = id
+                    upsert_user(new_student, side)
             db.session.commit()
+            if bad_members:
+                errorMsg = "The following members already exist in another group:"
+            else:
+                successMsg = 'Success processing your upload!'
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   successMsg='Success processing your upload!',
-                                   side="Admin", username=username, id=id)
+                                   errorMsg=errorMsg, bad_members=bad_members, successMsg=successMsg, username=username, id=id, side=side)
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}",
-                               side="Admin", username=username, id=id)
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side)
     return make_response(html)
 
 
@@ -1169,33 +931,18 @@ def strip_user(username):
     return username.replace('\n', '')
 
 
-def upsert_student(student):
-    table_student = students.query.filter_by(
-        studentid=student.studentid).first()
-    if table_student:
-        table_student.info_firstname = student.info_firstname
-        table_student.info_lastname = student.info_lastname
-        table_student.info_email = student.info_email
-        table_student.academics_major = student.academics_major
-        table_student.career_field = student.career_field
-        table_student.group_id = student.group_id
+def upsert_user(user, side):
+    table_user = alumni.query.filter_by(info_email=user.info_email).first(
+    ) if side == 'alum' else students.query.filter_by(studentid=user.studentid).first()
+    if table_user:
+        table_user.info_firstname = user.info_firstname
+        table_user.info_lastname = user.info_lastname
+        table_user.info_email = user.info_email
+        table_user.academics_major = user.academics_major
+        table_user.career_field = user.career_field
+        table_user.group_id = user.group_id
     else:
-        db.session.add(student)
-    db.session.commit()
-
-
-def upsert_alum(alum):
-    table_alum = alumni.query.filter_by(
-        info_email=alum.info_email).first()
-    if table_alum:
-        table_alum.info_firstname = alum.info_firstname
-        table_alum.info_lastname = alum.info_lastname
-        table_alum.info_email = alum.info_email
-        table_alum.academics_major = alum.academics_major
-        table_alum.career_field = alum.career_field
-        table_alum.group_id = alum.group_id
-    else:
-        db.session.add(alum)
+        db.session.add(user)
     db.session.commit()
 
 
@@ -1248,7 +995,7 @@ def admin_settings():
     user = admins.query.filter_by(username=username).first()
     id = user.id
     html = render_template('pages/admin/settings.html',
-                           username=username, id=id, side='admin', user=user)
+                           username=username, id=id, user=user)
     return make_response(html)
 
 
@@ -1271,8 +1018,8 @@ def admin_change_id():
                 errorMsg = 'The selected user already has an account'
         else:
             errorMsg = "The entered net id's don't match"
-    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
-                           side='admin', user=user)
+    html = render_template('pages/admin/settings.html',
+                           errorMsg=errorMsg, username=username, id=id, user=user)
     return make_response(html)
 
 
@@ -1290,8 +1037,8 @@ def admin_change_password():
             db.session.commit()
         else:
             errorMsg = 'The entered passwords must match'
-    html = render_template('pages/admin/settings.html', errorMsg=errorMsg, username=username, id=id,
-                           side='admin', user=user)
+    html = render_template('pages/admin/settings.html',
+                           errorMsg=errorMsg, username=username, id=id, user=user)
     return make_response(html)
 
 
@@ -1307,8 +1054,8 @@ def confirm_delete():
 #     return make_response(html)
 
 
-# @app.route('/student/join-group', methods=['GET', 'POST'])
-# def student_join_group():
+# @app.route('/<side>/join-group', methods=['GET', 'POST'])
+# def user_join_group():
 #     if request.method == 'POST':
 #         pass
 #     html = render_template('pages/admin/enter_group.html', side='student')
