@@ -173,7 +173,6 @@ def user_new(side):
 
 
 def update_info(user, username, side, info, with_group):
-    msg = ''
     params = {'username': username,
               }
     if side == 'alum':
@@ -187,14 +186,14 @@ def update_info(user, username, side, info, with_group):
             group_id = int(info.get('group_id'))
             admin = admins.query.filter_by(id=group_id).first()
             if not admin:
-                msg = "The group id you specified does not belong to an existing group"
+                return "The group id you specified does not belong to an existing group"
             elif admin.group_password and admin.group_password != info.get('group_password'):
-                msg = "The group password you entered is incorrect"
+                return "The group password you entered is incorrect"
         except:
             group_id = 0
         new_user.group_id = group_id
     upsert_user(new_user, side)
-    return msg
+    return ''
 
 
 @app.route('/<side>/information-additional', methods=['POST'])
