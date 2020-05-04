@@ -220,19 +220,22 @@ def user_matches(side):
     is_alum = side == 'alum'
     errorMsg = ''
     successMsg = ''
+    match_user = None
     if is_alum:
         match = matches.query.filter_by(info_email=username).first()
-        match_user = students.query.filter_by(studentid=match.studentid).first()
+        if match is not None:
+            match_user = students.query.filter_by(studentid=match.studentid).first()
     else:
         match = matches.query.filter_by(studentid=username).first()
-        match_user = alumni.query.filter_by(info_email=match.info_email).first()
+        if match is not None:
+            match_user = alumni.query.filter_by(info_email=match.info_email).first()
 
     if request.form.get("action") == "Confirm":
         if match is not None:
             match.contacted = True
             db.session.commit()
 
-    contacted = False if match else match.contacted
+    contacted = False if match is None else match.contacted
 
     html = render_template('pages/user/matches.html', match=match_user,
                            username=username, user=user, side=side, contacted=contacted, user_type=side)
