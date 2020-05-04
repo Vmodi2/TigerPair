@@ -876,12 +876,19 @@ def admin_dashboard_create():
 # Notify when a match has been made
 @app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
 def notify():
+    print("in notify")
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
     matches = get_matches(id)
+    print("matches: ", matches)
+    if matches is None:
+        error="No matches exist."
+        html = render_template('pages/admin/modify-matches.html', matches=matches,
+                           side='admin', username=username, id=id, errorMsg=error)
+        return make_response(html)
     student_emails = []
     alum_emails = []
     for match in matches:
@@ -903,13 +910,14 @@ def notify():
 
 @app.route('/admin/modify-matches', methods=['GET'])
 def admin_dashboard_modify_matches():
+    error=""
     username = get_cas()
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
     html = render_template('pages/admin/modify-matches.html', matches=matches,
-                           side='admin', username=username, id=id)
+                           side='admin', username=username, id=id, errorMsg=error)
     return make_response(html)
 
 
