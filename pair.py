@@ -77,15 +77,16 @@ def admin_logout():
 
 
 def get_student_info():
-    username = CASClient().authenticate()
-    username = username[0:len(username)-1]
+    CASClient().authenticate()
+    # username = username[0:len(username)-1]
+    username='tigerpair+cos333project'
     # adding tigerbook code (grabbed from tigerbook API)
 
 # /*! jQuery Validation Plugin - v1.17.0 - 7/29/2017
 # * https://jqueryvalidation.org/
 # * Copyright (c) 2017 Jörn Zaefferer; Licensed MIT */
-    key = "2c6f9faa30e5f4b2d7d6e6bb54d72861"
-    url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/{username}+TigerPair'
+    key = "7bebab1ff9bb592e95557e1ce216bb2f"
+    url = f'https://tigerbook.herokuapp.com/api/v1/undergraduates/tigerpair+cos333project'
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ').encode('utf-8')
 
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/=')
@@ -106,16 +107,17 @@ def get_student_info():
         'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
     r = requests.get(url, headers=headers)
+    print(r)
     if r:
         student_info = json.loads(r.text)
+        print(student_info)
         firstname = student_info['first_name']
         lastname = student_info['last_name']
         email = student_info['email']
         major = student_info['major_code']
-
         new_student = students(username, firstname, lastname,
                                email, major)
-        upsert_student(new_student)
+        upsert_user(new_student, side="student")
 
 
 def get_cas():
@@ -163,6 +165,7 @@ def user_dashboard(side):
 def user_new(side):
     if side == 'student':
         username = get_cas()
+        get_student_info()
         user = students.query.filter_by(studentid=username)
     else:
         username, user = verify_user(side)
