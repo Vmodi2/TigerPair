@@ -852,7 +852,7 @@ def process_import(is_alumni):
                     new_alum = alumni(info_firstname=row['First Name'], info_lastname=row['Last Name'],
                                       info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'])
                     current = alumni.query.filter_by(info_email=new_alum.info_email).first()
-                    if current.group_id != id and current.group_id != -1:
+                    if current and current.group_id != id and current.group_id != -1:
                         bad_members.append(new_alum.info_email)
                         continue
                     new_alum.group_id = id
@@ -862,7 +862,7 @@ def process_import(is_alumni):
                     new_student = students(row['netid'], row['First Name'],
                                            row['Last Name'], row['Email'], row['Major'].upper(), row['Career'])
                     current = students.query.filter_by(studentid=new_student.studentid).first()
-                    if current.group_id != id and current.group_id != -1:
+                    if current and current.group_id != id and current.group_id != -1:
                         bad_members.append(new_student.studentid)
                         continue
                     new_student.group_id = id
