@@ -155,7 +155,7 @@ def user_dashboard(side):
     if request.method == 'POST':
         msg = update_info(user, username, side, request.form, False)
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, msg=msg)
+                           side=side, user=user, username=username, msg=msg, user_type=side)
     return make_response(html)
 
 
@@ -172,7 +172,7 @@ def user_new(side):
         if not msg:
             return redirect(url_for('user_dashboard', side=side))
     html = render_template('pages/user/new.html', side=side,
-                           user=user, username=username, msg=msg)
+                           user=user, username=username, msg=msg, user_type=side)
     return make_response(html)
 
 
@@ -209,7 +209,7 @@ def user_information_additional(side):
             setattr(user, field, request.form.get(field))
     db.session.commit()
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, active='more')
+                           side=side, user=user, username=username, active='more', user_type=side)
     return make_response(html)
 
 
@@ -235,7 +235,7 @@ def user_matches(side):
     contacted = False if match else match.contacted
 
     html = render_template('pages/user/matches.html', match=match_user,
-                           username=username, user=user, side=side, contacted=contacted)
+                           username=username, user=user, side=side, contacted=contacted, user_type=side)
 
     if request.form.get("message") is not None:
         try:
@@ -267,7 +267,7 @@ def user_matches(side):
             print(e)
         html = render_template('pages/user/matches.html',
                                match=match_user, username=username, user=user, side=side,
-                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
+                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg, user_type=side)
 
     return make_response(html)
 
@@ -291,7 +291,7 @@ def user_email(side):
             user.info_email = email1
             db.session.commit()
     html = render_template('pages/user/account.html',
-                           active_email=True, errorMsg=errorMsg, user=user, side=side)
+                           active_email=True, errorMsg=errorMsg, user=user, side=side, user_type=side)
     return make_response(html)
 
 
@@ -335,7 +335,7 @@ def user_account(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     html = render_template('pages/user/account.html',
-                           active_email=True, username=username, user=user, side=side)
+                           active_email=True, username=username, user=user, side=side, user_type=side)
     return make_response(html)
 
 
