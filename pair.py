@@ -607,7 +607,7 @@ def admin_dashboard():
     id = user.id
     match_list = matches.query.filter_by(group_id=id).all()
     html = render_template('pages/admin/dashboard.html',
-                           matches=match_list, username=username, id=id)
+                           matches=match_list, username=username, id=id, user_type='admin')
     return make_response(html)
 
 # -----------------------------------------------------------------------
@@ -635,7 +635,7 @@ def notify():
     match_list = matches.query.filter_by(group_id=id).all()
     if not match_list:
         errorMsg = 'There are no members to notify'
-        html = render_template('pages/admin/modify-matches.html', errorMsg=errorMsg, username=username, id=id)
+        html = render_template('pages/admin/modify-matches.html', errorMsg=errorMsg, username=username, id=id, user_type='admin')
         return make_response(html)
     student_emails = []
     alum_emails = []
@@ -654,7 +654,7 @@ def notify():
     alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
     mail.send(alum_msg)
     successMsg = 'Email notifications successfully sent!'
-    html = render_template('pages/admin/modify-matches.html', successMsg=successMsg, username=username, id=id)
+    html = render_template('pages/admin/modify-matches.html', successMsg=successMsg, username=username, id=id, user_type='admin')
     return make_response(html)
 
 
@@ -666,7 +666,7 @@ def admin_dashboard_modify_matches():
         return redirect(url_for('adminlogin'))
     id = user.id
     html = render_template('pages/admin/modify-matches.html',
-                           matches=matches, username=username, id=id)
+                           matches=matches, username=username, id=id, user_type='admin')
     return make_response(html)
 
 
@@ -702,7 +702,7 @@ def admin_dashboard_manual_match():
     alumni = get_unmatched_alumni(id)
     students = get_unmatched_students(id)
     html = render_template('pages/admin/manual-match.html',
-                           alumni=alumni, students=students, username=username, id=id)
+                           alumni=alumni, students=students, username=username, id=id, user_type='admin')
     return make_response(html)
 
 
@@ -747,7 +747,8 @@ def admin_profile(side):
         match_list = matches.query.filter_by(
             studentid=request.args.get('username')).all()
     html = render_template('pages/admin/profile.html', matches=match_list, user=user,
-                           side=side, username=username, id=id)
+                           side=side, username=username, id=id, user_type='admin') # this used to be side=side but this is confusing because
+                           # we're on the admin side but we are using side to know which matches we want to display (student or alum?)
     return make_response(html)
 
 
@@ -765,7 +766,7 @@ def admin_profiles(side):
         users = get_students(id)
     html = render_template(
         'pages/admin/profiles.html', users=users,
-        side=side, username=username, id=id)
+        side=side, username=username, id=id, user_type='admin') # side = "admin"
     return make_response(html)
 
 # # SINGLE student profile page
@@ -811,7 +812,7 @@ def admin_import(side):
         return process_import(is_alumni=(side == 'alum'))
     page_suffix = 'alumni' if side == 'alum' else 'students'
     html = render_template(
-        f'pages/admin/import-{page_suffix}.html', username=username, id=id, side=side)
+        f'pages/admin/import-{page_suffix}.html', username=username, id=id, side=side, user_type='admin')
     return make_response(html)
 
 
@@ -844,7 +845,7 @@ def process_import(is_alumni):
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded', username=username, id=id, side=side)
+                                   errorMsg='No file uploaded', username=username, id=id, side=side, user_type='admin')
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
@@ -873,10 +874,10 @@ def process_import(is_alumni):
             else:
                 successMsg = 'Success processing your upload!'
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg=errorMsg, bad_members=bad_members, successMsg=successMsg, username=username, id=id, side=side)
+                                   errorMsg=errorMsg, bad_members=bad_members, successMsg=successMsg, username=username, id=id, side=side, user_type='admin')
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side)
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side, user_type='admin')
     return make_response(html)
 
 
@@ -995,7 +996,7 @@ def admin_settings():
     user = admins.query.filter_by(username=username).first()
     id = user.id
     html = render_template('pages/admin/settings.html',
-                           username=username, id=id, user=user)
+                           username=username, id=id, user=user, user_type='admin')
     return make_response(html)
 
 
@@ -1019,7 +1020,7 @@ def admin_change_id():
         else:
             errorMsg = "The entered net id's don't match"
     html = render_template('pages/admin/settings.html',
-                           errorMsg=errorMsg, username=username, id=id, user=user)
+                           errorMsg=errorMsg, username=username, id=id, user=user, user_type='admin')
     return make_response(html)
 
 
@@ -1038,7 +1039,7 @@ def admin_change_password():
         else:
             errorMsg = 'The entered passwords must match'
     html = render_template('pages/admin/settings.html',
-                           errorMsg=errorMsg, username=username, id=id, user=user)
+                           errorMsg=errorMsg, username=username, id=id, user=user, user_type='admin')
     return make_response(html)
 
 

@@ -104,3 +104,4 @@ class ChangeEmailForm(Form):
         user = alumni.query.filter_by(info_email=email.data).first()
         if user:
             raise ValidationError("That email is taken. Please use another")
+# -----------------------------------------------------------------------
