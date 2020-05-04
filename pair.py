@@ -119,7 +119,7 @@ def get_student_info():
 
 
 def get_cas():
-    CASClient().authenticate().replace('\n', '')
+    return CASClient().authenticate().replace('\n', '')
 
 
 def verify_alum():
@@ -161,7 +161,11 @@ def user_dashboard(side):
 
 @app.route('/<side>/new', methods=['POST', 'GET'])
 def user_new(side):
-    username, user = verify_user(side)
+    if side == 'student':
+        username = get_cas()
+        user = students.query.filter_by(studentid=username)
+    else:
+        username, user = verify_user(side)
     msg = ''
     if request.method == 'POST':
         msg = update_info(user, username, side, request.form, True)
