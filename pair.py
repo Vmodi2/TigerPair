@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, ForgotForm, PasswordResetForum
+from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, ForgotForm, PasswordResetForum, NewUserForm
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -161,35 +161,36 @@ def user_dashboard(side):
 
 @app.route('/<side>/new', methods=['POST', 'GET'])
 def user_new(side):
+    form = NewUserForm()
+
     if side == 'student':
         username = get_cas()
         user = students.query.filter_by(studentid=username)
     else:
         username, user = verify_user(side)
     msg = ''
-    if request.method == 'POST':
-        msg = update_info(user, username, side, request.form, True)
+    if form.validate_on_submit():
+        msg = update_info(user, username, side, form, True)
         if not msg:
             return redirect(url_for('user_dashboard', side=side))
-    html = render_template('pages/user/new.html', side=side,
-                           user=user, username=username, msg=msg, user_type=side)
+    html = render_template('pages/user/new.html', side=side, user=user, username=username, msg=msg, user_type=side, form=form)
     return make_response(html)
 
 
 def update_info(user, username, side, info, with_group):
     if side == 'alum':
-        new_user = alumni(info_firstname=info.get('firstname'), info_lastname=info.get(
-            'lastname'), info_email=username, academics_major=info.get('major').upper(), career_field=info.get('career'))
+        new_user = alumni(info_firstname=info.firstname.data, info_lastname=info.lastname.data,
+            info_email=username, academics_major=info.major.data.upper(), career_field=info.career.data)
     else:
-        new_user = students(username, info.get('firstname'), info.get(
-            'lastname'), f'{username}@princeton.edu', info.get('major'), info.get('career'))
+        new_user = students(username, info.firstname.data, info.lastname.data,
+            f'{username}@princeton.edu', info.major.data, info.career.data)
     if with_group:
         try:
-            group_id = int(info.get('group_id'))
+            group_id = int(info.group_id.data)
             admin = admins.query.filter_by(id=group_id).first()
             if not admin:
                 return "The group id you specified does not belong to an existing group"
-            elif admin.group_password and admin.group_password != info.get('group_password'):
+            elif admin.group_password and admin.group_password != info.group_password.data:
                 return "The group password you entered is incorrect"
         except:
             group_id = 0

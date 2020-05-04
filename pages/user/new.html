@@ -1,28 +1,34 @@
 {% extends 'pages/user/newuser_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block specific_form %}
+
+<style>
+  .control-label {
+    display:none
+  }
+  </style>
+
 <form method="post" action="/{{side}}/new">
-    <label for="name">Name</label>
+  {{ form.hidden_tag() }}
+  <label for="name">Name</label>
     <div class="row">
         <div class="col">
-            <input type="text" class="form-control" placeholder="First name"
-                value="{{user.info_firstname if user.info_firstname}}" name="firstname" required>
+          {{wtf.form_field(form.firstname, id='firstname', class='form-control', placeholder='First Name')}}
         </div>
         <div class="col">
-            <input type="text" class="form-control" placeholder="Last name"
-                value="{{user.info_lastname if user.info_lastname}}" name="lastname" required>
+          {{wtf.form_field(form.lastname, id='Last Name', class='form-control', placeholder='Last Name')}}
         </div>
     </div>
     <br />
     <label for="major">Major</label>
-    <select class="form-control mr-sm-2" id="major" name="major" required>
-        <option disabled selected value> -- select an option -- </option>
-    </select>
+    {{wtf.form_field(form.major, id='Major', class='form-control', placeholder='Major')}}
+
+
     <br />
     <label for="career">Career Field</label>
-    <select class="form-control mr-sm-2" id="career" name="career" required>
-        <option disabled selected value> -- select an option -- </option>
-    </select>
+    {{wtf.form_field(form.career, id='Career Field', class='form-control', placeholder='Career Field')}}
+
     <br />
     <div class="row">
         <div class="col">
@@ -34,7 +40,8 @@
                 data-content="If you don't specify a group ID you'll be placed in the general matching group">
                 <i class="fas fa-question fa-xs"></i>
             </button>
-            <input class="form-control mr-sm-2" type="text" id="group_id" name="group_id">
+            {{wtf.form_field(form.group_id, id='Group ID', class='form-control', placeholder='Group ID')}}
+
         </div>
         <div class="col">
             <label for="group_password">Group Password</label>
@@ -42,7 +49,8 @@
                 data-placement="top" data-content="Leave this blank if your group does not have a password">
                 <i class="fas fa-question fa-xs"></i>
             </button>
-            <input class="form-control mr-sm-2" type="text" id="group_password" name="group_password">
+            {{wtf.form_field(form.group_password, id='Group Password', class='form-control', placeholder='Group Password')}}
+            <!--<input class="form-control mr-sm-2" type="text" id="group_password" name="group_password">-->
         </div>
     </div>
     <br />
