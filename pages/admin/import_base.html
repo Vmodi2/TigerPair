@@ -11,7 +11,7 @@
     </li>
 </ul>
 <br>
-<form action="/admin/import-{{ self.import_side() }}" method="post" enctype="multipart/form-data">
+<form action="/admin/import/{{side}}" method="post" enctype="multipart/form-data">
     <input type="file" name="data_file" />
     <input type="submit" />
 </form>

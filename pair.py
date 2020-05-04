@@ -177,8 +177,6 @@ def user_new(side):
 
 
 def update_info(user, username, side, info, with_group):
-    params = {'username': username,
-              }
     if side == 'alum':
         new_user = alumni(info_firstname=info.get('firstname'), info_lastname=info.get(
             'lastname'), info_email=username, academics_major=info.get('major').upper(), career_field=info.get('career'))
@@ -196,6 +194,8 @@ def update_info(user, username, side, info, with_group):
         except:
             group_id = 0
         new_user.group_id = group_id
+    else:
+        new_user.group_id = user.group_id
     upsert_user(new_user, side)
     return ''
 
@@ -208,42 +208,31 @@ def user_information_additional(side):
         if field:
             setattr(user, field, request.form.get(field))
     db.session.commit()
-    return redirect(url_for("user_dashboard", side=side))
+    html = render_template('pages/user/dashboard.html',
+                           side=side, user=user, username=username, active='more')
+    return make_response(html)
 
 
 @app.route('/<side>/matches', methods=['GET', 'POST'])
-def user_matches(side, match=None):
+def user_matches(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     is_alum = side == 'alum'
     errorMsg = ''
     successMsg = ''
-
-    if not match:
-        if is_alum:
-            match = get_match_student(username)
-        else:
-            match = get_match_alum(username)
+    if is_alum:
+        match = matches.query.filter_by(info_email=username).first()
+    else:
+        match = matches.query.filter_by(studentid=username).first()  
 
     if request.form.get("action") == "Confirm":
         if match is not None:
-            if is_alum:
-                match_item = matches.query.filter_by(
-                    studentid=username).first()
-            else:
-                match_item = matches.query.filter_by(
-                    info_email=username).first()
-            match_item.contacted = True
+            match.contacted = True
             db.session.commit()
 
     contacted = False
     if match is not None:
-        if is_alum:
-            contacted = matches.query.filter_by(
-                studentid=username).first().contacted
-        else:
-            contacted = matches.query.filter_by(
-                info_email=username).first().contacted
+        contacted = match.contacted
 
     html = render_template('pages/user/matches.html', match=match,
                            username=username, user=user, side=side, contacted=contacted)
@@ -259,8 +248,9 @@ def user_matches(side, match=None):
             if (datetime.utcnow() - last_time).seconds / 3600 < 1:
                 errorMsg = 'You may not send more than one message per hour.'
             else:
+                where_clause = f"info_email='{user.info_email}'" if is_alum else f"studentid='{user.studentid}'"
                 db.engine.execute(
-                    f"UPDATE {'alumni' if is_alum else 'students'} SET last_message=now() WHERE studentid='{user.info_email if is_alum else user.studentid}'")
+                    f"UPDATE {'alumni' if is_alum else 'students'} SET last_message=now() WHERE {where_clause}")
                 db.session.commit()
                 group_id = user.group_id
                 admin = admins.query.filter_by(id=group_id).first()
@@ -268,13 +258,13 @@ def user_matches(side, match=None):
 
                 message = request.form.get("message")
                 msg = Message(
-                    f'TigerPair {side.upper()} Message', sender='tigerpaircontact@gmail.com', recipients=[email])
+                    f'TigerPair {side.capitalize()} Message', sender='tigerpaircontact@gmail.com', recipients=[email])
                 msg.body = message + \
                     f"\n --- \nThis message was sent to you from the {side}: " + username
                 mail.send(msg)
                 successMsg = 'Message successfully sent!'
         except Exception as e:
-            pass
+            print(e)
         html = render_template('pages/user/matches.html',
                                match=match, username=username, user=user, side=side,
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
@@ -311,8 +301,7 @@ def user_id(side):
     route_new_user(user, side)
     response = {}
     if request.method == "POST":
-        match = matches.query.filter_by(info_email=username).first(
-        ) if side == 'alum' else matches.query.filter_by(studentid=username).first()
+        match = matches.query.filter_by(info_email=username).first() if side == 'alum' else matches.query.filter_by(studentid=username).first()
         if match:
             response['msg'] = 'You may not change groups while you are matched'
         else:
@@ -323,12 +312,19 @@ def user_id(side):
                     response['msg'] = 'The chosen group id does not belong to an existing group'
                 elif group.group_password and group.group_password != request.form.get('password'):
                     response['msg'] = 'The group password you entered is incorrect'
+                elif new_id == str(user.group_id):
+                    response['msg'] = 'You may not switch into your own group'
                 else:
-                    current.group_id = new_id
+                    user.group_id = new_id
+                    # is_alum = side == 'alum'
+                    # where_clause = f"info_email='{user.info_email}'" if is_alum else f"studentid='{user.studentid}'"
+                    # db.engine.execute(f"UPDATE {'alumni' if is_alum else 'students'} SET last_message=epoch from now() WHERE {where_clause}")
                     db.session.commit()
                     response['changed'] = True
                     response['id'] = new_id
                     response['msg'] = 'Success changing your group!'
+            else:
+                response['msg'] = 'Please enter a valid group id'
     else:
         response['msg'] = 'An unexpected error occurred'
     return jsonify(response)
@@ -356,12 +352,6 @@ def user_delete(side):
     db.session.commit()
     return redirect(url_for("confirm_delete"))
 
-
-def get_match_student(username):
-    match = matches.query.filter_by(studentid=username).first()
-    if not match:
-        return None
-    return alumni.query.filter_by(info_email=match.info_email).first()
 # -----------------------------------------------------------------------
 
 
@@ -640,11 +630,16 @@ def notify():
     user = admins.query.filter_by(username=username).first()
     if user is None:
         return redirect(url_for('adminlogin'))
+    msg = ''
     id = user.id
-    matches = get_matches(id)
+    match_list = matches.query.filter_by(group_id=id).all()
+    if not match_list:
+        errorMsg = 'There are no members to notify'
+        html = render_template('pages/admin/modify-matches.html', errorMsg=errorMsg, username=username, id=id)
+        return make_response(html)
     student_emails = []
     alum_emails = []
-    for match in matches:
+    for match in match_list:
         student = students_table.query.filter_by(
             studentid=match[0]).first().info_email
         student_emails.append(student)
@@ -658,7 +653,9 @@ def notify():
                        sender='tigerpaircontact@gmail.com', bcc=alum_emails)
     alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
     mail.send(alum_msg)
-    return redirect(url_for('admin_dashboard'))
+    successMsg = 'Email notifications successfully sent!'
+    html = render_template('pages/admin/modify-matches.html', successMsg=successMsg, username=username, id=id)
+    return make_response(html)
 
 
 @app.route('/admin/modify-matches', methods=['GET'])
@@ -814,7 +811,7 @@ def admin_import(side):
         return process_import(is_alumni=(side == 'alum'))
     page_suffix = 'alumni' if side == 'alum' else 'students'
     html = render_template(
-        f'pages/admin/import-{page_suffix}.html', username=username, id=id)
+        f'pages/admin/import-{page_suffix}.html', username=username, id=id, side=side)
     return make_response(html)
 
 
@@ -839,31 +836,33 @@ def process_import(is_alumni):
     if user is None:
         return redirect(url_for('adminlogin'))
     id = user.id
+    side = 'alum' if is_alumni else 'student'
     html = ''
     try:
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded', username=username, id=id)
+                                   errorMsg='No file uploaded', username=username, id=id, side=side)
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
                 for row in csv_reader:
                     new_alum = alumni(info_firstname=row['First Name'], info_lastname=row['Last Name'],
-                                      info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'], group_id=id)
-                    print(new_alum.group_id)
-                    upsert_alum(new_alum)
+                                      info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'])
+                    new_alum.group_id = id
+                    upsert_user(new_alum, side)
             else:
                 for row in csv_reader:
                     new_student = students(row['netid'], row['First Name'],
-                                           row['Last Name'], row['Email'], row['Major'].upper(), row['Career'], group_id=id)
-                    upsert_student(new_student)
+                                           row['Last Name'], row['Email'], row['Major'].upper(), row['Career'])
+                    new_student.group_id = id
+                    upsert_user(new_student, side)
             db.session.commit()
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   successMsg='Success processing your upload!', username=username, id=id)
+                                   successMsg='Success processing your upload!', username=username, id=id, side=side)
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id)
+                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side)
     return make_response(html)
 
 

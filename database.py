@@ -26,7 +26,7 @@ class students(db.Model):
     class_year = db.Column('class_year', db.Unicode)
 
     def __init__(self, studentid, info_firstname, info_lastname, info_email,
-                 academics_major, career_field=None, matched=0, group_id=None):
+                 academics_major, career_field=None, matched=0):
         self.studentid = studentid
         self.info_firstname = info_firstname
         self.info_lastname = info_lastname
@@ -34,7 +34,6 @@ class students(db.Model):
         self.academics_major = academics_major
         self.career_field = career_field
         self.matched = matched
-        self.group_id = group_id
 
 
 class alumni(db.Model):
@@ -63,7 +62,7 @@ class alumni(db.Model):
     class_year = db.Column('class_year', db.Unicode)
 
     def __init__(self, info_email, info_firstname=None, info_lastname=None, academics_major=None, career_field=None, matched=0, password=None,
-                 email_confirmed=False, group_id=None):
+                 email_confirmed=False):
         self.info_firstname = info_firstname
         self.info_lastname = info_lastname
         self.info_email = info_email
@@ -72,7 +71,6 @@ class alumni(db.Model):
         self.matched = matched
         self.password = password
         self.email_confirmed = email_confirmed
-        self.group_id = group_id
 
     def is_authenticated(self):
         return self.authenticated
