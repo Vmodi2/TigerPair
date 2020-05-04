@@ -641,9 +641,9 @@ def notify():
     alum_emails = []
     for match in match_list:
         student = students_table.query.filter_by(
-            studentid=match[0]).first().info_email
+            studentid=match.studentid).first().info_email
         student_emails.append(student)
-        alum_emails.append(match[1])
+        alum_emails.append(match.info_email)
     student_msg = Message('You\'ve been Matched!',
                           sender='tigerpaircontact@gmail.com', bcc=student_emails)
     student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
@@ -838,6 +838,8 @@ def process_import(is_alumni):
     id = user.id
     side = 'alum' if is_alumni else 'student'
     html = ''
+    errorMsg, successMsg = '', ''
+    bad_members = []
     try:
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
@@ -849,17 +851,29 @@ def process_import(is_alumni):
                 for row in csv_reader:
                     new_alum = alumni(info_firstname=row['First Name'], info_lastname=row['Last Name'],
                                       info_email=row['Email'], academics_major=row['Major'].upper(), career_field=row['Career'])
+                    current = alumni.query.filter_by(info_email=new_alum.info_email).first()
+                    if current.group_id != id and current.group_id != -1:
+                        bad_members.append(new_alum.info_email)
+                        continue
                     new_alum.group_id = id
                     upsert_user(new_alum, side)
             else:
                 for row in csv_reader:
                     new_student = students(row['netid'], row['First Name'],
                                            row['Last Name'], row['Email'], row['Major'].upper(), row['Career'])
+                    current = students.query.filter_by(studentid=new_student.studentid).first()
+                    if current.group_id != id and current.group_id != -1:
+                        bad_members.append(new_student.studentid)
+                        continue
                     new_student.group_id = id
                     upsert_user(new_student, side)
             db.session.commit()
+            if bad_members:
+                errorMsg = "The following members already exist in another group:"
+            else:
+                successMsg = 'Success processing your upload!'
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   successMsg='Success processing your upload!', username=username, id=id, side=side)
+                                   errorMsg=errorMsg, bad_members=bad_members, successMsg=successMsg, username=username, id=id, side=side)
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
                                errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side)
