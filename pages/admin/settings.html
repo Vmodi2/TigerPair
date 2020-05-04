@@ -1,21 +1,32 @@
 {% extends 'pages/admin/base.html' %}
 
 {% block content %}
-<div class="card bg-dark text-white ml-3 mr-3 mt-4 mb-4">
-    <div class="card-body">Set a group password</div>
-    <div class="card-footer d-flex align-items-center justify-content-between">
-        <a data-toggle="modal" type="button" data-target="#passwordModal" class="small text-white stretched-link">This
-            will be the password that alumni and students use to join your matching
-            group.</a>
-        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<h3 class="text-center pt-3">Settings</h3>
+<div class="row d-flex justify-content-center">
+    <div class="card bg-white ml-3 mr-3 mt-4 mb-4 col-6">
+        <div class="row">
+            <span class="icon-padlock pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
+        <div class="card-body">Set a group password</div>
+        </div>
+        <div class="card-footer d-flex bg-white align-items-center justify-content-between">
+            <a data-toggle="modal" type="button" data-target="#passwordModal" class="small stretched-link">This
+                will be the password that alumni and students use to join your matching
+                group.</a>
+            <div class="small"><i class="fas fa-angle-right"></i></div>
+        </div>
     </div>
 </div>
-<div class="card bg-danger text-white ml-3 mr-3 mt-4 mb-4">
-    <div class="card-body">Transfer account</div>
-    <div class="card-footer d-flex align-items-center justify-content-between">
-        <a data-toggle="modal" type="button" data-target="#profileModal" class="small text-white stretched-link">Note:
-            This action is permanent!</a>
-        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+<div class="row d-flex justify-content-center">
+    <div class="card bg-white ml-3 mr-3 mt-4 mb-4 col-6">
+        <div class="row">
+            <span class="icon-arrow-right pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
+        <div class="card-body">Transfer account</div>
+        </div>
+        <div class="card-footer d-flex bg-white align-items-center justify-content-between">
+            <a data-toggle="modal" type="button" data-target="#profileModal" class="small stretched-link">Note:
+                This action is permanent!</a>
+            <div class="small"><i class="fas fa-angle-right"></i></div>
+        </div>
     </div>
 </div>
 
