@@ -347,7 +347,7 @@ def user_delete(side):
         matches.query.filter_by(info_email=username).delete()
         alumni.query.filter_by(info_email=username).delete()
     else:
-        match = matches.query.filter_by(studentid=username).delete()
+        matches.query.filter_by(studentid=username).delete()
         students.query.filter_by(studentid=username).delete()
     db.session.commit()
     return redirect(url_for("confirm_delete"))
@@ -552,6 +552,7 @@ def password_changed():
 
 @app.route('/login/gotoemail', methods=['GET', 'POST'])
 def gotoemail():
+    logout_user()
     return render_template('pages/login/gotoemail.html')
 
 
