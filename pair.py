@@ -76,21 +76,6 @@ def admin_logout():
     return redirect(url_for("index"))
 
 
-def route_new_student():
-    # username = get_cas()
-    # current = students.query.filter_by(studentid=username).first()
-    # if not current:
-    #     student_new()
-    pass
-
-
-@app.route('/<side>/new')
-def user_new(side):
-    username, user = verify_user(side)
-    html = render_template('pages/user/new.html', user=user, side=side)
-    return make_response(html)
-
-
 def get_student_info():
     username = CASClient().authenticate()
     username = username[0:len(username)-1]
@@ -120,19 +105,17 @@ def get_student_info():
         'Authorization': 'WSSE profile="UsernameToken"',
         'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
-    # idk what happened here :(( i would check an old version of pai
-    # r = requests.get(url, headers=headers)\
-    #     '3   	2'
-    # if r:
-    #     student_info = json.loads(r.text)
-    #     firstname = student_info['first_name']
-    #     lastname = student_info['last_name']
-    #     email = student_info['email']
-    #     major = student_info['major_code']
+    r = requests.get(url, headers=headers)
+    if r:
+        student_info = json.loads(r.text)
+        firstname = student_info['first_name']
+        lastname = student_info['last_name']
+        email = student_info['email']
+        major = student_info['major_code']
 
-    #     new_student = students(username, firstname, lastname,
-    #                            email, major)
-    #     upsert_student(new_student)
+        new_student = students(username, firstname, lastname,
+                               email, major)
+        upsert_student(new_student)
 
 
 def verify_alum():
@@ -140,8 +123,6 @@ def verify_alum():
         abort(redirect(url_for('login')))
     if not current_user.email_confirmed:
         abort(redirect(url_for('gotoemail')))
-    if not current_user.info_firstname:
-        abort(redirect(url_for('user_new')))
     return current_user.info_email
 
 
@@ -153,54 +134,62 @@ def verify_user(side):
         username = CASClient().authenticate().replace('\n', '')
         user = students.query.filter_by(studentid=username).first()
         if not user:
-            abort(redirect(url_for('user_new')))
+            abort(redirect(url_for('user_new', side='student')))
     return username, user
 
 
-@login_required
+def route_new_user(user, side):
+    if not user.info_firstname:
+        abort(redirect(url_for('user_new', side=side)))
+
+
 @app.route('/<side>/dashboard', methods=['POST', 'GET'])
 def user_dashboard(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
+    msg = ''
+    if request.method == 'POST':
+        msg = update_info(user, username, side, request.form, False)
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username)
-    return make_response('hey')
+                           side=side, user=user, username=username, msg=msg)
+    return make_response(html)
 
 
-def update_info(is_new):
-    #     create new user with all information except group info
-    #     if is_new -> take to general change id function (same function will deal with change your group button)
-    pass
-
-
-@app.route('/<side>/information', methods=['POST'])
-def user_information(side):
+@app.route('/<side>/new', methods=['POST', 'GET'])
+def user_new(side):
     username, user = verify_user(side)
-    info = request.form
-    # WTF IS THIS Group is auto going to 0 rn
-    try:
-        group_id = int(info.get('group_id'))
-        admin = admins.query.filter_by(id=group_id).first()
-        if not admin:
-            html = render_template('pages/user/new.html', user=user, side=side,
-                                   errorMsg="The group id you specified does not belong to an existing group")
-            return make_response(html)
-        elif admin.group_password and admin.group_password != info.get('group_password'):
-            html = render_template('pages/user/new.html', user=user, side=side,
-                                   errorMsg="The group password you entered is incorrect")
-            return make_response(html)
-    except:
-        group_id = 0
+    if request.method == 'POST':
+        print('hey')
+        msg = update_info(user, username, side, request.form, True)
+        return redirect(url_for('user_dashboard', side=side))
+    html = render_template('pages/user/new.html',
+                           side=side, user=user, username=username)
+    return make_response(html)
 
-    group_id = user.group_id
-    if side == 'student':
-        new_student = students(username, info.get('firstname'), info.get('lastname'),
-                               f'{username}@princeton.edu', info.get('major'), info.get('career'), group_id=group_id)
-        upsert_student(new_student)
+
+def update_info(user, username, side, info, with_group):
+    msg = ''
+    params = {'username': username,
+              }
+    if side == 'alum':
+        new_user = alumni(info_firstname=info.get('firstname'), info_lastname=info.get(
+            'lastname'), info_email=username, academics_major=info.get('major').upper(), career_field=info.get('career'))
     else:
-        new_alum = alumni(info.get('firstname'), info.get('lastname'),
-                          f"{info.get('email')}", info.get('major'), info.get('career'), group_id=group_id)
-        upsert_alum(new_alum)
-    return redirect(url_for('user_dashboard', side=side))
+        new_user = students(username, info.get('firstname'), info.get(
+            'lastname'), f'{username}@princeton.edu', info.get('major'), info.get('career'))
+    if with_group:
+        try:
+            group_id = int(info.get('group_id'))
+            admin = admins.query.filter_by(id=group_id).first()
+            if not admin:
+                msg = "The group id you specified does not belong to an existing group"
+            elif admin.group_password and admin.group_password != info.get('group_password'):
+                msg = "The group password you entered is incorrect"
+        except:
+            group_id = 0
+        new_user.group_id = group_id
+    upsert_user(new_user, side)
+    return msg
 
 
 @app.route('/<side>/information-additional', methods=['POST'])
@@ -453,7 +442,7 @@ def login():
     error = ""
     # print("login")
     if current_user.is_authenticated:
-        return redirect(url_for('alumni_info'))
+        return redirect(url_for('user_dashboard', side='alum'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -580,8 +569,8 @@ def signup():
 
             # update the database with new user info
 
-            user = alumni(email, password=hashed_password)
-            upsert_alum(user)
+            user = alumni(info_email=email, password=hashed_password)
+            upsert_user(user, side='alum')
 
             return redirect(url_for('gotoemail'))
 
@@ -913,33 +902,18 @@ def strip_user(username):
     return username.replace('\n', '')
 
 
-def upsert_student(student):
-    table_student = students.query.filter_by(
-        studentid=student.studentid).first()
-    if table_student:
-        table_student.info_firstname = student.info_firstname
-        table_student.info_lastname = student.info_lastname
-        table_student.info_email = student.info_email
-        table_student.academics_major = student.academics_major
-        table_student.career_field = student.career_field
-        table_student.group_id = student.group_id
+def upsert_user(user, side):
+    table_user = alumni.query.filter_by(info_email=user.info_email).first(
+    ) if side == 'alum' else students.query.filter_by(studentid=user.studentid).first()
+    if table_user:
+        table_user.info_firstname = user.info_firstname
+        table_user.info_lastname = user.info_lastname
+        table_user.info_email = user.info_email
+        table_user.academics_major = user.academics_major
+        table_user.career_field = user.career_field
+        table_user.group_id = user.group_id
     else:
-        db.session.add(student)
-    db.session.commit()
-
-
-def upsert_alum(alum):
-    table_alum = alumni.query.filter_by(
-        info_email=alum.info_email).first()
-    if table_alum:
-        table_alum.info_firstname = alum.info_firstname
-        table_alum.info_lastname = alum.info_lastname
-        table_alum.info_email = alum.info_email
-        table_alum.academics_major = alum.academics_major
-        table_alum.career_field = alum.career_field
-        table_alum.group_id = alum.group_id
-    else:
-        db.session.add(alum)
+        db.session.add(user)
     db.session.commit()
 
 
