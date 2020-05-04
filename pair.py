@@ -200,6 +200,7 @@ def update_info(user, username, side, info, with_group):
 @app.route('/<side>/information-additional', methods=['POST'])
 def user_information_additional(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
     for field in request.form:
         if field:
             setattr(user, field, request.form.get(field))
@@ -210,6 +211,7 @@ def user_information_additional(side):
 @app.route('/<side>/matches', methods=['GET', 'POST'])
 def user_matches(side, match=None):
     username, user = verify_user(side)
+    route_new_user(user, side)
     is_alum = side == 'alum'
     errorMsg = ''
     successMsg = ''
@@ -280,6 +282,7 @@ def user_matches(side, match=None):
 @app.route('/<side>/email', methods=['GET', 'POST'])
 def user_email(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
@@ -302,6 +305,7 @@ def user_email(side):
 @app.route('/<side>/id', methods=['GET', 'POST'])
 def user_id(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
     response = {}
     if request.method == "POST":
         match = matches.query.filter_by(info_email=username).first(
@@ -330,6 +334,7 @@ def user_id(side):
 @app.route('/<side>/account', methods=['GET'])
 def user_account(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
     html = render_template('pages/user/account.html',
                            active_email=True, username=username, user=user, side=side)
     return make_response(html)
@@ -338,6 +343,7 @@ def user_account(side):
 @app.route('/<side>/delete', methods=['GET'])
 def user_delete(side):
     username, user = verify_user(side)
+    route_new_user(user, side)
     alum = get_match_student(username=username)
     if alum is not None:
         alum.matched -= 1
