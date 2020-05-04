@@ -39,12 +39,12 @@ class students(db.Model):
 
 class alumni(db.Model):
     __tablename__ = 'alumni'
-    id = db.Column('id', db.Unicode, db.Sequence(
-        'alumni_id_seq'), primary_key=True)
+    # id = db.Column('id', db.Unicode, db.Sequence(
+    #     'alumni_id_seq'), primary_key=True)
     info_firstname = db.Column('info_firstname', db.Unicode)
     info_lastname = db.Column('info_lastname', db.Unicode)
     info_email = db.Column(
-        'info_email', db.Unicode)
+        'info_email', db.Unicode, primary_key=True)
     academics_major = db.Column('academics_major', db.Unicode)
     career_field = db.Column('career_field', db.Unicode)
     matched = db.Column('matched', db.SmallInteger)
