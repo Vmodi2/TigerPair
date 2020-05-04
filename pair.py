@@ -74,12 +74,6 @@ def admin_logout():
     # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
-# -----------------------------------------------------------------------
-
-
-def get_cas():
-    username = CASClient().authenticate().replace('\n', '')
-    return username
 
 
 def route_new_student():
@@ -126,17 +120,19 @@ def get_student_info():
         'Authorization': 'WSSE profile="UsernameToken"',
         'X-WSSE': 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % (username, generated_digest, nonce, created)
     }
-    r = requests.get(url, headers=headers)
-    if r:
-        student_info = json.loads(r.text)
-        firstname = student_info['first_name']
-        lastname = student_info['last_name']
-        email = student_info['email']
-        major = student_info['major_code']
+    # idk what happened here :(( i would check an old version of pai
+    # r = requests.get(url, headers=headers)\
+    #     '3   	2'
+    # if r:
+    #     student_info = json.loads(r.text)
+    #     firstname = student_info['first_name']
+    #     lastname = student_info['last_name']
+    #     email = student_info['email']
+    #     major = student_info['major_code']
 
-        new_student = students(username, firstname, lastname,
-                               email, major)
-        upsert_student(new_student)
+    #     new_student = students(username, firstname, lastname,
+    #                            email, major)
+    #     upsert_student(new_student)
 
 
 def verify_alum():
@@ -472,7 +468,7 @@ def login():
                     print("this is a problem")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
-                    return redirect(url_for('alumni_info'))
+                    return redirect(url_for('user_dashboard', side='alum'))
                 else:
                     error = "Invalid email or password"
                     print("should be here")
