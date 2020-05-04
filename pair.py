@@ -343,11 +343,12 @@ def user_account(side):
 def user_delete(side):
     username, user = verify_user(side)
     route_new_user(user, side)
-    alum = get_match_student(username=username)
-    if alum is not None:
-        alum.matched -= 1
-        matches.query.filter_by(studentid=username).delete()
-    students.query.filter_by(studentid=username).delete()
+    if side == 'alum':
+        matches.query.filter_by(info_email=username).delete()
+        alumni.query.filter_by(info_email=username).delete()
+    else:
+        match = matches.query.filter_by(studentid=username).delete()
+        students.query.filter_by(studentid=username).delete()
     db.session.commit()
     return redirect(url_for("confirm_delete"))
 
