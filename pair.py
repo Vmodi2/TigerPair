@@ -533,7 +533,7 @@ def alum_matches(match=None):
         contacted = matches.query.filter_by(
             studentid=match.studentid).first().contacted
 
-    html = render_template('pages/user/matches.html', username=current_user.info_email,                       match=match, side="alum",
+    html = render_template('pages/user/matches.html', user=current_user, username=current_user.info_email,                       match=match, side="alum",
                            contacted=contacted)
 
     if request.form.get("message") is not None:
@@ -565,7 +565,7 @@ def alum_matches(match=None):
                 successMsg = 'Message successfully sent!'
         except Exception as e:
             pass
-        html = render_template('pages/user/matches.html', username=current_user.info_email,
+        html = render_template('pages/user/matches.html', user=current_user, username=current_user.info_email,
                                match=match, side="alum",
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg)
     return make_response(html)
