@@ -1,0 +1,37 @@
+{% extends "pages/admin/base.html" %}
+
+{% block content %}
+{% if user %}
+<h1 class="ml-3 mr-3 mt-4 mb-4">{{user.info_firstname}} {{user.info_lastname}}</h1>
+<h3>Contact: <a href="mailto:{{user.info_email}}">{{user.info_email}}</a></h3>
+<h3>Major: {{user.academics_major}}</h3>
+<h3>Career: {{user.career_field}}</h3>
+<p class="font-weight-bold">Class Year: {{user.class_year}}</p>
+<p class="font-weight-bold">Certificate 1: {{user.academics_certificate1}}</p>
+<p class="font-weight-bold">Certificate 2: {{user.academics_certificate2}}</p>
+<p class="font-weight-bold">Certificate 3: {{user.academics_certificate3}}</p>
+<p class="font-weight-bold">Extracurricular 1: {{user.extracurricular1}}</p>
+<p class="font-weight-bold">Extracurricular 2: {{user.extracurricular2}}</p>
+<p class="font-weight-bold">Extracurricular 3: {{user.extracurricular3}}</p>
+
+{% if matches %}
+<h3>Matched with:</h3>
+<ul>
+    {% for match in matches %}
+    <li><a
+            href='{{url_for('.admin_profile' , username=(match.studentid if side=='alum' else match.info_email), side=('alum' if side=='student' else 'student'))}}'>{{match.studentid if side=='alum' else match.info_email}}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<h3>No matches</h3>
+{% endif %}
+
+{% else %}
+<h1>No user exists for the given name</h1>
+{% endif %}
+{% endblock %}
+<p>{{side}}</p>
+
+{% block profiles_alum %}{{'active' if side=='alum' else ''}}{% endblock %}
+{% block profiles_student %}{{'active' if side=='student' else ''}}{% endblock %}

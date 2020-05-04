@@ -44,10 +44,10 @@
 <script>
     function toggle() {
         var html = document.getElementById("sidebarToggle").innerHTML;
-        if (html.search('left') == -1) {
-            html = '<i class="fas fa-angle-double-left"></i>';
-        } else {
+        if (getComputedStyle(document.getElementById("layoutSidenav_nav")).transform.search("-225") == -1) {
             html = '<i class="fas fa-angle-double-right"></i>';
+        } else {
+            html = '<i class="fas fa-angle-double-left"></i>';
         }
 
         document.getElementById("sidebarToggle").innerHTML = html;

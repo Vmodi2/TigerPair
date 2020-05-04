@@ -44,10 +44,10 @@
                     {% for match in matches: %}
                     <tr>
                         <td><a
-                                href='{{url_for('.admin_profile_student', netid=match.studentid)}}'>{{match.studentid}}</a>
+                                href='{{url_for('.admin_profile', username=match.studentid, side='student')}}'>{{match.studentid}}</a>
                         </td>
                         <td><a
-                                href='{{url_for('.admin_profile_alum', email=match.info_email)}}'>{{match.info_email}}</a>
+                                href='{{url_for('.admin_profile', username=match.info_email, side='alum')}}'>{{match.info_email}}</a>
                         </td>
                         <td>{% if match.contacted %}Yes{% else %}No{% endif%}</td>
                         <td><a href='
