@@ -162,12 +162,13 @@ def user_dashboard(side):
 @app.route('/<side>/new', methods=['POST', 'GET'])
 def user_new(side):
     username, user = verify_user(side)
+    msg = ''
     if request.method == 'POST':
-        print('hey')
         msg = update_info(user, username, side, request.form, True)
-        return redirect(url_for('user_dashboard', side=side))
-    html = render_template('pages/user/new.html',
-                           side=side, user=user, username=username)
+        if not msg:
+            return redirect(url_for('user_dashboard', side=side))
+    html = render_template('pages/user/new.html', side=side,
+                           user=user, username=username, msg=msg)
     return make_response(html)
 
 
