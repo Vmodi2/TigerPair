@@ -947,17 +947,21 @@ def admin_change_id():
 def admin_change_password():
     username, id = verify_admin()
     user = admins.query.filter_by(username=username).first()
-    errorMsg = ''
+    errorMsg, successMsg = '', ''
     if request.method == 'POST':
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         if password == confirm_password:
-            user.group_password = password
-            db.session.commit()
+            if password == user.group_password:
+                errorMsg = 'You may not use your current password'
+            else:
+                user.group_password = password
+                db.session.commit()
+                successMsg = 'Password successfully changed!'
         else:
             errorMsg = 'The entered passwords must match'
     html = render_template('pages/admin/settings.html',
-                           errorMsg=errorMsg, username=username, user=user, id=id, user_type='admin')
+                           errorMsg=errorMsg, successMsg=successMsg, username=username, user=user, id=id, user_type='admin')
     return make_response(html)
 
 
