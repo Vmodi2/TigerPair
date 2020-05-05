@@ -134,7 +134,7 @@ def get_student_info():
 
 
 def get_cas():
-    return "CASClient().authenticate().replace('\n', '')"
+    return CASClient().authenticate().replace('\n', '')
 
 
 def verify_alum():
