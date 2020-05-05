@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, UserDashboardForm, ForgotForm, PasswordResetForum, NewUserForm
+from forms import LoginForm, RegisterForm, ChangeGroupForm, AdminLoginForm, AdminRegisterForm, UserDashboardForm, ForgotForm, PasswordResetForum, NewUserForm
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -168,10 +168,11 @@ def user_dashboard(side):
     route_new_user(user, side)
     msg = ''
     form = UserDashboardForm()
+    form2 = ChangeGroupForm()
     if form.validate_on_submit():
         msg = update_info(user, username, side, form, False)
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, msg=msg, user_type=side, form=form)
+                           side=side, user=user, username=username, msg=msg, user_type=side, form=form, form2=form2)
     return make_response(html)
 
 
@@ -223,6 +224,7 @@ def user_information_additional(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     form = UserDashboardForm()
+    form2 = ChangeGroupForm()
     # definitely will change this to flask forms later
     errorMsg = ''
     for field in request.form:
@@ -241,7 +243,7 @@ def user_information_additional(side):
         setattr(user, field, value)
     db.session.commit()
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, active='more', user_type=side, form=form, errorMsg=errorMsg)
+                           side=side, user=user, username=username, active='more', user_type=side, form=form, form2=form2, errorMsg=errorMsg)
     return make_response(html)
 
 
@@ -249,6 +251,7 @@ def user_information_additional(side):
 def user_matches(side):
     username, user = verify_user(side)
     route_new_user(user, side)
+    form2 = ChangeGroupForm()
     is_alum = side == 'alum'
     errorMsg = ''
     successMsg = ''
@@ -272,7 +275,7 @@ def user_matches(side):
     contacted = False if match is None else match.contacted
 
     html = render_template('pages/user/matches.html', match=match_user,
-                           username=username, user=user, side=side, contacted=contacted, user_type=side)
+                           username=username, user=user, side=side, contacted=contacted, user_type=side, form2=form2)
 
     if request.form.get("message") is not None:
         try:
@@ -304,7 +307,7 @@ def user_matches(side):
             print(e)
         html = render_template('pages/user/matches.html',
                                match=match_user, username=username, user=user, side=side,
-                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg, user_type=side)
+                               contacted=contacted, successMsg=successMsg, errorMsg=errorMsg, user_type=side, form2=form2)
 
     return make_response(html)
 
@@ -313,6 +316,7 @@ def user_matches(side):
 def user_email(side):
     username, user = verify_user(side)
     route_new_user(user, side)
+    form2 = ChangeGroupForm()
     errorMsg = ''
     email1 = request.form.get('email')
     email2 = request.form.get('email-repeated')
@@ -328,7 +332,7 @@ def user_email(side):
             user.info_email = email1
             db.session.commit()
     html = render_template('pages/user/account.html',
-                           active_email=True, errorMsg=errorMsg, user=user, side=side, user_type=side)
+                           active_email=True, errorMsg=errorMsg, user=user, side=side, user_type=side, form2=form2)
     return make_response(html)
 
 
@@ -336,19 +340,19 @@ def user_email(side):
 def user_id(side):
     username, user = verify_user(side)
     route_new_user(user, side)
+    form = ChangeGroupForm()
     response = {}
-    if request.method == "POST":
-        match = matches.query.filter_by(info_email=username).first(
-        ) if side == 'alum' else matches.query.filter_by(studentid=username).first()
+    if form.validate_on_submit():
+        match = matches.query.filter_by(info_email=username).first() if side == 'alum' else matches.query.filter_by(studentid=username).first()
         if match:
             response['msg'] = 'You may not change groups while you are matched'
         else:
-            new_id = request.form.get('id').strip()
+            new_id = form.new_group_id.data
             if new_id:
                 group = admins.query.filter_by(id=new_id).first()
                 if not group:
                     response['msg'] = 'The chosen group id does not belong to an existing group'
-                elif group.group_password and group.group_password != request.form.get('password'):
+                elif group.group_password and group.group_password != form.group_password.data:
                     response['msg'] = 'The group password you entered is incorrect'
                 elif new_id == str(user.group_id):
                     response['msg'] = 'You may not switch into your own group'
@@ -372,8 +376,9 @@ def user_id(side):
 def user_account(side):
     username, user = verify_user(side)
     route_new_user(user, side)
+    form2 = ChangeGroupForm()
     html = render_template('pages/user/account.html',
-                           active_email=True, username=username, user=user, side=side, user_type=side)
+                           active_email=True, username=username, user=user, side=side, user_type=side, form2=form2)
     return make_response(html)
 
 

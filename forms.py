@@ -123,7 +123,7 @@ class NewUserForm(Form):
 
     group_id = IntegerField('Group ID', validators=[Optional()])
 
-    group_password = password = PasswordField('Password')
+    group_password = PasswordField('Password')
 
 
 class UserDashboardForm(Form):
@@ -140,3 +140,13 @@ class UserDashboardForm(Form):
                          InputRequired(), Length(max=20)])  #maybe change this
     major = SelectField(choices=majors)
     career = SelectField('Career Field',choices=careers)
+
+class ChangeGroupForm(Form):
+    new_group_id = IntegerField('New Group ID', validators=[InputRequired()])
+    group_password = PasswordField('Password')
+
+
+    '''def validate_group(self, new_group_id):
+        admin = admins.query.filter_by(id=new_group_id).first()
+        if admin is None:
+            raise ValidationError("Please choose an existing group id")'''
