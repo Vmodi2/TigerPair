@@ -134,8 +134,7 @@ def get_student_info():
 
 
 def get_cas():
-    return "barkachi"
-    # return "CASClient().authenticate().replace('\n', '')"
+    return "CASClient().authenticate().replace('\n', '')"
 
 
 def verify_alum():
