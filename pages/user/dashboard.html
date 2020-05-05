@@ -1,4 +1,5 @@
 {% extends 'pages/user/user_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
 <!-- Info side -->
@@ -17,32 +18,20 @@
 	<div class="tab-pane fade {% if not active %}active show{% endif %}" id="home" role="tabpanel"
 		aria-labelledby="home-tab">
 		<form method="post" action="/{{side}}/dashboard">
-			<label for="firstname">First Name</label>
-			<input class="form-control mr-sm-2 info-1" type="text" id="firstname" name="firstname"
-				value="{{user.info_firstname if user.info_firstname}}" required readonly>
+			{{ form.hidden_tag() }}
+			{{wtf.form_field(form.firstname, id='firstname', class='form-control mr-sm-2 info-1', value=user.info_firstname if user.info_firstname, disabled=True)}}
 			<br />
-			<label for="lastname">Last Name</label>
-			<input class="form-control mr-sm-2 info-1" type="text" id="lastname" name="lastname"
-				value="{{user.info_lastname if user.info_lastname}}" required readonly>
+			{{wtf.form_field(form.lastname, id='lastname', class='form-control mr-sm-2 info-1', value=user.info_lastname if user.info_lastname, disabled=True)}}
 			<br />
-			<label for="major">Major</label>
-			<select class="form-control mr-sm-2 info-1" id="major" name="major" required disabled>
-				<option value="{{user.academics_major if user.academics_major}}" selected>
-					{{user.academics_major if user.academics_major}}
-				</option>
-			</select>
+			{{wtf.form_field(form.major, id='major', class='form-control mr-sm-2 info-1', value=user.academics_major if user.academics_major, disabled=True)}}
 			<br />
-			<label for="career">Career Field</label>
-			<select class="form-control mr-sm-2 info-1" id="career" name="career" required disabled>
-				<option value="{{user.career_field if user.career_field}}" selected>
-					{{user.career_field if user.career_field}}
-				</option>
-			</select>
+			{{wtf.form_field(form.career, id='career', class='form-control mr-sm-2 info-1', value=user.careerfield if user.career_field, disabled=True)}}
 			<br />
 			<button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
+
 	<div class="tab-pane fade {% if active %}active show{% endif %}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
 		<form method="post" action="/{{side}}/information-additional">
 			<label for="class_year">Class Year</label>
@@ -80,7 +69,8 @@
 			<button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
 		</form>
 	</div>
-	
+
+  <p class="font-weight-bold text-danger">{{errorMsg}}</p>
 
 </div>
 {% endblock %}

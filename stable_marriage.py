@@ -80,6 +80,8 @@ def create_new_matches(id):
     used_alums = set()
     student_alum = {}
 
+    matches = set()
+
     for student in students_alumni:
         for alum, score in students_alumni[student]:
             if alum not in used_alums:
@@ -88,6 +90,7 @@ def create_new_matches(id):
 
                 new_match = matches_table(student, student_alum[student], id)
                 db.session.add(new_match)
+                matches.add(new_match)
 
                 student = students_table.query.filter_by(
                     studentid=student).first()
@@ -98,6 +101,7 @@ def create_new_matches(id):
                 alum.matched += 1
                 break
     db.session.commit()
+    return matches
 
 
 def get_matches(id):
