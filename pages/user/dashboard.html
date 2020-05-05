@@ -32,6 +32,16 @@
 		</form>
 	</div>
 
+	<script>
+		current = document.getElementById("major").innerHTML;
+		current = "<option value='{{user.academics_major if user.academics_major}}'>{{user.academics_major if user.academics_major}}</option>" + current;
+		document.getElementById("major").innerHTML = current;
+
+		current = document.getElementById("career").innerHTML;
+		current = "<option value='{{user.career_field if user.career_field}}'>{{user.career_field if user.career_field}}</option>" + current;
+		document.getElementById("career").innerHTML = current;
+	</script>
+
 	<div class="tab-pane fade {% if active %}active show{% endif %}" id="page-1" role="tabpanel" aria-labelledby="page-1-tab">
 		<form method="post" action="/{{side}}/information-additional">
 			<label for="class_year">Class Year</label>
