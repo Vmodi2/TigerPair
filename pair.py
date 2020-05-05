@@ -343,7 +343,8 @@ def user_id(side):
     form = ChangeGroupForm()
     response = {}
     if form.validate_on_submit():
-        match = matches.query.filter_by(info_email=username).first() if side == 'alum' else matches.query.filter_by(studentid=username).first()
+        match = matches.query.filter_by(info_email=username).first(
+        ) if side == 'alum' else matches.query.filter_by(studentid=username).first()
         if match:
             response['msg'] = 'You may not change groups while you are matched'
         else:
@@ -672,7 +673,8 @@ def admin_dashboard_create():
 def notify(selective=False, members=None):
     username, id = verify_admin()
     msg = ''
-    match_list = members if selective else matches.query.filter_by(group_id=id).all()
+    match_list = members if selective else matches.query.filter_by(
+        group_id=id).all()
     if not match_list:
         errorMsg = 'There are no members to notify'
         html = render_template('pages/admin/modify-matches.html',
@@ -851,6 +853,7 @@ def admin_action(side):
             delete(id, user)
     return redirect(url_for('admin_profiles', side=side))
 
+
 def upsert_user(user, side):
     table_user = alumni.query.filter_by(info_email=user.info_email).first(
     ) if side == 'alum' else students.query.filter_by(studentid=user.studentid).first()
@@ -911,8 +914,9 @@ def asignup():
 @app.route('/admin/settings', methods=['GET', 'POST'])
 def admin_settings():
     username, id = verify_admin()
+    user = admins.query.filter_by(username=username).first()
     html = render_template('pages/admin/settings.html',
-                           username=username, id=id, user_type='admin')
+                           username=username, id=id, user=user, user_type='admin')
     return make_response(html)
 
 
@@ -935,26 +939,26 @@ def admin_change_id():
         else:
             errorMsg = "The entered net id's don't match"
     html = render_template('pages/admin/settings.html',
-                           errorMsg=errorMsg, username=username, id=id, user_type='admin')
+                           errorMsg=errorMsg, username=username, user=user, id=id, user_type='admin')
     return make_response(html)
 
 
-# @app.route('/admin/change-password', methods=['GET', 'POST'])
-# def admin_change_password():
-#     username, id = verify_admin()
-#     user = admins.query.filter_by(username=username).first()
-#     errorMsg = ''
-#     if request.method == 'POST':
-#         password = request.form.get('password')
-#         confirm_password = request.form.get('confirm_password')
-#         if password == confirm_password:
-#             user.group_password = password
-#             db.session.commit()
-#         else:
-#             errorMsg = 'The entered passwords must match'
-#     html = render_template('pages/admin/settings.html',
-#                            errorMsg=errorMsg, username=username, id=id, user_type='admin')
-#     return make_response(html)
+@app.route('/admin/change-password', methods=['GET', 'POST'])
+def admin_change_password():
+    username, id = verify_admin()
+    user = admins.query.filter_by(username=username).first()
+    errorMsg = ''
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        if password == confirm_password:
+            user.group_password = password
+            db.session.commit()
+        else:
+            errorMsg = 'The entered passwords must match'
+    html = render_template('pages/admin/settings.html',
+                           errorMsg=errorMsg, username=username, user=user, id=id, user_type='admin')
+    return make_response(html)
 
 
 @app.route('/delete/confirm', methods=['GET', 'POST'])
