@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import students, alumni, admins, groups, matches
 from stable_marriage import *
 from config import app, mail, s, db, login_manager
-from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, ForgotForm, PasswordResetForum, NewUserForm
+from forms import LoginForm, RegisterForm, AdminLoginForm, AdminRegisterForm, UserDashboardForm, ForgotForm, PasswordResetForum, NewUserForm
 from csv import DictReader, reader
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
@@ -152,10 +152,11 @@ def user_dashboard(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     msg = ''
-    if request.method == 'POST':
-        msg = update_info(user, username, side, request.form, False)
+    form = UserDashboardForm()
+    if form.validate_on_submit():
+        msg = update_info(user, username, side, form, False)
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, msg=msg, user_type=side)
+                           side=side, user=user, username=username, msg=msg, user_type=side, form=form)
     return make_response(html)
 
 
@@ -176,7 +177,32 @@ def user_new(side):
     html = render_template('pages/user/new.html', side=side, user=user, username=username, msg=msg, user_type=side, form=form)
     return make_response(html)
 
+# THIS IS THE LEGACY UPDATE_INFO, WITH NON-WTFORMS. THIS WILL BE PHASED OUT.
+'''def update_info(user, username, side, info, with_group):
+    if side == 'alum':
+        new_user = alumni(info_firstname=info.get("firstname"), info_lastname=info.get("lastname"),
+            info_email=username, academics_major=info.get("major").upper(), career_field=info.get("career"))
+    else:
+        new_user = students(username, info.get("firstname"), info.get("lastname"),
+            f'{username}@princeton.edu', info.get("major"), info.get("career"))
+    if with_group:
+        try:
+            group_id = int(info.get("group_id"))
+            admin = admins.query.filter_by(id=group_id).first()
+            if not admin:
+                return "The group id you specified does not belong to an existing group"
+            elif admin.group_password and admin.group_password != info.get("group_password"):
+                return "The group password you entered is incorrect"
+        except:
+            group_id = 0
+        new_user.group_id = group_id
+    else:
+        new_user.group_id = user.group_id
+    upsert_user(new_user, side)
+    return ''
+    '''
 
+# THIS IS THE BETTER VERSION OF UPDATE_INFO
 def update_info(user, username, side, info, with_group):
     if side == 'alum':
         new_user = alumni(info_firstname=info.firstname.data, info_lastname=info.lastname.data,
@@ -205,12 +231,13 @@ def update_info(user, username, side, info, with_group):
 def user_information_additional(side):
     username, user = verify_user(side)
     route_new_user(user, side)
+    form = UserDashboardForm()
     for field in request.form:
         if field:
             setattr(user, field, request.form.get(field))
     db.session.commit()
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, active='more', user_type=side)
+                           side=side, user=user, username=username, active='more', user_type=side, form=form)
     return make_response(html)
 
 
