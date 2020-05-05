@@ -46,6 +46,15 @@ login_manager.login_view = 'login'
 # major = StringField('Major', validators=[DataRequired()])
 # career = StringField('Career Field', validators=[DataRequired()])
 
+# simple error handling functions 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('pages/errors/404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('pages/errors/500.html'), 500
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -74,6 +83,7 @@ def admin_logout():
     # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
+
 
 
 def get_student_info():
