@@ -46,15 +46,6 @@ login_manager.login_view = 'login'
 # major = StringField('Major', validators=[DataRequired()])
 # career = StringField('Career Field', validators=[DataRequired()])
 
-# simple error handling functions 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('pages/errors/404.html'), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('pages/errors/500.html'), 500
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -83,7 +74,6 @@ def admin_logout():
     # casClient.authenticate()
     casClient.logout()
     return redirect(url_for("index"))
-
 
 
 def get_student_info():
@@ -187,32 +177,6 @@ def user_new(side):
     html = render_template('pages/user/new.html', side=side, user=user, username=username, msg=msg, user_type=side, form=form)
     return make_response(html)
 
-# THIS IS THE LEGACY UPDATE_INFO, WITH NON-WTFORMS. THIS WILL BE PHASED OUT.
-'''def update_info(user, username, side, info, with_group):
-    if side == 'alum':
-        new_user = alumni(info_firstname=info.get("firstname"), info_lastname=info.get("lastname"),
-            info_email=username, academics_major=info.get("major").upper(), career_field=info.get("career"))
-    else:
-        new_user = students(username, info.get("firstname"), info.get("lastname"),
-            f'{username}@princeton.edu', info.get("major"), info.get("career"))
-    if with_group:
-        try:
-            group_id = int(info.get("group_id"))
-            admin = admins.query.filter_by(id=group_id).first()
-            if not admin:
-                return "The group id you specified does not belong to an existing group"
-            elif admin.group_password and admin.group_password != info.get("group_password"):
-                return "The group password you entered is incorrect"
-        except:
-            group_id = 0
-        new_user.group_id = group_id
-    else:
-        new_user.group_id = user.group_id
-    upsert_user(new_user, side)
-    return ''
-    '''
-
-# THIS IS THE BETTER VERSION OF UPDATE_INFO
 def update_info(user, username, side, info, with_group):
     if side == 'alum':
         new_user = alumni(info_firstname=info.firstname.data, info_lastname=info.lastname.data,
