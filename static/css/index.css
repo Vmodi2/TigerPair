@@ -22,7 +22,7 @@
 .team{
   /* background-image: url("/static/images/20140610_NAB_013.jpg"); */
   background-size: cover;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     color: #ffa050;
     max-width:100vw;
     font-style: bold;
@@ -30,7 +30,7 @@
 
 .about{
     background-size: cover;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     color:  #ffa050;
     font-size: 30px;
     /* padding: 20px 100px; */
@@ -38,7 +38,7 @@
 #member a {
   color:white;
   text-decoration:none;
-} 
+}
 
 
 /* .overlay {
@@ -93,7 +93,7 @@
   outline: #ffffff;
 }
 
-.btn-primary, .btn-primary:focus, #member .btn-primary:active, #signup .btn-primary:active, 
+.btn-primary, .btn-primary:focus, #member .btn-primary:active, #signup .btn-primary:active,
 #signin .btn-primary:active, .btn-primary.active {
   background: #3a3939;
   color: #ffffff;
@@ -136,7 +136,7 @@
 
 /* bounce animation */
 .move-up {
-  position: relative; 
+  position: relative;
   top: -5px;
 }
 .move-up {
@@ -162,7 +162,7 @@
     }
   }
 
-  
+
 
 .name {
   min-height: 70px;
@@ -171,15 +171,12 @@
 
 
 @media screen and (max-width: 576px) {
-  a {
-    font-size: 80% !important;
-  }
   h1 {
     font-size: 350% !important;
   }
 }
 
-  
+
 /* ===================================================================
  * # preloader
  *
@@ -321,8 +318,8 @@
 }
 
 .pswp--css_animation .pswp__preloader__cut {
-  /* 
-    The idea of animating inner circle is based on Polymer ("material") loading indicator 
+  /*
+    The idea of animating inner circle is based on Polymer ("material") loading indicator
      by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
   */
   position: relative;
@@ -422,7 +419,7 @@
 }
 
 
-/* ------------------------------------------------------------------- 
+/* -------------------------------------------------------------------
 * ## services list
 * ------------------------------------------------------------------- */
 .services-list {
@@ -481,7 +478,7 @@
 }
 
 
-/* ------------------------------------------------------------------- 
+/* -------------------------------------------------------------------
 * responsive:
 * services- for icons in admininfo page
 * ------------------------------------------------------------------- */

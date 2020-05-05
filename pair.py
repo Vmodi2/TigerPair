@@ -162,7 +162,7 @@ def route_new_user(user, side):
         abort(redirect(url_for('user_new', side=side)))
 
 
-@app.route('/<side>/dashboard', methods=['POST', 'GET'])
+@app.route('/<side>/dashboard', methods=['GET', 'POST'])
 def user_dashboard(side):
     username, user = verify_user(side)
     route_new_user(user, side)
@@ -175,7 +175,7 @@ def user_dashboard(side):
     return make_response(html)
 
 
-@app.route('/<side>/new', methods=['POST', 'GET'])
+@app.route('/<side>/new', methods=['GET', 'POST'])
 def user_new(side):
     form = NewUserForm()
 
@@ -223,12 +223,25 @@ def user_information_additional(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     form = UserDashboardForm()
+    # definitely will change this to flask forms later
+    errorMsg = ''
     for field in request.form:
-        if field:
-            setattr(user, field, request.form.get(field))
+        value = request.form.get(field)
+        if field == 'class_year':
+            try:
+                print('fsdfsdf')
+                value = int(value)
+                print(value)
+                print(int(datetime.today().year + 8))
+                if value > int(datetime.today().year + 8) or value < 1930:
+                    raise Exception()
+            except:
+                errorMsg = 'Class year must be a valid graduation year'
+                continue
+        setattr(user, field, value)
     db.session.commit()
     html = render_template('pages/user/dashboard.html',
-                           side=side, user=user, username=username, active='more', user_type=side, form=form)
+                           side=side, user=user, username=username, active='more', user_type=side, form=form, errorMsg=errorMsg)
     return make_response(html)
 
 
@@ -296,7 +309,7 @@ def user_matches(side):
     return make_response(html)
 
 
-@app.route('/<side>/email', methods=['GET', 'POST'])
+@app.route('/<side>/email', methods=['POST'])
 def user_email(side):
     username, user = verify_user(side)
     route_new_user(user, side)
@@ -355,7 +368,7 @@ def user_id(side):
     return jsonify(response)
 
 
-@app.route('/<side>/account', methods=['GET'])
+@app.route('/<side>/account')
 def user_account(side):
     username, user = verify_user(side)
     route_new_user(user, side)
@@ -364,7 +377,7 @@ def user_account(side):
     return make_response(html)
 
 
-@app.route('/<side>/delete', methods=['GET'])
+@app.route('/<side>/delete')
 def user_delete(side):
     username, user = verify_user(side)
     route_new_user(user, side)
@@ -443,25 +456,25 @@ def confirm_email(token):
 
 # -----------------------------------------------------------------------
 # Dynamic page function for home page of site
-@app.route('/index', methods=['GET'])
-@app.route('/', methods=['GET'])
+@app.route('/index')
+@app.route('/')
 def index():
-    html = render_template('pages/visitor/index.html', side="landing")
+    html = render_template('pages/index.html', side="landing")
     return make_response(html)
 
 
-@app.route('/team', methods=['GET'])
+@app.route('/team')
 def team():
     return render_template('pages/visitor/team.html')
 
 
-@app.route('/admin-info', methods=['GET'])
+@app.route('/admin-info')
 def admininfo():
     return render_template('pages/visitor/admininfo.html')
 
 # -----------------------------------------------------------------------
 # Dynamic page function for sign in page of site
-@app.route('/signin', methods=['GET'])
+@app.route('/signin')
 def matching():
     html = render_template('pages/signin/index.html')
     return make_response(html)
@@ -623,7 +636,7 @@ def verify_admin():
     return username, user.id
 
 
-@app.route('/admin/dashboard', methods=['GET', 'POST'])
+@app.route('/admin/dashboard')
 def admin_dashboard():
     username, id = verify_admin()
     match_list = matches.query.filter_by(group_id=id).all()
@@ -633,7 +646,7 @@ def admin_dashboard():
 
 # -----------------------------------------------------------------------
 # Dynamic page function for admin home page of site
-@app.route('/admin/dashboard/create', methods=['GET', 'POST'])
+@app.route('/admin/dashboard/create', methods=['POST'])
 def admin_dashboard_create():
     username, id = verify_admin()
     matches = create_new_matches(id)
@@ -650,7 +663,7 @@ def admin_dashboard_create():
 # -----------------------------------------------------------------------
 
 # Notify when a match has been made
-@app.route('/admin/dashboard/notify', methods=['GET', 'POST'])
+@app.route('/admin/dashboard/notify', methods=['POST'])
 def notify(selective=False, members=None):
     username, id = verify_admin()
     msg = ''
@@ -682,7 +695,7 @@ def notify(selective=False, members=None):
     return make_response(html)
 
 
-@app.route('/admin/modify-matches', methods=['GET'])
+@app.route('/admin/modify-matches')
 def admin_dashboard_modify_matches():
     username, id = verify_admin()
     html = render_template('pages/admin/modify-matches.html',
@@ -690,7 +703,7 @@ def admin_dashboard_modify_matches():
     return make_response(html)
 
 
-@app.route('/admin/dashboard/clearall', methods=['GET', 'POST'])
+@app.route('/admin/dashboard/clearall')
 def admin_dashboard_clearall():
     username, id = verify_admin()
     clear_matches(id)
@@ -699,14 +712,14 @@ def admin_dashboard_clearall():
     return make_response(html)
 
 # -----------------------------------------------------------------------
-@app.route('/admin/dashboard/clearone', methods=['GET', 'POST'])
+@app.route('/admin/dashboard/clearone')
 def admin_dashboard_clearone():
     username, id = verify_admin()
     clear_match(request.args.get('student'), request.args.get('alum'))
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route('/admin/manual-match', methods=['GET', 'POST'])
+@app.route('/admin/manual-match')
 def admin_dashboard_manual_match():
     username, id = verify_admin()
     alumni = get_unmatched_alumni(id)
@@ -716,7 +729,7 @@ def admin_dashboard_manual_match():
     return make_response(html)
 
 
-@app.route('/admin/dashboard/createone', methods=['POST', 'GET'])
+@app.route('/admin/dashboard/createone')
 def admin_dashboard_createone():
     username, id = verify_admin()
     create_one(id, request.form.get('student'), request.form.get('alum'))
@@ -753,7 +766,7 @@ def admin_profiles(side):
 
 
 @login_required
-@app.route('/admin/get-registrations/<side>', methods=['GET'])
+@app.route('/admin/get-registrations/<side>')
 def admin_get_registrations(side):
     username, id = verify_admin()
     table = 'alumni' if side == 'alum' else 'students'
@@ -863,7 +876,6 @@ def adminlogin():
         admin = admins(username=username)
         db.session.add(admin)
         db.session.commit()
-        print("heyyy")
         return redirect(url_for('admin_dashboard'))
     html = render_template('pages/login/admin.html')
     return make_response(html)
@@ -891,7 +903,7 @@ def asignup():
     return make_response(html)
 
 
-@app.route('/admin/settings', methods=['GET'])
+@app.route('/admin/settings')
 def admin_settings():
     username, id = verify_admin()
     html = render_template('pages/admin/settings.html',
@@ -899,7 +911,7 @@ def admin_settings():
     return make_response(html)
 
 
-@app.route('/admin/change-id', methods=['GET', 'POST'])
+@app.route('/admin/change-id', methods=['POST'])
 def admin_change_id():
     username, id = verify_admin()
     user = admins.query.filter_by(username=username).first()
@@ -922,22 +934,22 @@ def admin_change_id():
     return make_response(html)
 
 
-@app.route('/admin/change-password', methods=['GET', 'POST'])
-def admin_change_password():
-    username, id = verify_admin()
-    user = admins.query.filter_by(username=username).first()
-    errorMsg = ''
-    if request.method == 'POST':
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-        if password == confirm_password:
-            user.group_password = password
-            db.session.commit()
-        else:
-            errorMsg = 'The entered passwords must match'
-    html = render_template('pages/admin/settings.html',
-                           errorMsg=errorMsg, username=username, id=id, user_type='admin')
-    return make_response(html)
+# @app.route('/admin/change-password', methods=['GET', 'POST'])
+# def admin_change_password():
+#     username, id = verify_admin()
+#     user = admins.query.filter_by(username=username).first()
+#     errorMsg = ''
+#     if request.method == 'POST':
+#         password = request.form.get('password')
+#         confirm_password = request.form.get('confirm_password')
+#         if password == confirm_password:
+#             user.group_password = password
+#             db.session.commit()
+#         else:
+#             errorMsg = 'The entered passwords must match'
+#     html = render_template('pages/admin/settings.html',
+#                            errorMsg=errorMsg, username=username, id=id, user_type='admin')
+#     return make_response(html)
 
 
 @app.route('/delete/confirm')
