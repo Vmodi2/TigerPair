@@ -21,6 +21,8 @@
             vertical-align: middle;
         }
     </style>
+    <!-- Add IntroJs styles -->
+    <link href="/static/css/introjs.min.css" rel="stylesheet">
 </head>
 
 <body class="sb-nav-fixed">
@@ -79,9 +81,10 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="pt-4 px-4">
-                <div class=" card pt-4 pb-4 container-fluid">
-                    {% block content %}{% endblock %}
-                </div></div>
+                    <div class=" card pt-4 pb-4 container-fluid">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -92,6 +95,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+    <script src="/static/js/intro.js"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 

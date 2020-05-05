@@ -162,8 +162,8 @@ def route_new_user(user, side):
         abort(redirect(url_for('user_new', side=side)))
 
 
-@app.route('/<side>/dashboard', methods=['GET', 'POST'])
-def user_dashboard(side):
+@app.route('/<side>/profile', methods=['GET', 'POST'])
+def user_profile(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     msg = ''
@@ -171,7 +171,7 @@ def user_dashboard(side):
     form2 = ChangeGroupForm()
     if form.validate_on_submit():
         msg = update_info(user, username, side, form, False)
-    html = render_template('pages/user/dashboard.html',
+    html = render_template('pages/user/profile.html',
                            side=side, user=user, username=username, msg=msg, user_type=side, form=form, form2=form2)
     return make_response(html)
 
@@ -247,8 +247,8 @@ def user_information_additional(side):
     return make_response(html)
 
 
-@app.route('/<side>/matches', methods=['GET', 'POST'])
-def user_matches(side):
+@app.route('/<side>/dashboard', methods=['GET', 'POST'])
+def user_dashboard(side):
     username, user = verify_user(side)
     route_new_user(user, side)
     form2 = ChangeGroupForm()
@@ -274,7 +274,7 @@ def user_matches(side):
 
     contacted = False if match is None else match.contacted
 
-    html = render_template('pages/user/matches.html', match=match_user,
+    html = render_template('pages/user/dashboard.html', match=match_user,
                            username=username, user=user, side=side, contacted=contacted, user_type=side, form2=form2)
 
     if request.form.get("message") is not None:
@@ -305,7 +305,7 @@ def user_matches(side):
                 successMsg = 'Message successfully sent!'
         except Exception as e:
             print(e)
-        html = render_template('pages/user/matches.html',
+        html = render_template('pages/user/dashboard.html',
                                match=match_user, username=username, user=user, side=side,
                                contacted=contacted, successMsg=successMsg, errorMsg=errorMsg, user_type=side, form2=form2)
 

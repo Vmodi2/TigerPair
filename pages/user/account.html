@@ -2,39 +2,40 @@
 
 {% block content %}
 <div class="pb-3">
-<div class="card pb-5 px-5">
-	<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
-		aria-labelledby="change-email-tab">
-		<h2 class="pt-5 pb-3 text-center">Change Email</h2>
-		<p class="text-danger font-weight-bold">{{errorMsg}}</p>
-		<form action="/{{side}}/email" method="post">
-			<div class="form-group row">
-				<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
-				<div class="col-sm-10">
-					<input type="text" readonly class="form-control-plaintext" id="staticEmail"
-						value="{{user.info_email if user.info_email}}">
+	<div class="card pb-5 px-5">
+		<div class="tab-pane fade {% if active_email %}active show{% endif %}" id="change-email" role="tabpanel"
+			aria-labelledby="change-email-tab">
+			<h2 class="pt-5 pb-3 text-center">Change Email</h2>
+			<p class="text-danger font-weight-bold">{{errorMsg}}</p>
+			<form action="/{{side}}/email" method="post">
+				<div class="form-group row" data-step="4"
+					data-intro="Your admin may choose to send an email when you're matched. You can change where this notification will be sent here.">
+					<label for="staticEmail" class="col-sm-2 col-form-label">Current Email</label>
+					<div class="col-sm-10">
+						<input type="text" readonly class="form-control-plaintext" id="staticEmail"
+							value="{{user.info_email if user.info_email}}">
+					</div>
 				</div>
-			</div>
 
-			<div class="form-group row">
-				<label for="email" class="col-sm-2 col-form-label">New Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com">
+				<div class="form-group row">
+					<label for="email" class="col-sm-2 col-form-label">New Email</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="email" name="email" placeholder="email@domain.com">
+					</div>
+					<br><br>
+					<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="email-repeated" name="email-repeated"
+							placeholder="email@domain.com">
+					</div>
 				</div>
-				<br><br>
-				<label for="email-repeated" class="col-sm-2 col-form-label">Confirm Email</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="email-repeated" name="email-repeated"
-						placeholder="email@domain.com">
+				<div class="text-center">
+					<button type="submit" class="btn btn-primary my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
 				</div>
-			</div>
-			<div class="text-center">
-				<button type="submit" class="btn btn-primary my-2 my-sm-0">&nbsp;Submit&nbsp;</button>
-			</div>
-		</form>
+			</form>
 
+		</div>
 	</div>
-</div>
 </div>
 <div class="card px-5">
 	<h2 class="pt-5 pb-3 text-center">Delete Account</h2>
@@ -55,4 +56,9 @@
 {% block account %}active{% endblock %}
 {% block individual_scripts %}
 <script src="/static/js/delete_account.js"></script>
+<script>
+	if (RegExp('multipage', 'gi').test(window.location.search)) {
+		introJs().start()
+	};
+</script>
 {% endblock %}

@@ -3,7 +3,8 @@
 {% block content %}
 <h1 class="ml-3 mr-3 mt-4 mb-4">Welcome to your dashboard, {{username}}</h1>
 <div class="row">
-    <div class="col-xl-6">
+    <div class="col-xl-6" data-step="1"
+        data-intro="You can track sign-ups in your group over time to determine if it's time to create matches.">
         <div class="card ml-3 mr-3 mt-4 mb-4">
             <div class="card-header"><i class="fas fa-chart-area mr-1"></i>New alum sign-ups over the
                 past few days</div>
@@ -18,7 +19,8 @@
         </div>
     </div>
 </div>
-<div class="card ml-3 mr-3 mt-4 mb-4">
+<div class="card ml-3 mr-3 mt-4 mb-4" data-step="2"
+    data-intro="This is where you'll see your matches when you create them." data-position='right'>
     <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
     <div class="card-body">
         <div class="table-responsive">
@@ -28,7 +30,8 @@
                     <tr>
                         <th>Student</th>
                         <th>Alum</th>
-                        <th>Student confirmed contact</th>
+                        <th data-step="3" data-intro="More features, more fun." data-position='left'>Student confirmed
+                            contact</th>
                         <th data-orderable="false">Modify</th>
                     </tr>
                 </thead>
@@ -69,4 +72,11 @@
 {% block extra_scripts %}
 <script src="/static/js/datatables-demo.js"></script>
 <script src="/static/js/chart-area-demo.js"></script>
+<script>
+    document.getElementById('startButton').onclick = function () {
+        introJs().setOption('doneLabel', 'Next page').start().oncomplete(function () {
+            window.location.href = '/admin/import/students?multipage=true';
+        });
+    };
+</script>
 {% endblock %}

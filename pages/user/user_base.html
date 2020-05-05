@@ -5,9 +5,13 @@
 {% include "pages/header.html" %}
 
 <style>
-  .control-label {
-    display:none
-  }
+    .control-label {
+        display: none
+    }
+
+    .introjs-helperLayer {
+        opacity: 0.2;
+    }
 </style>
 
 <div id="layoutSidenav">
@@ -15,21 +19,32 @@
         <nav class="sb-sidenav accordion sb-sidenav-dark users-side-nav" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
                 <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Profile</div>
-                    <a class="nav-link tab {% block edit_profile %}{% endblock %}" href="/{{side}}/dashboard">
-                        <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
-                        Edit profile
-                    </a>
-                    <div class="sb-sidenav-menu-heading">Matches</div>
-                    <a class="nav-link tab {% block view_matches %}{% endblock %}" href="/{{side}}/matches">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-friends"></i></div>
-                        View matches
-                    </a>
-                    <div class="sb-sidenav-menu-heading">Your account</div>
-                    <a class="nav-link tab {% block account %}{% endblock %}" href="/{{side}}/account">
-                        <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
-                        Settings
-                    </a>
+                    <div data-step='1'
+                        data-intro='Stay on your dashboard to view matches when they appear and contact your program admin with any questions or concerns.'
+                        data-position='right'>
+                        <div class="sb-sidenav-menu-heading">Matches</div>
+                        <a class="nav-link tab {% block view_matches %}{% endblock %}" href="/{{side}}/dashboard">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user-friends"></i></div>
+                            View matches
+                        </a>
+                    </div>
+                    <div data-step='2'
+                        data-intro='Navigate here to add additional fields like your class year, certificates, and extracurriculars.'>
+                        <div class="sb-sidenav-menu-heading" data-position='right'>Profile</div>
+                        <a class="nav-link tab {% block edit_profile %}{% endblock %}" href="/{{side}}/profile">
+                            <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
+                            Edit profile
+                        </a>
+                    </div>
+                    <div data-step='3'
+                        data-intro='Join another group in settings, but note that you may only be in one group at a time.'
+                        data-position='right'>
+                        <div class="sb-sidenav-menu-heading">Your account</div>
+                        <a class="nav-link tab {% block account %}{% endblock %}" href="/{{side}}/account">
+                            <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                            Settings
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -80,7 +95,7 @@
                         </div>
                     </div>
                     <div class="form-group row ">
-                        <label for="id" class="col-sm-8 col-form-label">New Group ID</label>                        
+                        <label for="id" class="col-sm-8 col-form-label">New Group ID</label>
                         <div class="col-sm-4">
                             {{wtf.form_field(form2.new_group_id, id='id', class='form-control')}}
                         </div>
@@ -104,6 +119,12 @@
 {% block extra_scripts %}
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/change_group.js"></script>
+<script src="/static/js/intro.js"></script>
+<script>
+    document.getElementById('startButton').onclick = function () {
+        introJs().start();
+    };
+</script>
 {% block individual_scripts %}
 {% endblock %}
 {% endblock %}
