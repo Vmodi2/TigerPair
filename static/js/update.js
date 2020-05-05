@@ -4,7 +4,6 @@ toggle = function (className) {
         $(className).attr('disabled', false);
         $(this).attr('hidden', true);
         $(this).next().attr('hidden', false);
-        console.log(obj);
     };
 };
 

@@ -34,11 +34,11 @@
 
 	<script>
 		current = document.getElementById("major").innerHTML;
-		current = "<option value='{{user.academics_major if user.academics_major}}'>{{user.academics_major if user.academics_major}}</option>" + current;
+		current = "<option value='{{user.academics_major if user.academics_major}}' hidden>{{user.academics_major if user.academics_major}}</option>" + current;
 		document.getElementById("major").innerHTML = current;
 
 		current = document.getElementById("career").innerHTML;
-		current = "<option value='{{user.career_field if user.career_field}}'>{{user.career_field if user.career_field}}</option>" + current;
+		current = "<option value='{{user.career_field if user.career_field}}' hidden>{{user.career_field if user.career_field}}</option>" + current;
 		document.getElementById("career").innerHTML = current;
 	</script>
 
@@ -86,6 +86,5 @@
 {% endblock %}
 {% block edit_profile %}active{% endblock %}
 {% block individual_scripts %}
-<script src="/static/js/options.js"></script>
 <script src="/static/js/update.js"></script>
 {% endblock %}
