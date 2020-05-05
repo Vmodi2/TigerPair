@@ -46,6 +46,20 @@ login_manager.login_view = 'login'
 # major = StringField('Major', validators=[DataRequired()])
 # career = StringField('Career Field', validators=[DataRequired()])
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('/pages/errors/404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('pages/errors/500.html'), 500
+# how to handle 502 503 504 erros?
+# @app.errorhandler(502)
+# def internal_error(error):
+#     db.session.rollback()
+#     return render_template('pages/errors/500.html'), 500
+
 
 @login_manager.user_loader
 def user_loader(user_id):
