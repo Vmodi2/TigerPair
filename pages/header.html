@@ -40,17 +40,3 @@
         </ul>
     </div>
 </nav>
-
-<!-- NOTE: Sometimes these can go the wrong direction (on smaller screens specifically) -->
-<script>
-    function toggle() {
-        var html = document.getElementById("sidebarToggle").innerHTML;
-        if (getComputedStyle(document.getElementById("layoutSidenav_nav")).transform.search("-225") == -1) {
-            html = '<i class="fas fa-angle-double-right"></i>';
-        } else {
-            html = '<i class="fas fa-angle-double-left"></i>';
-        }
-
-        document.getElementById("sidebarToggle").innerHTML = html;
-    }
-</script>

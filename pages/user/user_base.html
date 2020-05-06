@@ -65,7 +65,7 @@
                 <br><br>
                 <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal"
                     data-target="#exampleModal" data-step='4' data-position='right'
-                    data-intro="You may join another group, but note that you may only be in one group at a time">>Change
+                    data-intro="You may join another group, but note that you may only be in one group at a time">Change
                     your group</a>
                 <span class="d-lg-none">
                     <br><br><br>
@@ -153,6 +153,27 @@
             introJs().start();
         }
     };
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+        if (window.innerWidth < 768) {
+            html = '<i class="fas fa-angle-double-right"></i>'
+        }
+        else {
+            html = '<i class="fas fa-angle-double-left"></i>'
+        }
+        document.getElementById("sidebarToggle").innerHTML = html;
+    });
+    function toggle() {
+        var html = document.getElementById("sidebarToggle").innerHTML;
+        if (getComputedStyle(document.getElementById("layoutSidenav_nav")).transform.search("-225") == -1) {
+            html = '<i class="fas fa-angle-double-right"></i>';
+        } else {
+            html = '<i class="fas fa-angle-double-left"></i>';
+        }
+
+        document.getElementById("sidebarToggle").innerHTML = html;
+    }
 </script>
 {% block individual_scripts %}
 {% endblock %}
