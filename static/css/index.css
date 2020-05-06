@@ -174,7 +174,10 @@
   a {
     font-size: 80% !important;
   }
-  h1 {
+  h1{
+    font-size: 350% !important;
+  }
+  h2{
     font-size: 350% !important;
   }
 }
