@@ -71,6 +71,7 @@
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
+                    {% block extra_sidenav %}{% endblock %}
                     <div class="small">Logged in as:</div>
                     {{username}}
                     <div class="small">Your group ID:</div>
