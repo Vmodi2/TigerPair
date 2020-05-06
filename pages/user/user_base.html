@@ -122,7 +122,24 @@
 <script src="/static/js/intro.js"></script>
 <script>
     document.getElementById('startButton').onclick = function () {
-        introJs().start();
+        if (window.innerWidth < 992) {
+            introJs().setOptions({
+                steps: [
+                    {
+                        intro: 'Stay on your dashboard to view matches when they appear and contact your program admin with any questions or concerns.'
+                    },
+                    {
+                        intro: 'Navigate to your profile page to add additional fields like your class year, certificates, and extracurriculars.'
+                    },
+                    {
+                        intro: 'Join another group in settings, but note that you may only be in one group at a time.'
+                    }
+                ]
+            }).start();
+        }
+        else {
+            introJs().start();
+        }
     };
 </script>
 {% block individual_scripts %}
