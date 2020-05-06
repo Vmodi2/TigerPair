@@ -31,7 +31,7 @@
 .about{
     background-size: cover;
     background-repeat: no-repeat;
-    color:  #ffa050;
+    /* color:  #ffa050; */
     font-size: 30px;
     /* padding: 20px 100px; */
 }
@@ -40,16 +40,6 @@
   text-decoration:none;
 }
 
-
-/* .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;;
-  opacity: .2;
-  background-color: #000000;
-} */
 /* navbar */
 .navbar {
     padding: 0 1rem !important;
@@ -177,6 +167,12 @@
   .btn-landing {
     font-size: 80%;
   }
+}
+
+#welcome-landing {
+  background-color: #2e2d2d;
+  /* background:url("../images/bg-pattern.png"), linear-gradient(to bottom, #ffae55, #ffffff); */
+  color: white !important;
 }
 
 

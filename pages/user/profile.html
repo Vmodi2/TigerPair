@@ -42,46 +42,63 @@
         document.getElementById("career").innerHTML = current;
     </script>
 
+    
     <div class="tab-pane fade {% if active %}active show{% endif %}" id="page-1" role="tabpanel"
         aria-labelledby="page-1-tab">
-        <form method="post" action="/{{side}}/information-additional">
+            <form method="post" action="/{{side}}/information-additional">
             <label for="class_year">Class Year</label>
             <input class="form-control info-2 mr-sm-2 info-2" type="number" id="class_year" name="class_year"
                 value="{{user.class_year if user.class_year}}" readonly>
             <br><br>
-            <label for="academics_certificate1">Certificate 1</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate1"
-                name="academics_certificate1" value="{{user.academics_certificate1 if user.academics_certificate1}}"
-                readonly>
-            <br>
-            <label for="academics_certificate2">Certificate 2</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate2"
-                name="academics_certificate2" value="{{user.academics_certificate2 if user.academics_certificate2}}"
-                readonly>
-            <br>
-            <label for="academics_certificate3">Certificate 3</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate3"
-                name="academics_certificate3" value="{{user.academics_certificate3 if user.academics_certificate3}}"
-                readonly>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="academics_certificate1">Certificate 1</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate1"
+                        name="academics_certificate1"
+                        value="{{user.academics_certificate1 if user.academics_certificate1}}" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <label for="academics_certificate2">Certificate 2</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate2"
+                        name="academics_certificate2"
+                        value="{{user.academics_certificate2 if user.academics_certificate2}}" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <label for="academics_certificate2">Certificate 3</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate2"
+                        name="academics_certificate2"
+                        value="{{user.academics_certificate2 if user.academics_certificate2}}" readonly>
+                </div>
+            </div>
             <br><br>
-            <label for="extracurricular1">Extracurricular 1</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular1" name="extracurricular1"
-                value="{{user.extracurricular1 if user.extracurricular1}}" readonly>
-            <br>
-            <label for="extracurricular2">Extracurricular 2</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular2" name="extracurricular2"
-                value="{{user.extracurricular2 if user.extracurricular2}}" readonly>
-            <br>
-            <label for="extracurricular3">Extracurricular 3</label>
-            <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular3" name="extracurricular3"
-                value="{{user.extracurricular3 if user.extracurricular3}}" readonly>
+            <div class="form-row">
+                <div class="col-sm-4">
+                    <label for="extracurricular1">Extracurricular 1</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular1"
+                        name="extracurricular1" value="{{user.extracurricular1 if user.extracurricular1}}" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <label for="extracurricular2">Extracurricular 2</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular2"
+                        name="extracurricular2" value="{{user.extracurricular2 if user.extracurricular2}}" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <label for="extracurricular3">Extracurricular 3</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular3"
+                        name="extracurricular3" value="{{user.extracurricular3 if user.extracurricular3}}" readonly>
+                </div>
+            </div>
             <br><br>
             <button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
             <button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
-        </form>
+            </form>
     </div>
+    <!-- <br><br> -->
+    <!-- <button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
+            <button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button> -->
+</div>
 
-    <p class="font-weight-bold text-danger">{{errorMsg}}</p>
+<p class="font-weight-bold text-danger">{{errorMsg}}</p>
 
 </div>
 {% endblock %}

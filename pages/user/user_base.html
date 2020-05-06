@@ -155,25 +155,27 @@
     };
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', ()=> {
-        if (window.innerWidth < 768) {
+    function check() {
+        if (window.innerWidth < 992) {
             html = '<i class="fas fa-angle-double-right"></i>'
         }
         else {
             html = '<i class="fas fa-angle-double-left"></i>'
         }
         document.getElementById("sidebarToggle").innerHTML = html;
-    });
-    function toggle() {
-        var html = document.getElementById("sidebarToggle").innerHTML;
-        if (getComputedStyle(document.getElementById("layoutSidenav_nav")).transform.search("-225") == -1) {
-            html = '<i class="fas fa-angle-double-right"></i>';
-        } else {
-            html = '<i class="fas fa-angle-double-left"></i>';
-        }
-
-        document.getElementById("sidebarToggle").innerHTML = html;
     }
+    document.addEventListener('DOMContentLoaded', check);
+    window.addEventListener('resize', check);
+
+    document.getElementById('sidebar-but').addEventListener('click', function() {
+        if (this.innerHTML.includes('double-left')) {
+            html = '<i class="fas fa-angle-double-right"></i>'
+        }
+        else {
+            html = '<i class="fas fa-angle-double-left"></i>'
+        }
+        document.getElementById("sidebarToggle").innerHTML = html;
+    })
 </script>
 {% block individual_scripts %}
 {% endblock %}
