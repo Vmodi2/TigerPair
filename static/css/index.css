@@ -161,7 +161,7 @@
 
 
 @media screen and (max-width: 576px) {
-  h1 {
+  h4, h1 {
     font-size: 350% !important;
   }
   .btn-landing {
