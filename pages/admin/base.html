@@ -72,6 +72,7 @@
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
+                    {% block extra_sidebar %}{% endblock %}
                     {% block extra_sidenav %}{% endblock %}
                     <div class="small">Logged in as:</div>
                     {{username}}
