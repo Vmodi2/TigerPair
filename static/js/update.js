@@ -1,4 +1,4 @@
-toggle = function (className) {
+toggleEdit = function (className) {
     return function () {
         $(className).attr('readonly', false);
         $(className).attr('disabled', false);
@@ -7,5 +7,5 @@ toggle = function (className) {
     };
 };
 
-$('#edit-btn-1').on('click', toggle('.info-1'));
-$('#edit-btn-2').on('click', toggle('.info-2'));
+$('#edit-btn-1').on('click', toggleEdit('.info-1'));
+$('#edit-btn-2').on('click', toggleEdit('.info-2'));
