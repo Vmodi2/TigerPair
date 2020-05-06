@@ -17,7 +17,7 @@
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade {% if not active %}active show{% endif %}" id="home" role="tabpanel"
         aria-labelledby="home-tab">
-        <form method="post" action="/{{side}}/dashboard">
+        <form method="post" action="/{{side}}/profile">
             {{ form.hidden_tag() }}
             {{wtf.form_field(form.firstname, id='firstname', class='form-control mr-sm-2 info-1', value=user.info_firstname if user.info_firstname, disabled=True)}}
             <br />

@@ -12,6 +12,11 @@
     .introjs-helperLayer {
         opacity: 0.2;
     }
+
+    .introjs-helperNumberLayer {
+        right: -10px;
+        left: auto;
+    }
 </style>
 
 <div id="layoutSidenav">
@@ -29,16 +34,16 @@
                         </a>
                     </div>
                     <div data-step='2'
-                        data-intro='Navigate here to add additional fields like your class year, certificates, and extracurriculars.'>
-                        <div class="sb-sidenav-menu-heading" data-position='right'>Profile</div>
+                        data-intro='Navigate here to add additional fields like your class year, certificates, and extracurriculars.'
+                        data-position='right'>
+                        <div class="sb-sidenav-menu-heading">Profile</div>
                         <a class="nav-link tab {% block edit_profile %}{% endblock %}" href="/{{side}}/profile">
                             <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
                             Edit profile
                         </a>
                     </div>
-                    <div data-step='3'
-                        data-intro='Join another group in settings, but note that you may only be in one group at a time.'
-                        data-position='right'>
+                    <div data-step='3' data-intro="Change your email in settings if you'd like to be notified of
+                        matches elsewhere." data-position='right'>
                         <div class="sb-sidenav-menu-heading">Your account</div>
                         <a class="nav-link tab {% block account %}{% endblock %}" href="/{{side}}/account">
                             <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
@@ -48,6 +53,9 @@
                 </div>
             </div>
             <div class="sb-sidenav-footer">
+                <div class="small">
+                    <a class="text-warning lead highlight" id="startButton" href="javascript:void(0)">Tutorial</a>
+                </div>
                 <div class="small">Logged in as:</div>
                 <span>{{user.info_email}}</span>
                 <div class="small">Your group ID:</div>
@@ -56,7 +64,8 @@
                     class="id-display">{{user.group_id if user.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 <br><br>
                 <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal"
-                    data-target="#exampleModal">Change
+                    data-target="#exampleModal" data-step='4' data-position='right'
+                    data-intro="You may join another group, but note that you may only be in one group at a time">>Change
                     your group</a>
                 <span class="d-lg-none">
                     <br><br><br>
@@ -132,7 +141,10 @@
                         intro: 'Navigate to your profile page to add additional fields like your class year, certificates, and extracurriculars.'
                     },
                     {
-                        intro: 'Join another group in settings, but note that you may only be in one group at a time.'
+                        intro: "Change your email in settings if you'd like to be notified of matches elsewhere."
+                    },
+                    {
+                        intro: 'You may join another group, but note that you may only be in one group at a time'
                     }
                 ]
             }).start();

@@ -134,7 +134,8 @@ def get_student_info():
 
 
 def get_cas():
-    return CASClient().authenticate().replace('\n', '')
+    return "barkachi"
+    # return CASClient().authenticate().replace('\n', '')
 
 
 def verify_alum():
@@ -242,7 +243,7 @@ def user_information_additional(side):
                 continue
         setattr(user, field, value)
     db.session.commit()
-    html = render_template('pages/user/dashboard.html',
+    html = render_template('pages/user/profile.html',
                            side=side, user=user, username=username, active='more', user_type=side, form=form, form2=form2, errorMsg=errorMsg)
     return make_response(html)
 
