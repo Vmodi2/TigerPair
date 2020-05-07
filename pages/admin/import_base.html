@@ -42,7 +42,7 @@
     if (RegExp('multipage', 'gi').test(window.location.search)) {
         document.getElementById('import-students').classList.add('active')
         introJs().setOption('doneLabel', 'Next page').start().oncomplete(function () {
-            window.location.href = '/admin/settings?multipage=true';
+            window.location.href = '/admin/modify-matches?multipage=true';
         });
     }
 </script>
