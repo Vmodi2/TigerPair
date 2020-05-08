@@ -39,7 +39,7 @@
                         <div class="sb-sidenav-menu-heading">Profile</div>
                         <a class="nav-link tab {% block edit_profile %}{% endblock %}" href="/{{side}}/profile">
                             <div class="sb-nav-link-icon"><i class="far fa-id-badge"></i></div>
-                            Edit profile
+                            Profile info
                         </a>
                     </div>
                     <div data-step='3' data-intro="Change your email in settings if you'd like to be notified of
@@ -54,15 +54,16 @@
             </div>
             <div class="sb-sidenav-footer">
                 <div class="text-center">
-                    <a type="button" class="btn btn-change btn-sm text-white text-center" id="startButton" href="javascript:void(0)">Tutorial</a>
+                    <a type="button" class="btn btn-change btn-sm text-white text-center" id="startButton"
+                        href="javascript:void(0)">Tutorial</a>
                 </div>
                 <hr style="border-top:1px solid white;">
                 <div>Logged in as:</div>
                 <span>{{user.info_email}}</span>
                 <div>Your group ID:
-                <!-- print id -->
-                {% if user %}<span
-                    class="id-display">{{user.group_id if user.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
+                    <!-- print id -->
+                    {% if user %}<span
+                        class="id-display">{{user.group_id if user.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 </div>
                 <br>
                 <div class="text-center">
@@ -171,7 +172,7 @@
     document.addEventListener('DOMContentLoaded', check);
     window.addEventListener('resize', check);
 
-    document.getElementById('sidebar-but').addEventListener('click', function() {
+    document.getElementById('sidebar-but').addEventListener('click', function () {
         if (this.innerHTML.includes('double-left')) {
             html = '<i class="fas fa-angle-double-right"></i>'
         }
