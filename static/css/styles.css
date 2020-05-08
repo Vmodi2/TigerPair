@@ -1986,6 +1986,12 @@ pre code {
   border: 0;
 }
 
+.current-info-1, .current-info-2 {
+  padding:0.375rem 0.75rem;
+  border:1px hidden;
+  border-radius:0.25rem;
+}
+
 .form-control {
   display: block;
   width: 100%;
