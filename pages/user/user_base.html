@@ -66,10 +66,10 @@
                         class="id-display">{{user.group_id if user.group_id != -1 else 'Currently not in a group'}}</span>{% endif %}
                 </div>
                 <br>
-                <div class="text-center">
-                    <a type="button" class="btn btn-change btn-sm text-white text-center" data-toggle="modal"
-                        data-target="#exampleModal" data-step='4' data-position='right'
-                        data-intro="You may join another group, but note that you may only be in one group at a time">Change
+                <div class="text-center" data-target="#exampleModal" data-step='4' data-position='right'
+                    data-toggle="modal"
+                    data-intro="You may join another group, but note that you may only be in one group at a time">
+                    <a type="button" class="btn btn-change btn-sm text-white text-center">Change
                         your group</a>
                 </div>
                 <span class="d-lg-none">

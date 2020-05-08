@@ -36,9 +36,9 @@
 		</div>
 	</div>
 </div>
-<div class="card px-5">
+<div class="card px-5 mb-3">
 	<h2 class="pt-5 pb-3 text-center">Delete Account</h2>
-	<div class="row d-flex justify-content-center">
+	<!-- <div class="row d-flex justify-content-center">
 		<div class="card bg-danger text-white mb-4 mt-4 col-6">
 			<div class="card-body">Delete account</div>
 			<div class="card-footer d-flex align-items-center justify-content-between">
@@ -48,11 +48,13 @@
 				<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 			</div>
 		</div>
-	</div>
+	</div> -->
+	<a href="/{{side}}/delete" class="btn btn-outline-danger mb-5" id="delete-account">Permanently delete your
+		account</a>
 </div>
 </div>
 {% endblock %}
 {% block account %}active{% endblock %}
 {% block individual_scripts %}
-<script src="/static/js/delete_account.js"></script>
+<script src=" /static/js/delete_account.js"></script>
 {% endblock %}
