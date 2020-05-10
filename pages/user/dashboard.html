@@ -11,17 +11,20 @@
 <br />
 <div class="match-info text-center">
 	{% if match %}
-	<h1 class="display-4">You've been matched</h1>
-	<p class="lead">...with <strong><mark>{{match.info_firstname}}
-				{{match.info_lastname}}</mark></strong>!</p>
-	<hr class="my-4">
-	<p>View their profile below</p>
+	<p class="lead">You've been matched with...</p>
+	<h1 class="display-4"><strong>{{match.info_firstname}}
+				{{match.info_lastname}}</strong>!</h1>
+	<br>
 	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
 		data-target="#profileModal">{{match.info_firstname}}'s Profile</button>
-	<hr class="my-4">
+	<br><br><hr class="my-4"><br>
 	{% if contacted == False: %}
 	<form method="post">
-		<p>Confirm that you have contacted {{match.info_firstname}}.</p>
+		<p>
+			Reach out to them at <a href="mailto:{{match.info_email}}">{{match.info_email}}</a>.
+			<br>
+			Once you have, please confirm that you are in contact.
+		</p>
 		<input type="submit" class="btn btn-primary btn-lg" name="action" value="Confirm">
 	</form>
 	{% endif %}
@@ -35,9 +38,9 @@
 			<br><br><br><br>
 			<div class="offset-3 w-50">
 				<form method="post">
-					<label for="message">Send a message to your group admin:</label>
+					<label for="message">Reach out to your group admin:</label>
 					<textarea class="form-control" id="message" name="message" rows="3" required
-						style="resize:none;"></textarea>
+						style="resize:none;" placeholder="{% if match: %}Want to change your match?{% else: %}Questions about when you'll be matched?{% endif %} Let your admin know!"></textarea>
 					<br>
 					<button type="submit" name="action" class="btn btn-warning my-2 my-sm-0"
 						id="submit">&nbsp;Submit&nbsp;</button>
