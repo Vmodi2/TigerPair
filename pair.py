@@ -231,10 +231,7 @@ def user_information_additional(side):
         value = request.form.get(field)
         if field == 'class_year':
             try:
-                print('fsdfsdf')
                 value = int(value)
-                print(value)
-                print(int(datetime.today().year + 8))
                 if value > int(datetime.today().year + 8) or value < 1930:
                     raise Exception()
             except:
