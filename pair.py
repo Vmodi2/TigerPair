@@ -802,7 +802,7 @@ def process_import(is_alumni):
         request_file = request.files.get('data_file')
         if not request_file.filename.strip():
             html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                                   errorMsg='No file uploaded', username=username, id=id, side=side, user_type='admin')
+                                   errorMsg='No .csv file uploaded', username=username, id=id, side=side, user_type='admin')
         else:
             csv_reader = DictReader(chunk.decode() for chunk in request_file)
             if is_alumni:
