@@ -19,21 +19,17 @@
         aria-labelledby="home-tab">
         <form method="post" action="/{{side}}/profile">
             {{ form.hidden_tag() }}
-            <label for="firstname">First Name</label>
-            <p class="mr-sm-2 current-info-1">{{user.info_firstname if user.info_firstname}}</p>
-            {{wtf.form_field(form.firstname, id='firstname', class='form-control mr-sm-2 info-1', value=user.info_firstname if user.info_firstname, disabled=True, hidden=True)}}
-
-            <label for="lastname">Last Name</label>
-            <p class="mr-sm-2 current-info-1">{{user.info_lastname if user.info_lastname}}</p>
-            {{wtf.form_field(form.lastname, id='lastname', class='form-control mr-sm-2 info-1', value=user.info_lastname if user.info_lastname, disabled=True, hidden=True)}}
-            
+            <label for="firstname">First name</label>
+            {{wtf.form_field(form.firstname, id='firstname', class='form-control mr-sm-2 info-1', value=user.info_firstname if user.info_firstname, disabled=True)}}
+            <br />
+            <label for="lastname">Last name</label>
+            {{wtf.form_field(form.lastname, id='lastname', class='form-control mr-sm-2 info-1', value=user.info_lastname if user.info_lastname, disabled=True)}}
+            <br />
             <label for="major">Major</label>
-            <p class="mr-sm-2 current-info-1">{{user.academics_major if user.academics_major}}</p>
-            {{wtf.form_field(form.major, id='major', class='form-control mr-sm-2 info-1', value=user.academics_major if user.academics_major, disabled=True, hidden=True)}}
-
+            {{wtf.form_field(form.major, id='major', class='form-control mr-sm-2 info-1', value=user.academics_major if user.academics_major, disabled=True)}}
+            <br />
             <label for="career">Career</label>
-            <p class="mr-sm-2 current-info-1">{{user.career_field if user.career_field}}</p>
-            {{wtf.form_field(form.career, id='career', class='form-control mr-sm-2 info-1', value=user.career_field if user.career_field, disabled=True, hidden=True)}}
+            {{wtf.form_field(form.career, id='career', class='form-control mr-sm-2 info-1', value=user.careerfield if user.career_field, disabled=True)}}
             <br />
             <button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-1">&nbsp;Edit&nbsp;</button>
             <button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-1" hidden>&nbsp;Submit&nbsp;</button>
@@ -50,63 +46,56 @@
         document.getElementById("career").innerHTML = current;
     </script>
 
-    
+
     <div class="tab-pane fade {% if active %}active show{% endif %}" id="page-1" role="tabpanel"
         aria-labelledby="page-1-tab">
-            <form method="post" action="/{{side}}/information-additional">
+        <form method="post" action="/{{side}}/information-additional">
             <label for="class_year">Class Year</label>
-            <p class="mr-sm-2 current-info-2">{{user.class_year if user.class_year}}</p>
             <input class="form-control info-2 mr-sm-2 info-2" type="number" id="class_year" name="class_year"
-                value="{{user.class_year if user.class_year}}" disabled hidden>
+                value="{{user.class_year if user.class_year}}" readonly>
             <br><br>
             <div class="form-row">
                 <div class="col-sm-4">
                     <label for="academics_certificate1">Certificate 1</label>
-                    <p class="mr-sm-2 current-info-2">{{user.academics_certificate1 if user.academics_certificate1}}</p>
                     <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate1"
                         name="academics_certificate1"
-                        value="{{user.academics_certificate1 if user.academics_certificate1}}" disabled hidden>
+                        value="{{user.academics_certificate1 if user.academics_certificate1}}" readonly>
                 </div>
                 <div class="col-sm-4">
                     <label for="academics_certificate2">Certificate 2</label>
-                    <p class="mr-sm-2 current-info-2">{{user.academics_certificate2 if user.academics_certificate2}}</p>
                     <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate2"
                         name="academics_certificate2"
-                        value="{{user.academics_certificate2 if user.academics_certificate2}}" disabled hidden>
+                        value="{{user.academics_certificate2 if user.academics_certificate2}}" readonly>
                 </div>
                 <div class="col-sm-4">
-                    <label for="academics_certificate3">Certificate 3</label>
-                    <p class="mr-sm-2 current-info-2">{{user.academics_certificate3 if user.academics_certificate3}}</p>
-                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate3"
-                        name="academics_certificate3"
-                        value="{{user.academics_certificate3 if user.academics_certificate3}}" disabled hidden>
+                    <label for="academics_certificate2">Certificate 3</label>
+                    <input class="form-control info-2 mr-sm-2 info-2" type="text" id="academics_certificate2"
+                        name="academics_certificate2"
+                        value="{{user.academics_certificate2 if user.academics_certificate2}}" readonly>
                 </div>
             </div>
             <br><br>
             <div class="form-row">
                 <div class="col-sm-4">
                     <label for="extracurricular1">Extracurricular 1</label>
-                    <p class="mr-sm-2 current-info-2">{{user.extracurricular1 if user.extracurricular1}}</p>
                     <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular1"
-                        name="extracurricular1" value="{{user.extracurricular1 if user.extracurricular1}}" disabled hidden>
+                        name="extracurricular1" value="{{user.extracurricular1 if user.extracurricular1}}" readonly>
                 </div>
                 <div class="col-sm-4">
                     <label for="extracurricular2">Extracurricular 2</label>
-                    <p class="mr-sm-2 current-info-2">{{user.extracurricular2 if user.extracurricular2}}</p>
                     <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular2"
-                        name="extracurricular2" value="{{user.extracurricular2 if user.extracurricular2}}" disabled hidden>
+                        name="extracurricular2" value="{{user.extracurricular2 if user.extracurricular2}}" readonly>
                 </div>
                 <div class="col-sm-4">
                     <label for="extracurricular3">Extracurricular 3</label>
-                    <p class="mr-sm-2 current-info-2">{{user.extracurricular3 if user.extracurricular3}}</p>
                     <input class="form-control info-2 mr-sm-2 info-2" type="text" id="extracurricular3"
-                        name="extracurricular3" value="{{user.extracurricular3 if user.extracurricular3}}" disabled hidden>
+                        name="extracurricular3" value="{{user.extracurricular3 if user.extracurricular3}}" readonly>
                 </div>
             </div>
             <br><br>
             <button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
             <button type="submit" class="btn btn-primary my-2 my-sm-0" id="submit-2" hidden>&nbsp;Submit&nbsp;</button>
-            </form>
+        </form>
     </div>
     <!-- <br><br> -->
     <!-- <button type="button" class="btn btn-primary my-2 my-sm-0" id="edit-btn-2">&nbsp;Edit&nbsp;</button>
