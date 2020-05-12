@@ -17,6 +17,11 @@
 </nav> -->
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/users.css">
+<style>
+    .no-underline {
+        text-decoration: none !important;
+    }
+</style>
 {% endblock %}
 <nav class="navbar fixed-top transparent navbar-expand navbar-dark bg-dark topNavbar" id="landing-nav">
     <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
@@ -24,11 +29,14 @@
             <li class="nav-item active" id="sidebar-but">
                 <a class="nav-link text-white" href="#" role="button" id="sidebarToggle" aria-haspopup="true"
                     aria-expanded="false">
-                    <i class="fas fa-angle-double-left"></i></a>
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
             </li>
             <li class="nav-item">
-                <a href="/"><img src="/static/images/TigerPairLogo.png" style="width:80px;" alt="TigerPair Logo">
-                <img src="/static/images/logo.png" style="width:80px;" alt=""></a>
+                <a href="/" class="no-underline">
+                    <img src="/static/images/TigerPairLogo.png" style="width:80px;" alt="TigerPair Logo">
+                    <img src="/static/images/logo.png" style="width:80px;" alt="">
+                </a>
             </li>
         </ul>
     </div>
