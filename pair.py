@@ -839,7 +839,7 @@ def process_import(is_alumni):
                                    errorMsg=errorMsg, bad_members=bad_members, successMsg=successMsg, username=username, id=id, side=side, user_type='admin')
     except Exception as e:
         html = render_template('pages/admin/import-alumni.html' if is_alumni else 'pages/admin/import-students.html',
-                               errorMsg=f"Error processing your upload. It's possible that you are attempting to upload duplicate information. {str(e)}", username=username, id=id, side=side, user_type='admin')
+                               errorMsg=f"Error processing your upload. Make sure to follow the specified format.", username=username, id=id, side=side, user_type='admin')
     return make_response(html)
 
 
