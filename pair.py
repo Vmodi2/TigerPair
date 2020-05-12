@@ -442,7 +442,7 @@ def confirm_email(token):
     try:
         # changed to infinite (got rid of max_age)
         # email = s.loads(token, salt='email-confirm', max_age=3600)
-        email = s.loads(token, salt='email-confirm')
+        email = s.loads(token, salt='email-confirm', max_age=3600)
     except SignatureExpired:
         errormsg = 'The token is expired'
         abort(404)
