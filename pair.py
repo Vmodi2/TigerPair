@@ -669,14 +669,15 @@ def notify(selective=False, members=None):
             studentid=match.studentid).first().info_email
         student_emails.append(student)
         alum_emails.append(match.info_email)
+    student_link = 'https://tigerpair.herokuapp.com/student/dashboard'
     student_msg = Message('You\'ve been Matched!',
                           sender='tigerpaircontact@gmail.com', bcc=student_emails)
-    student_msg.body = 'You have been assigned a match!\nPlease reach out to them as soon as possible to confirm your pairing. If you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nTigerPair Team'
+    student_msg.body = f'You have been assigned a match! Visit the link below to view your match and reach out to them as soon as possible to confirm your pairing.\n\n{student_link}\n\nIf you do not reach out within 10 days your match will be removed and reassigned to another alum.\n\nBest,\nThe TigerPair Team'
     mail.send(student_msg)
-
+    alum_link = 'https://tigerpair.herokuapp.com/alum/dashboard'
     alum_msg = Message('You\'ve been Matched!',
                        sender='tigerpaircontact@gmail.com', bcc=alum_emails)
-    alum_msg.body = 'You have been assigned a match!\nLook out for an email from them in coming days. If they do not reach out let admin know, and you can be reassigned. Thank you for participating in this program.\n\nBest,\nTigerPair Team'
+    alum_msg.body = f'You have been assigned a match! Visit the link below to view your match and look out for an email from them in coming days.\n\n{alum_link}\n\nIf they do not reach out let admin know to be reassigned. Thank you for participating in this program.\n\nBest,\nThe TigerPair Team'
     mail.send(alum_msg)
     successMsg = 'Email notifications successfully sent!'
     html = render_template('pages/admin/modify-matches.html',
