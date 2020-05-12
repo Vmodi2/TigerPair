@@ -149,12 +149,15 @@ def verify_user(side):
     if side == 'alum':
         username = verify_alum()
         user = alumni.query.filter_by(info_email=username).first()
-    else:
+        return username, user
+    elif side == 'student':
         username = get_cas()
         user = students.query.filter_by(studentid=username).first()
         if not user:
             abort(redirect(url_for('user_new', side='student')))
-    return username, user
+        return username, user
+    else:
+        abort(404)
 
 
 def route_new_user(user, side):
