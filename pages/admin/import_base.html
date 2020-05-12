@@ -4,38 +4,38 @@
 <div data-step="3"
     data-intro="If you already have a list of members you'd like to import, you can do so on these import pages."
     data-position='right'>
-    <h2 class="ml-3 mr-3 mt-4 mb-4 text-center">Upload a list of {% block import_side %}{% endblock %} as a .csv file
-    </h2>
-    <ul>
-        <li>
-            <h5>Header must include {% block header_info %}{% endblock %}, although the order is not important</h5>
-        </li>
-        <li>
-            <h5>Ensure that major is listed in a three-letter format (e.g. COS or ECO)</h4>
-        </li>
-    </ul>
-    <br>
-    <form action="/admin/import/{{side}}" method="post" enctype="multipart/form-data">
-        <input type="file" name="data_file" />
-        <input type="submit" />
+    <h1 class="display-4 text-center">Upload a list of {% block import_side %}{% endblock %} as a .csv file</h1>
+    <p class="lead">The header of your csv file must include {% block header_info %}{% endblock %}, although the order
+        is not important</p>
+    <p class="lead">Ensure that major is listed in a three-letter format (e.g. COS or ECO)</p>
+    <hr class="my-4">
+    <form action="/admin/import/{{side}}" method="post" enctype="multipart/form-data"
+        class="d-flex justify-content-center mb-3">
+        <label class="btn btn-primary mb-0 mr-2">
+            Browse <input type="file" name="data_file" hidden />
+        </label>
+        <button type="submit" class="btn btn-primary ml-3">Upload</button>
     </form>
-
-    <br>
-    <h5>Additional information</h5>
-    <ul>
-        <li class="font-weight-bold">An Excel or Google Sheets spreadsheet must be saved and uploaded as a CSV file.
-        </li>
-        <li class="font-weight-bold">Uploading a CSV with members already in your group will update their information.
-        </li>
-    </ul>
-    <span class="font-weight-bold text-danger">{{errorMsg}}</span>
-    {% if bad_members %}
-    {% for member in bad_members: %}
-    <br>
-    <span class="font-weight-bold text-center text-danger">{{member}}</span>
-    {% endfor %}
-    {% endif %}
-    <span class="font-weight-bold text-center text-success">{{successMsg}}</span>
+    <div class="text-center">
+        <span class="font-weight-bold text-danger">{{errorMsg}}</span>
+        {% if bad_members %}
+        {% for member in bad_members: %}
+        <br>
+        <span class="font-weight-bold text-danger">{{member}}</span>
+        {% endfor %}
+        {% endif %}
+        <span class="font-weight-bold text-success">{{successMsg}}</span>
+    </div>
+    <hr class="my-4">
+    <p class="lead font-weight-bold text-center">Additional information.</p>
+    <p class="lead">
+        An Excel or Google Sheets spreadsheet must be saved and
+        uploaded as a CSV file.
+    </p>
+    <p class="lead">
+        Uploading a CSV with members already in your group will
+        update their information.
+    </p>
     {% endblock %}
 </div>
 {% block extra_scripts %}
