@@ -177,26 +177,14 @@ color: white !important;
 
 /* About stuff, adapted from https://bootstrapmade.com/maundy-free-coming-soon-bootstrap-theme/?download_theme=maundy.zip */
 
-.section-title h4::after {
-content: '';
-position: absolute;
-display: block;
-width: 50px;
-height: 2px;
-background: #ffa050;
-bottom: 0;
-left: calc(50% - 25px);
-}
-
 .section-title h2::after {
   content: '';
-  position: absolute;
+  position: static;
   display: block;
   width: 50px;
-  height: 2px;
+  height: 6px;
   background: #ffa050;
-  bottom: 0;
-  left: calc(50% - 25px);
+  margin: 7px auto 0;
 }
 
 

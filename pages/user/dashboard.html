@@ -13,11 +13,12 @@
 	{% if match %}
 	<p class="lead">You've been matched with...</p>
 	<h1 class="display-4"><strong>{{match.info_firstname}}
-				{{match.info_lastname}}</strong>!</h1>
+			{{match.info_lastname}}</strong>!</h1>
 	<br>
 	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
 		data-target="#profileModal">{{match.info_firstname}}'s Profile</button>
-	<br><br><hr class="my-4"><br>
+	<br><br>
+	<hr class="my-4"><br>
 	{% if contacted == False: %}
 	<form method="post">
 		<p>
@@ -39,8 +40,8 @@
 			<div class="offset-3 w-50">
 				<form method="post">
 					<label for="message">Reach out to your group admin:</label>
-					<textarea class="form-control" id="message" name="message" rows="3" required
-						style="resize:none;" placeholder="{% if match: %}Want to change your match?{% else: %}Questions about when you'll be matched?{% endif %} Let your admin know!"></textarea>
+					<textarea class="form-control" id="message" name="message" rows="3" required style="resize:none;"
+						placeholder="{% if match: %}Want to change your match?{% else: %}Questions about when you'll be matched?{% endif %} Let your admin know!"></textarea>
 					<br>
 					<button type="submit" name="action" class="btn btn-warning my-2 my-sm-0"
 						id="submit">&nbsp;Submit&nbsp;</button>
@@ -67,13 +68,21 @@
 					<h5>Major: {{match.academics_major}}</h5>
 					<h5>Career: {{match.career_field}}</h5>
 					<h5>Email: <a href="mailto:{{match.info_email}}">{{match.info_email}}</a></h5>
-					<h5>Class Year: {{match.class_year}}</h5>
-					<p class="font-weight-bold">Certificate 1: {{match.academics_certificate1}}</p>
-					<p class="font-weight-bold">Certificate 2: {{match.academics_certificate2}}</p>
-					<p class="font-weight-bold">Certificate 3: {{match.academics_certificate3}}</p>
-					<p class="font-weight-bold">Extracurricular 1: {{match.extracurricular1}}</p>
-					<p class="font-weight-bold">Extracurricular 2: {{match.extracurricular2}}</p>
-					<p class="font-weight-bold">Extracurricular 3: {{match.extracurricular3}}</p>
+					{% if match.class_year %}<h5>Class Year: {{match.class_year}}</h5>
+					{% endif %}
+					{% if match.academics_certificate1 %}<p class="font-weight-bold">Certificate 1:
+						{{match.academics_certificate1}}
+					</p>{% endif %}
+					{% if match.academics_certificate2 %}<p class="font-weight-bold">Certificate 2:
+						{{match.academics_certificate2}}</p>{% endif %}
+					{% if match.academics_certificate3 %}<p class="font-weight-bold">Certificate 3:
+						{{match.academics_certificate3}}</p>{% endif %}
+					{% if match.extracurricular1 %}<p class="font-weight-bold">Extracurricular 1:
+						{{match.extracurricular1}}</p>{% endif %}
+					{% if match.extracurricular2 %}<p class="font-weight-bold">Extracurricular 2:
+						{{match.extracurricular2}}</p>{% endif %}
+					{% if match.extracurricular3 %}<p class="font-weight-bold">Extracurricular 3:
+						{{match.extracurricular3}}</p>{% endif %}
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
