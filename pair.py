@@ -489,28 +489,21 @@ def matching():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = ""
-    # print("login")
     if current_user.is_authenticated:
         return redirect(url_for('user_dashboard', side='alum'))
 
     form = LoginForm()
     if form.validate_on_submit():
-        # print("submitted form")
         user = alumni.query.filter_by(info_email=form.email.data).first()
         if user is not None:
-            # print("user is not none")
             if user.email_confirmed:
-                # print("email is confirmed")
                 if check_password_hash(user.password, form.password.data):
-                    # print("password is correct")
-                    print("this is a problem")
                     db.session.commit()
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('user_dashboard', side='alum'))
                 else:
                     error = "Invalid email or password"
                     print("should be here")
-                    # url_for('alum_info')
             else:
                 error = "email not verified"
         else:
@@ -601,31 +594,20 @@ def signup():
 
     if form.validate_on_submit():
         email = form.email.data
-        # username = form.username.data
         hashed_password = generate_password_hash(
             form.password.data, method='sha256')
         existing_user = alumni.query.filter_by(info_email=email).first()
         if existing_user is None:
-
-            # email verification code
-
             token = s.dumps(email, salt='email-confirm')
-
             msg = Message(
                 'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
             link = url_for('confirm_email', token=token, _external=True)
             msg.body = 'Confirmation link is {}'.format(link)
             mail.send(msg)
-
-            # update the database with new user info
-
             user = alumni(info_email=email, password=hashed_password)
             upsert_user(user, side='alum')
-
             return redirect(url_for('gotoemail'))
-
         error = 'Invalid'
-
     html = render_template('pages/login/signup.html',
                            form=form, errors=[error])
     return make_response(html)
