@@ -871,26 +871,26 @@ def adminlogin():
     return make_response(html)
 
 
-@app.route('/login/asignup', methods=['GET', 'POST'])
-def asignup():
-    error = ""
-    form = AdminRegisterForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        hashed_password = generate_password_hash(
-            form.password.data, method='sha256')
-        existing_user = admins.query.filter_by(username=username).first()
-        if existing_user is None:
-
-            user = admins(username, hashed_password)
-            db.session.add(user)
-            db.session.commit()  # this isnt doing anything
-
-            return redirect(url_for('admin_dashboard'))
-
-    html = render_template('pages/login/asignup.html',
-                           form=form, errors=[error])
-    return make_response(html)
+# @app.route('/login/asignup', methods=['GET', 'POST'])
+# def asignup():
+#     error = ""
+#     form = AdminRegisterForm()
+#     if form.validate_on_submit():
+#         username = form.username.data
+#         hashed_password = generate_password_hash(
+#             form.password.data, method='sha256')
+#         existing_user = admins.query.filter_by(username=username).first()
+#         if existing_user is None:
+#
+#             user = admins(username, hashed_password)
+#             db.session.add(user)
+#             db.session.commit()  # this isnt doing anything
+#
+#             return redirect(url_for('admin_dashboard'))
+#
+#     html = render_template('pages/login/asignup.html',
+#                            form=form, errors=[error])
+#     return make_response(html)
 
 
 @app.route('/admin/settings', methods=['GET', 'POST'])
