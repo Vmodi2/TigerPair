@@ -5,7 +5,8 @@
     <h3 class="text-center">Modify Matches</h3>
     <div class="pt-3 row d-flex justify-content-center">
         <div class="col-xl-6">
-            <div class="card bg-white mb-4" data-intro="Use this button to automatically match all your unmatched students and alumni, without sending them an email notification">
+            <div class="card bg-white mb-4"
+                data-intro="Use this button to automatically match all your unmatched students and alumni, without sending them an email notification">
                 <div class="row">
                     <span class="icon-user-add pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
                     <div class="card-body">Match without notifying participants</div>
@@ -18,7 +19,8 @@
             </div>
         </div>
         <div class="col">
-            <div class="card bg-white mb-4" data-intro="Use this button to automatically match all your unmatched students and alumni, and send them an email notification">
+            <div class="card bg-white mb-4"
+                data-intro="Use this button to automatically match all your unmatched students and alumni, and send them an email notification">
                 <div class="row">
                     <span class="icon-user-add pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
                     <div class="card-body">Match and notify participants</div>
@@ -31,7 +33,8 @@
             </div>
         </div>
         <div class="col-xl-6">
-            <div class="card bg-white mb-4" data-intro="This will delete all your existing matches! Use this if you want to rematch everyone, or start a new matching cycle.">
+            <div class="card bg-white mb-4"
+                data-intro="This will delete all your existing matches! Use this if you want to rematch everyone, or start a new matching cycle.">
                 <div class="row">
                     <span class="icon-user-remove pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
                     <div class="card-body">Clear matches</div>
@@ -46,7 +49,8 @@
             </div>
         </div>
         <div class="col-xl-6">
-            <div class="card bg-white mb-4" data-intro="This will send out an email notification to all your existing matches.">
+            <div class="card bg-white mb-4"
+                data-intro="This will send out an email notification to all your existing matches.">
                 <div class="row">
                     <span class="icon-mail pl-5 pr-2 pt-3" style="font-size:2rem;"></span>
                     <div class="card-body">Email Notification</div>
@@ -69,7 +73,7 @@
 <script type="text/javascript">
     if (RegExp('multipage', 'gi').test(window.location.search)) {
         document.getElementById('modify-matches').classList.add('active')
-        introJs().setOption('doneLabel', 'Next page').start().oncomplete(function () {
+        introJs().setOption('doneLabel', 'Next page').setOption('showStepNumbers', false).start().oncomplete(function () {
             window.location.href = '/admin/settings?multipage=true';
         });
     }

@@ -151,11 +151,13 @@
                     {
                         intro: 'You may join another group, but note that you may only be in one group at a time'
                     }
-                ]
+                ],
+                showStepNumbers: false,
+                hideNext: false
             }).start();
         }
         else {
-            introJs().start();
+            introJs().setOption('showStepNumbers', false).setOption('hideNext', true).start();
         }
     };
 </script>

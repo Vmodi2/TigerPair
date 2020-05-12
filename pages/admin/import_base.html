@@ -1,7 +1,8 @@
 {% extends "pages/admin/base.html" %}
 
 {% block content %}
-<div data-step="3" data-intro="If you already have a list of members you'd like to import, you can do so on these import pages."
+<div data-step="3"
+    data-intro="If you already have a list of members you'd like to import, you can do so on these import pages."
     data-position='right'>
     <h2 class="ml-3 mr-3 mt-4 mb-4 text-center">Upload a list of {% block import_side %}{% endblock %} as a .csv file
     </h2>
@@ -41,7 +42,7 @@
 <script type="text/javascript">
     if (RegExp('multipage', 'gi').test(window.location.search)) {
         document.getElementById('import-students').classList.add('active')
-        introJs().setOption('doneLabel', 'Next page').start().oncomplete(function () {
+        introJs().setOption('doneLabel', 'Next page').setOption('showStepNumbers', false).start().oncomplete(function () {
             window.location.href = '/admin/modify-matches?multipage=true';
         });
     }

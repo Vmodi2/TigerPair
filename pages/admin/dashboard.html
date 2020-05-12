@@ -26,9 +26,10 @@
         </div>
     </div>
 </div>
-<div class="card ml-3 mr-3 mt-4 mb-4" data-step="2"
-    data-intro="This is where you'll see your matches when you create them." data-position='right'>
-    <div class="card-header"><i class="fas fa-table mr-1"></i>Current Matches</div>
+<div class="card ml-3 mr-3 mt-4 mb-4">
+    <div class="card-header" data-step="2" data-intro="This is where you'll see your matches when you create them."
+        data-position='right'><i class="fas fa-table mr-1"></i>Current
+        Matches</div>
     <div class="card-body">
         <div class="table-responsive">
             {% if matches %}
@@ -37,8 +38,7 @@
                     <tr>
                         <th>Student</th>
                         <th>Alum</th>
-                        <th data-step="3">Confirmed
-                            contact</th>
+                        <th data-step="3">Confirmed contact</th>
                         <th data-orderable="false">Modify</th>
                     </tr>
                 </thead>
@@ -46,7 +46,7 @@
                     <tr>
                         <th>Student</th>
                         <th>Alum</th>
-                        <th>Student confirmed contact</th>
+                        <th>Confirmed contact</th>
                         <th>Modify</th>
                     </tr>
                 </tfoot>
@@ -81,7 +81,7 @@
 <script src="/static/js/chart-area-demo.js"></script>
 <script>
     function start() {
-        introJs().setOption('doneLabel', 'Next page').start().oncomplete(function () {
+        introJs().setOption('doneLabel', 'Next page').setOption('showStepNumbers', false).start().oncomplete(function () {
             window.location.href = '/admin/import/students?multipage=true';
         });
     }

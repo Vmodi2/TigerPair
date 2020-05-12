@@ -111,7 +111,7 @@
 <script src="/static/js/change_account.js"></script>
 <script>
     if (RegExp('multipage', 'gi').test(window.location.search)) {
-        introJs().start()
+        introJs().setOption('hideNext', true).setOption('showStepNumbers', false).start()
     };
 </script>
 {% endblock %}
