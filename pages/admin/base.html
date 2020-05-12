@@ -73,10 +73,15 @@
                 </div>
                 <div class="sb-sidenav-footer">
                     {% block extra_sidenav %}{% endblock %}
-                    <div class="small">Logged in as:</div>
-                    {{username}}
-                    <div class="small">Your group ID:</div>
-                    {{id}}
+                    <div>Logged in as:</div>
+                    <span>{{username}}</span>
+                    <div>
+                        Your group ID:
+                        <span class="id-display">{{id}}</span>
+                    </div>
+                    <span class="d-lg-none">
+                        <br><br><br>
+                    </span>
                 </div>
             </nav>
         </div>
