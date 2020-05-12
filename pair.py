@@ -349,7 +349,7 @@ def user_id(side):
             response['msg'] = 'You may not change groups while you are matched'
         else:
             new_id = form.new_group_id.data
-            if new_id:
+            if new_id is not None:
                 group = admins.query.filter_by(id=new_id).first()
                 if not group:
                     response['msg'] = 'The chosen group id does not belong to an existing group'
