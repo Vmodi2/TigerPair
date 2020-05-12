@@ -16,28 +16,28 @@
 
 <body>
     {% include "/pages/home_nav.html" %}
-    <div class="col-full">
+    <div class="col-full d-flex flex-column align-items-center">
         <h2 class="admin-title display-5 text-center font-weight-bold px-4 mt-5 pt-5">Become an admin today
         </h2>
-        <h3 class="display-4 text-center px-4 pt-2 pb-4">Match your students with the mentors they deserve</h3>
+        <h3 class="display-4 text-center px-4 pt-2 pb-4 w-75">Match your students with the mentors they deserve</h3>
         <hr style="width:60%;text-align:center;border-top:1px solid;">
     </div>
     <div class="container pt-4">
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-5">
                 <div class="row">
                     <div class="col-2 mt-2 mt-2 text-responsive">
                         <i class="icons icon-user-add lead"></i>
                     </div>
                     <div class="col-10">
                         <h3 class="mb-3">Easy Sign-Up</h3>
-                        <p class="lead">Students are easily authorized through Princeton's CAS login system and alumni
-                            are approved with a valid e-mail address on the alumni.princeton.edu domain.
+                        <p class="lead">Each admin is assigned a unique group ID to facilitate the sign-up and matching
+                            process. You can easily set a password for added security.
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="row">
                     <div class="col-2 mt-2">
                         <i class="icons icon-update lead"></i>
@@ -50,21 +50,23 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-5">
                 <div class="row">
                     <div class="col-2 mt-2 pr-md-2">
                         <i class="icons icon-network lead"></i>
                     </div>
                     <div class="col-10">
-                        <h3 class="mb-3">Personalized Matching - Coming Soon!</h3>
-                        <p class="lead">As an administrator, you can easily choose the matching
+                        <h3 class="mb-3">Personalized Matching</h3>
+                        <p class="lead">(Coming Soon) As an administrator, you can easily choose the matching
                             criteria for your group. With our algorithm, computed matches
                             between students and alumni will be optimal.
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="row">
                     <div class="col-2 mt-2">
                         <i class="icons icon-download lead"></i>
@@ -72,16 +74,17 @@
                     <div class="col-10">
                         <h3 class="mb-3">Importing Features</h3>
                         <p class="lead">If you'd rather avoid the sign-up process, TigerPair offers easy-to-use tools
-                            for you to import student and alumni information from a spreadsheet or Google Form.
+                            for you to import student and alumni information from a spreadsheet.
                             Match results can then easily be sent out to participants.
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center mb-5"><a type="button"
-                class="btn btn-change btn-sm text-white text-center" id="startButton" href="/admin/dashboard">Get
-                started today!</a></div>
+    </div>
+    <div class="d-flex justify-content-center mb-5"><a type="button"
+            class="btn btn-change btn-sm text-white text-center" id="startButton" href="/admin/dashboard">Get
+            started today!</a></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
