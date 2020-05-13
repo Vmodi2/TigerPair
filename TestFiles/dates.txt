@@ -1,0 +1,15 @@
+update alumni set date_created='2020-04-26' where info_email='bezos@amazon.com';
+update alumni set date_created='2020-04-27' where info_email='hamilton@columbia.edu';
+update alumni set date_created='2020-04-29' where info_email='jerome@government.org';
+update alumni set date_created='2020-04-29' where info_email='sonia@supremecourt.com';
+update alumni set date_created='2020-04-29' where info_email='fitzgerald.westegg.com';
+update alumni set date_created='2020-04-30' where info_email='michelle@whitehouse.gov';
+update alumni set date_created='2020-05-04' where info_email='whitman@hp.com';
+
+update students set date_created='2020-04-27' where studentid='aandrews';
+update students set date_created='2020-04-27' where studentid='atopaz';
+update students set date_created='2020-04-29' where studentid='cblossom';
+update students set date_created='2020-04-29' where studentid='ecooper';
+update students set date_created='2020-04-29' where studentid='fpjones';
+update students set date_created='2020-05-02' where studentid='rmantle';
+update students set date_created='2020-05-04' where studentid='vlodge';
