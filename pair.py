@@ -397,70 +397,6 @@ def user_delete(side):
     return redirect(url_for("confirm_delete"))
 
 # -----------------------------------------------------------------------
-
-
-def verify_email_regex(request):
-    email1 = request.form.get('email')
-    regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-    return search(regex, email1)
-
-
-# NEW ALUM END
-# -----------------------------------------------------------------------
-
-@app.route('/resend_email', methods=['GET', 'POST'])
-def resend_email():
-    error = ""
-    form = ForgotForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        user = alumni.query.filter_by(info_email=email).first()
-        if user is not None:
-
-            token = s.dumps(email, salt='email-confirm')
-
-            msg = Message(
-                'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body = 'Click here to verify email {}'.format(link)
-            mail.send(msg)
-            return redirect(url_for('gotoemail'))
-
-        else:
-            error = "Invalid credentials"
-
-    html = render_template(
-        'pages/login/resend_email.html', form=form, errors=[error])  # MAKE THIS
-    return make_response(html)
-
-
-@app.route('/confirm_email/<token>', methods=['GET', 'POST'])
-def confirm_email(token):
-
-    html = ''
-    errormsg = ''
-    try:
-        # changed to infinite (got rid of max_age)
-        # email = s.loads(token, salt='email-confirm', max_age=3600)
-        email = s.loads(token, salt='email-confirm')
-    except SignatureExpired:
-        errormsg = 'The token is expired'
-        abort(404)
-
-    # give email column indexability
-    user = alumni.query.filter_by(info_email=email).first_or_404()
-    user.email_confirmed = True
-    db.session.commit()
-
-    html = render_template(
-        'pages/login/confirm_email.html', errormsg=errormsg)
-    return make_response(html)
-    # add a button in confirm_email that redirects them to login
-
-    # login_user(user)  # Log in as newly created user
-    # return redirect(url_for('/site/pages/alumni/index.html')) ## idk where to redirect to
-
-# -----------------------------------------------------------------------
 # Dynamic page function for home page of site
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
@@ -477,13 +413,6 @@ def team():
 @app.route('/admin-info', methods=['GET', 'POST'])
 def admininfo():
     return render_template('pages/visitor/admininfo.html')
-
-# -----------------------------------------------------------------------
-# Dynamic page function for sign in page of site
-@app.route('/signin', methods=['GET', 'POST'])
-def matching():
-    html = render_template('pages/signin/index.html')
-    return make_response(html)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -613,6 +542,68 @@ def signup():
     return make_response(html)
 
 # -----------------------------------------------------------------------
+
+
+def verify_email_regex(request):
+    email1 = request.form.get('email')
+    regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    return search(regex, email1)
+
+
+# NEW ALUM END
+# -----------------------------------------------------------------------
+
+@app.route('/resend_email', methods=['GET', 'POST'])
+def resend_email():
+    error = ""
+    form = ForgotForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = alumni.query.filter_by(info_email=email).first()
+        if user is not None:
+
+            token = s.dumps(email, salt='email-confirm')
+
+            msg = Message(
+                'Confirm Email', sender='tigerpaircontact@gmail.com', recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body = 'Click here to verify email {}'.format(link)
+            mail.send(msg)
+            return redirect(url_for('gotoemail'))
+
+        else:
+            error = "Invalid credentials"
+
+    html = render_template(
+        'pages/login/resend_email.html', form=form, errors=[error])  # MAKE THIS
+    return make_response(html)
+
+
+@app.route('/confirm_email/<token>', methods=['GET', 'POST'])
+def confirm_email(token):
+
+    html = ''
+    errormsg = ''
+    try:
+        # changed to infinite (got rid of max_age)
+        # email = s.loads(token, salt='email-confirm', max_age=3600)
+        email = s.loads(token, salt='email-confirm')
+    except SignatureExpired:
+        errormsg = 'The token is expired'
+        abort(404)
+
+    # give email column indexability
+    user = alumni.query.filter_by(info_email=email).first_or_404()
+    user.email_confirmed = True
+    db.session.commit()
+
+    html = render_template(
+        'pages/login/confirm_email.html', errormsg=errormsg)
+    return make_response(html)
+    # add a button in confirm_email that redirects them to login
+
+    # login_user(user)  # Log in as newly created user
+    # return redirect(url_for('/site/pages/alumni/index.html')) ## idk where to redirect to
 
 
 def verify_admin():

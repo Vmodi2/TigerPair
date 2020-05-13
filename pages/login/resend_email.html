@@ -4,7 +4,7 @@
 <body id="top">
 
   {% block title %}
-  Enter Email
+  Enter your email
   {% endblock %}
 
   {% block styles %}
@@ -24,7 +24,7 @@
         <div class="card card-signin my-5">
           <div class="card-body">
             <form class="form-signin" method="POST" action="#">
-              <h3 class="card-title text-center"><strong>Enter Email</strong></h3>
+              <h3 class="card-title text-center"><strong>Enter your email</strong></h3>
               {{ form.hidden_tag() }}
               {% for error in errors %}
               <span style="color: #a94442;">{{error}}</span>

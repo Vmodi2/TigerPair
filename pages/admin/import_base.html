@@ -5,9 +5,10 @@
     data-intro="If you already have a list of members you'd like to import, you can do so on these import pages."
     data-position='right'>
     <h1 class="display-4 text-center">Upload a list of {% block import_side %}{% endblock %} as a .csv file</h1>
-    <p class="lead">The header of your csv file must include {% block header_info %}{% endblock %}, although the order
+    <p class="lead">The header of your csv file must include {% block header_info %}{% endblock %} columns, although the
+        order of the columns
         is not important</p>
-    <p class="lead">Ensure that major is listed in a three-letter format (e.g. COS or ECO)</p>
+    <p class="lead">Ensure that each major is listed in Princeton's unique three-letter format (e.g. COS or ECO)</p>
     <hr class="my-4">
     <form action="/admin/import/{{side}}" method="post" enctype="multipart/form-data"
         class="d-flex justify-content-center mb-3">
